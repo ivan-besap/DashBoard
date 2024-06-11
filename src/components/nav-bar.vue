@@ -9,8 +9,7 @@ import img5 from "../assets/images/products/img-5.png"
 import simplebar from "simplebar-vue";
 
 import i18n from "../i18n";
-import axios from 'axios';
-import Swal from 'sweetalert2';
+
 /**
  * Nav-bar Component
  */
@@ -113,33 +112,6 @@ export default {
   },
 
   methods: {
-    logout() {
-      Swal.fire({
-        title: 'Are you sure you want to log out?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, log out',
-        cancelButtonText: 'No, cancel'
-      }).then((result) => {
-        if (result.isConfirmed) {
-        
-          
-        }).then(() => {
-                this.$router.push('/auth/logout');
-              });
-            })
-            .catch(error => {
-              console.error('Error logging out', error);
-              Swal.fire({
-                icon: 'error',
-                title: 'Logout Failed',
-                text: 'There was an error while logging out. Please try again.',
-              });
-            });
-        }
-      });
-    },
-
     ...layoutMethods,
     isCustomDropdown() {
       //Search bar
@@ -942,9 +914,8 @@ export default {
                 class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Lock screen</span>
             </router-link>
-            <router-link class="dropdown-item" @click="logout"><i 
-              class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
-            <span class="align-middle" data-key="t-logout"> Logout</span>
+            <router-link class="dropdown-item" to="/logout"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+              <span class="align-middle" data-key="t-logout"> Logout</span>
             </router-link>
           </BDropdown>
         </div>

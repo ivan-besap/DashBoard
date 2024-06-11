@@ -5,17 +5,19 @@ import {
   helpers
 } from "@vuelidate/validators";
 import axios from 'axios';
+
 import {
   authMethods,
   authFackMethods,
   notificationMethods,
 } from "@/state/helpers";
 
+
 export default {
   data() {
     return {
-      email: "correo@miempresa.com",
-      password: "password",
+      email: "",
+      password: "",
       submitted: false,
       authError: null,
       tryingToLogIn: false,
@@ -40,41 +42,39 @@ export default {
     ...authFackMethods,
     ...notificationMethods,
 
-    clearLocalStorage() {
-      localStorage.removeItem('userdata');
-      localStorage.removeItem('userid');
-      localStorage.removeItem('userrole');
-      localStorage.removeItem('jwt');
-    },
-
     async signinapi() {
-      this.processing = true;
-      try {
-        const result = await axios.post('http://localhost:8080/auth/login', {
-          username: this.email,
-          password: this.password
-        });
-        if (result.data.status === 'errors') {
-          this.authError = result.data.data;
-          this.processing = false;
-          return;
-        }
-        console.log(result.data);
+  this.processing = true;
+  try {
+    const result = await axios.post('http://localhost:8080/auth/login', {
+      username: this.email,
+      password: this.password
+    });
 
-        // Clear localStorage before storing new user data
-        this.clearLocalStorage();
+    if (result.data.status === 'errors') {
+      this.authError = result.data.data;
+      return;
+    }
 
-        localStorage.setItem('jwt', result.data.token);
-        this.$router.push({
-          path: "/",
-        });
-      } catch (error) {
-        this.authError = 'Failed to log in. Please try again.';
-        console.error('Login error:', error);
-      } finally {
-        this.processing = false;
-      }
-    },
+    // Suponiendo que el token se encuentra en result.data.token
+    localStorage.setItem('jwt', result.data.token);
+
+    // Otras posibles acciones con los datos del usuario
+    const { userType, userData } = result.data;
+    localStorage.setItem('userType', userType);
+    localStorage.setItem('userData', JSON.stringify(userData));
+
+    // Redirige a la página principal o a una página específica del usuario
+    this.$router.push({
+      path: '/dashboard/crypto' // Asegúrate de que esta ruta existe
+    });
+  } catch (error) {
+    console.error('Error during login:', error);
+    this.authError = 'Login failed. Please check your credentials and try again.';
+  } finally {
+    this.processing = false;
+  }
+},
+
 
     // Try to log the user in with the username
     // and password they provided.
@@ -102,7 +102,7 @@ export default {
                 this.isAuthError = false;
                 // Redirect to the originally requested page, or to the home page
                 this.$router.push({
-                  path: "/",
+                  path: '/'
                 });
               })
               .catch((error) => {
@@ -122,7 +122,7 @@ export default {
           }
         } else if (process.env.VUE_APP_DEFAULT_AUTH === "authapi") {
           axios
-            .post("http://127.0.0.1:8080/auth/login", {
+            .post("http://127.0.0.1:8000/api/login", {
               email: this.email,
               password: this.password,
             })
@@ -131,10 +131,11 @@ export default {
             });
         }
       }
-    },   
+    },
+
   },
 };
-</script>;
+</script>
 
 <template>
   <div class="auth-page-wrapper pt-5">
