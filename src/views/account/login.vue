@@ -57,7 +57,7 @@ export default {
 
     // Suponiendo que el token se encuentra en result.data.token
     localStorage.setItem('jwt', result.data.token);
-
+    console.log(result.data.token)
     // Otras posibles acciones con los datos del usuario
     const { userType, userData } = result.data;
     localStorage.setItem('userType', userType);
@@ -65,7 +65,7 @@ export default {
 
     // Redirige a la página principal o a una página específica del usuario
     this.$router.push({
-      path: '/dashboard/crypto' // Asegúrate de que esta ruta existe
+      path: '/client/dashboard-client' // Asegúrate de que esta ruta existe
     });
   } catch (error) {
     console.error('Error during login:', error);

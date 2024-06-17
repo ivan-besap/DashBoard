@@ -1230,4 +1230,40 @@ export default [
     meta: { title: "Leaflet Maps", authRequired: true },
     component: () => import("../views/maps/leaflet/index"),
   },
+  {
+    path: "/client/account-client",
+    name: "Account Client",
+    meta: { title: "Cuenta", authRequired: true },
+    component: () => import("../views/client/account-client"),
+  },
+  {
+    path: "/client/dashboard-client",
+    name: "Dashboard Client",
+    meta: { title: "Dashboard", authRequired: true },
+    component: () => import("../views/client/dashboard-client"),
+  },
+  {
+    path: "/client/profile-client",
+    name: "Profile Client",
+    meta: { title: "Perfil", authRequired: true },
+    component: () => import("../views/client/profile-client"),
+  },
+  {
+    path: "/client/reserve-client",
+    name: "Reserve Client",
+    meta: { title: "Reserva", authRequired: true },
+    component: () => import("../views/client/reserve-client"),
+  },
+  {
+    path: "/client/stations",
+    name: "Stations",
+    meta: { title: "Estaciones", authRequired: true },
+    component: () => import("../views/client/stations"),
+  },
+  {
+    path: "/client/subscription-plan",
+    name: "Subscription Plan",
+    meta: { title: "Suscripcion Plan", authRequired: true },
+    component: () => import("../views/client/subscription-plan"),
+  },
 ];
