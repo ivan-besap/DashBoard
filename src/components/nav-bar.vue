@@ -112,6 +112,15 @@ export default {
   },
 
   methods: {
+    loadUserData() {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      const userType = localStorage.getItem('userType');
+
+      this.userData = userData || {};
+      this.userRole = userType === 'client' ? 'Cliente' : userType;
+      console.log(this.userData)
+
+    },
     ...layoutMethods,
     isCustomDropdown() {
       //Search bar
@@ -265,6 +274,7 @@ export default {
     },
   },
   mounted() {
+    this.loadUserData();
     if (process.env.VUE_APP_I18N_LOCALE) {
       this.flag = process.env.VUE_APP_I18N_LOCALE;
       this.languages.forEach((item) => {
@@ -875,18 +885,21 @@ export default {
             <template #button-content>
               <span class="d-flex align-items-center">
                 <img class="rounded-circle header-profile-user" src="@/assets/images/users/avatar-1.jpg"
-                  alt="Header Avatar">
-                <span class="text-start ms-xl-2">
-                  <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Edward
-                    Diana</span>
-                  <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Founder</span>
+                     alt="Header Avatar">
+                <span class="text-start ms-xl-2" v-if="userData">
+                  <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ userData.firstName }} {{ userData.lastName }}</span>
+                  <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ userRole }}</span>
                 </span>
               </span>
             </template>
             <h6 class="dropdown-header">Welcome Anna!</h6>
-            <router-link class="dropdown-item" to="/pages/profile"><i
+            <router-link class="dropdown-item" to="/client/profile-client"><i
                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Profile</span>
+            </router-link>
+            <router-link class="dropdown-item" to="/client/dashboard-client"><i
+                class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+              <span class="align-middle"> Dashboard</span>
             </router-link>
             <router-link class="dropdown-item" to="/chat">
               <i class=" mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i>

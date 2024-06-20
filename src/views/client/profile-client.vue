@@ -1,7 +1,7 @@
 <script>
-import Multiselect from "@vueform/multiselect";
+/*import Multiselect from "@vueform/multiselect";*/
 import "@vueform/multiselect/themes/default.css";
-import flatPickr from "vue-flatpickr-component";
+/*import flatPickr from "vue-flatpickr-component";*/
 import "flatpickr/dist/flatpickr.css";
 import axios from 'axios';
 import Layout from "@/layouts/main.vue";
@@ -9,6 +9,7 @@ import Layout from "@/layouts/main.vue";
 export default {
   data() {
     return {
+      activeTab: 'home',
       value: ['javascript'],
       date: null,
       client: null,  // Añadir un campo para almacenar los datos del cliente
@@ -16,10 +17,17 @@ export default {
   },
   components: {
     Layout,
-    Multiselect,
-    flatPickr
+    /*Multiselect,*/
+    /*flatPickr*/
   },
   methods: {
+    setActiveTab(tabName) {
+      this.activeTab = tabName;
+      console.log(`Active tab set to: ${tabName}`);
+    },
+    goToTab(tabName) {
+      this.activeTab = tabName; // Actualiza el tab activo
+    },
     async getUser() {
       try {
         const response = await axios.get('http://localhost:8080/api/clients/current');
@@ -120,7 +128,7 @@ export default {
             </div>
           </BCardBody>
         </BCard>
-        <BCard no-body>
+<!--        <BCard no-body>
           <BCardBody>
             <div class="d-flex align-items-center mb-5">
               <div class="flex-grow-1">
@@ -138,12 +146,12 @@ export default {
               </BProgressBar>
             </BProgress>
           </BCardBody>
-        </BCard>
+        </BCard>-->
         <BCard no-body>
           <BCardBody>
             <div class="d-flex align-items-center mb-4">
               <div class="flex-grow-1">
-                <h5 class="card-title mb-0">Auto</h5>
+                <h5 class="card-title mb-0">Mis Autos</h5>
               </div>
               <div class="flex-shrink-0">
                 <BLink href="javascript:void(0);" class="badge bg-light text-primary fs-12">
@@ -154,27 +162,12 @@ export default {
             <div class="mt-6">
               <div class="space-y-4">
                 <div class="bg-dark p-4 rounded-lg">
-                  <img src="https://placehold.co/100x50" alt="Tesla Model X" class="mb-2 img-fluid rounded" />
+                  <img src="https://i.blogs.es/efcca7/screenshot/1366_521.jpg" alt="Tesla Model X" class="mb-2 img-fluid rounded" @click="goToTab('autos')" />
                   <div class="text-white mb-2">
-                    <strong>Patente:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].licensePlate : '' }}
+                    <strong>Modelo:</strong> <span style="color: #7ae6ac;">{{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].model : '' }}</span>
                   </div>
                   <div class="text-white mb-2">
-                    <strong>Modelo:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].model : '' }}
-                  </div>
-                  <div class="text-white mb-2">
-                    <strong>Vin:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].vin : '' }}
-                  </div>
-                  <div class="text-white mb-2">
-                    <strong>Color:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].color : '' }}
-                  </div>
-                  <div class="text-white mb-2">
-                    <strong>Fabricante:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].brand : '' }}
-                  </div>
-                  <div class="text-white mb-2">
-                    <strong>Año:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].manufactureYear : '' }}
-                  </div>
-                  <div class="text-white mb-2">
-                    <strong>Bateria:</strong> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].capacityFullPower : '' }} kWh
+                    <strong>Capacidad Total:</strong> <span style="color: #7ae6ac;"> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].capacityFullPower : '' }} kWh </span>
                   </div>
                 </div>
               </div>
@@ -185,8 +178,9 @@ export default {
       <BCol xxl="9">
         <BCard no-body class="mt-xxl-n5">
           <BCardBody class="p-4 pt-2">
-            <BTabs nav-class="nav-tabs-custom rounded border-bottom-0">
-              <BTab class="nav-item" title="Perfil" active>
+            <BNav :active-tab="activeTab">
+              <BTabs nav-class="nav-tabs-custom rounded border-bottom-0">
+              <BTab class="nav-item" title="Perfil" :active="activeTab === 'home'" @click="setActiveTab('home')">
                 <form action="javascript:void(0);">
                   <BRow class="pt-4">
                     <BCol lg="6">
@@ -214,51 +208,46 @@ export default {
                       </div>
                     </BCol>
                     <BCol lg="12">
-                      <div class="mb-3">
-                        <label for="JoiningdatInput" class="form-label">Fecha de Nacimiento</label>
-                        <flat-pickr v-model="date" id="dateinput" class="form-control"></flat-pickr>
+                      <div class="hstack gap-2 justify-content-end">
+                        <BButton type="submit" variant="secondary" @click="updatedata">
+                          Updates
+                        </BButton>
+                        <BButton type="button" variant="soft-danger">
+                          Cancel
+                        </BButton>
                       </div>
                     </BCol>
-                    <BCol lg="4">
+                  </BRow>
+                </form>
+              </BTab>
+              <BTab class="nav-item" title="Ubicacion" :active="activeTab === 'ubicacion'" @click="setActiveTab('ubicacion')">
+                <form action="javascript:void(0);">
+                  <BRow class="pt-4">
+                    <BCol lg="6">
                       <div class="mb-3">
                         <label for="cityInput" class="form-label">Ciudad</label>
                         <input type="text" class="form-control" id="cityInput" placeholder="City" :value="client && client.account[0].locations[0].city ? client.account[0].locations[0].city : ''" />
                       </div>
                     </BCol>
-                    <BCol lg="4">
+                    <BCol lg="6">
                       <div class="mb-3">
                         <label for="regionInput" class="form-label">Region</label>
                         <input type="text" class="form-control" id="regionInput" placeholder="Region"
-                        :value="client && client.account[0].locations[0].country ? client.account[0].locations[0].region : ''" />
+                               :value="client && client.account[0].locations[0].country ? client.account[0].locations[0].region : ''" />
                       </div>
                     </BCol>
-                    <BCol lg="4">
+                    <BCol lg="6">
                       <div class="mb-3">
                         <label for="countryInput" class="form-label">Pais</label>
                         <input type="text" class="form-control" id="countryInput" placeholder="Country"
-                        :value="client && client.account[0].locations[0].country ? client.account[0].locations[0].country : ''" />
+                               :value="client && client.account[0].locations[0].country ? client.account[0].locations[0].country : ''" />
                       </div>
                     </BCol>
-                    <BCol lg="4">
+                    <BCol lg="6">
                       <div class="mb-3">
                         <label for="addressInput" class="form-label">Direccion</label>
                         <input type="text" class="form-control" id="addressInput" placeholder="Address"
-                        :value="client && client.account[0].locations[0].country ? client.account[0].locations[0].address : ''" />
-                      </div>
-                    </BCol>
-                    <BCol lg="4">
-                      <div class="mb-3">
-                        <label for="zipcodeInput" class="form-label">Zip Code</label>
-                        <input type="text" class="form-control" minlength="5" maxlength="6" id="zipcodeInput"
-                          placeholder="Enter zipcode" value="90011" />
-                      </div>
-                    </BCol>
-                    <BCol lg="12">
-                      <div class="mb-3 pb-2">
-                        <label for="exampleFormControlTextarea" class="form-label">Description</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea"
-                          placeholder="Enter your description" rows="3">
-Hi I'm Anna Adame,It will be as simple as Occidental; in fact, it will be Occidental. To an English person, it will seem like simplified English, as a skeptical Cambridge friend of mine told me what Occidental is European languages are members of the same family.</textarea>
+                               :value="client && client.account[0].locations[0].country ? client.account[0].locations[0].address : ''" />
                       </div>
                     </BCol>
                     <BCol lg="12">
@@ -274,7 +263,113 @@ Hi I'm Anna Adame,It will be as simple as Occidental; in fact, it will be Occide
                   </BRow>
                 </form>
               </BTab>
-              <BTab title="Change Password">
+              <BTab class="nav-item" title="Autos" :active="activeTab === 'autos'" @click="setActiveTab('autos')">
+                <form action="javascript:void(0);">
+                  <BRow class="pt-4">
+                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="firstnameInput" class="form-label">Patente</label>
+                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value=" client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].licensePlate : '' " />
+                      </div>
+                    </BCol>
+                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="lastnameInput" class="form-label">Modelo</label>
+                        <input type="text" class="form-control" id="lastnameInput" placeholder="Enter your lastname" :value="client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].model : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="phonenumberInput" class="form-label">Vin</label>
+                        <input type="text" class="form-control" id="phonenumberInput" placeholder="Enter your phone number" :value="client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].vin : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="emailInput" class="form-label">Color</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].color : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="4">
+                      <div class="mb-3">
+                        <label for="cityInput" class="form-label">Fabricante</label>
+                        <input type="text" class="form-control" id="cityInput" placeholder="City" :value="client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].brand : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="4">
+                      <div class="mb-3">
+                        <label for="regionInput" class="form-label">Año</label>
+                        <input type="text" class="form-control" id="regionInput" placeholder="Region"
+                               :value="client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].manufactureYear : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="4">
+                      <div class="mb-3">
+                        <label for="countryInput" class="form-label">Capacidad Total (kWh)</label>
+                        <input type="text" class="form-control" id="countryInput" placeholder="Country"
+                               :value="client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].capacityFullPower : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="12">
+                      <div class="hstack gap-2 justify-content-end">
+                        <BButton type="submit" variant="secondary" @click="updatedata">
+                          Updates
+                        </BButton>
+                        <BButton type="button" variant="soft-danger">
+                          Cancel
+                        </BButton>
+                      </div>
+                    </BCol>
+                  </BRow>
+                </form>
+              </BTab>
+              <BTab class="nav-item" title="Plan" :active="activeTab === 'planes'" @click="setActiveTab('planes')">
+                <form action="javascript:void(0);">
+                  <BRow class="pt-4">
+                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="firstnameInput" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value=" client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].name : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="lastnameInput" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="lastnameInput" placeholder="Enter your lastname" :value="client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].description : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="4">
+                      <div class="mb-3">
+                        <label for="phonenumberInput" class="form-label">Días</label>
+                        <input type="text" class="form-control" id="phonenumberInput" placeholder="Enter your phone number" :value="client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].days : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="4">
+                      <div class="mb-3">
+                        <label for="emailInput" class="form-label">Costo</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].cost : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="4">
+                      <div class="mb-3">
+                        <label for="emailInput" class="form-label">Total kWh</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].totalKWh : ''" />
+                      </div>
+                    </BCol>
+                    <BCol lg="12">
+                      <div class="hstack gap-2 justify-content-end">
+                        <BButton type="submit" variant="secondary" @click="updatedata">
+                          Updates
+                        </BButton>
+                        <BButton type="button" variant="soft-danger">
+                          Cancel
+                        </BButton>
+                      </div>
+                    </BCol>
+                  </BRow>
+                </form>
+              </BTab>
+<!--              <BTab title="Change Password">
                 <form action="javascript:void(0);">
                   <BRow class="g-2 pt-4">
                     <BCol lg="4">
@@ -384,8 +479,8 @@ Hi I'm Anna Adame,It will be as simple as Occidental; in fact, it will be Occide
                     <BLink href="javascript:void(0);">Logout</BLink>
                   </div>
                 </div>
-              </BTab>
-              <BTab title="Experience">
+              </BTab>-->
+<!--              <BTab title="Experience">
                 <form>
                   <div id="newlink">
                     <div id="1">
@@ -497,8 +592,8 @@ You always want to make sure that your fonts work well together and try to limit
                     </div>
                   </BCol>
                 </form>
-              </BTab>
-              <BTab title="Privacy Policy">
+              </BTab>-->
+<!--              <BTab title="Privacy Policy">
                 <div class="mb-4 pb-2 pt-4">
                   <h5 class="card-title text-decoration-underline mb-3">
                     Security:
@@ -652,8 +747,9 @@ You always want to make sure that your fonts work well together and try to limit
                     <BLink href="javascript:void(0);" class="btn btn-light">Cancel</BLink>
                   </div>
                 </div>
-              </BTab>
+              </BTab>-->
             </BTabs>
+            </BNav>
           </BCardBody>
         </BCard>
       </BCol>
