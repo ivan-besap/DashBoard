@@ -304,8 +304,8 @@ export default {
 <template>
   <header id="page-topbar">
     <div class="layout-width">
-      <div class="navbar-header">
-        <div class="d-flex">
+      <div class="navbar-header" style="display: flex; align-items: center;">
+        <div class="d-flex align-items-center">
           <!-- LOGO -->
           <div class="navbar-brand-box horizontal-logo">
             <router-link to="/" class="logo logo-dark">
@@ -322,7 +322,7 @@ export default {
                 <img src="@/assets/images/logo-sm.png" alt="" height="22" />
               </span>
               <span class="logo-lg">
-                <img src="@/assets/images/logo-light.png" alt="" height="17" />
+                <img src="@/assets/images/logo-evol.png" alt="" height="160" style="margin-top: 6px;" />
               </span>
             </router-link>
           </div>
@@ -898,7 +898,7 @@ export default {
               <span class="align-middle"> Profile</span>
             </router-link>
             <router-link class="dropdown-item" to="/client/dashboard-client"><i
-                class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                class="mdi mdi-view-dashboard text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Dashboard</span>
             </router-link>
             <router-link class="dropdown-item" to="/chat">

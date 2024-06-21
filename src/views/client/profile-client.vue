@@ -9,6 +9,58 @@ import Layout from "@/layouts/main.vue";
 export default {
   data() {
     return {
+      dealsStatus: [
+        {
+          id: 1,
+          name: "Quilpue",
+          date: "May 20, 2024",
+          img: require("@/assets/images/logo-estacion.png"),
+          representativeName: "Estación Quilpue",
+          badgeClass: "success",
+          status: "Disponible",
+          statusValue: "$1000",
+        },
+        {
+          id: 2,
+          name: "Viña del Mar",
+          date: "Jun 12, 2024",
+          img: require("@/assets/images/logo-estacion.png"),
+          representativeName: "Estación Vergara",
+          badgeClass: "warning",
+          status: "Disponible",
+          statusValue: "$1500",
+        },
+        {
+          id: 3,
+          name: "Valparaíso",
+          date: "Abr 27, 2024",
+          img: require("@/assets/images/logo-estacion.png"),
+          representativeName: "Estación la Polvora",
+          badgeClass: "danger",
+          status: "No Disponible",
+          statusValue: "$780",
+        },
+        {
+          id: 4,
+          name: "Valparaíso",
+          date: "Jun 08, 2024",
+          img: require("@/assets/images/logo-estacion.png"),
+          representativeName: "Estación Playa Ancha",
+          badgeClass: "success",
+          status: "Terminando",
+          statusValue: "$890",
+        },
+        {
+          id: 5,
+          name: "Santiago",
+          date: "May 30, 2024",
+          img: require("@/assets/images/logo-estacion.png"),
+          representativeName: "Estación Providencia",
+          badgeClass: "info",
+          status: "Llena",
+          statusValue: "$1020",
+        },
+      ],
       activeTab: 'home',
       value: ['javascript'],
       date: null,
@@ -128,25 +180,6 @@ export default {
             </div>
           </BCardBody>
         </BCard>
-<!--        <BCard no-body>
-          <BCardBody>
-            <div class="d-flex align-items-center mb-5">
-              <div class="flex-grow-1">
-                <h5 class="card-title mb-0">Complete Your Profile</h5>
-              </div>
-              <div class="flex-shrink-0">
-                <BLink href="javascript:void(0);" class="badge bg-light text-primary fs-12"><i
-                    class="ri-edit-box-line align-bottom me-1"></i> Edit</BLink>
-              </div>
-            </div>
-
-            <BProgress class="animated-progress custom-progress progress-label">
-              <BProgressBar :value="30" variant="danger">
-                <div class="label">30%</div>
-              </BProgressBar>
-            </BProgress>
-          </BCardBody>
-        </BCard>-->
         <BCard no-body>
           <BCardBody>
             <div class="d-flex align-items-center mb-4">
@@ -162,12 +195,39 @@ export default {
             <div class="mt-6">
               <div class="space-y-4">
                 <div class="bg-dark p-4 rounded-lg">
-                  <img src="https://i.blogs.es/efcca7/screenshot/1366_521.jpg" alt="Tesla Model X" class="mb-2 img-fluid rounded" @click="goToTab('autos')" />
+                  <img src="https://i.blogs.es/efcca7/screenshot/1366_521.jpg" alt="Tesla Model X" class="mb-2 img-fluid rounded" @click="goToTab('autos')" style="cursor: pointer;" />
                   <div class="text-white mb-2">
                     <strong>Modelo:</strong> <span style="color: #7ae6ac;">{{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].model : '' }}</span>
                   </div>
                   <div class="text-white mb-2">
                     <strong>Capacidad Total:</strong> <span style="color: #7ae6ac;"> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].capacityFullPower : '' }} kWh </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </BCardBody>
+        </BCard>
+        <BCard no-body>
+          <BCardBody>
+            <div class="d-flex align-items-center mb-4">
+              <div class="flex-grow-1">
+                <h5 class="card-title mb-0">Mis Planes</h5>
+              </div>
+              <div class="flex-shrink-0">
+                <BLink href="javascript:void(0);" class="badge bg-light text-primary fs-12">
+                  <i class="ri-add-fill align-bottom me-1"></i> Add
+                </BLink>
+              </div>
+            </div>
+            <div class="mt-6">
+              <div class="space-y-4">
+                <div class="bg-dark p-4 rounded-lg">
+                  <img src="@/assets/images/plan-basico.png"  alt="Tesla Model X" class="mb-2 img-fluid rounded" @click="goToTab('planes')" style="cursor: pointer; width: 100%; height: auto;" />
+                  <div class="text-white mb-2">
+                    <strong>Nombre:</strong> <span style="color: #7ae6ac;">{{ client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].name : '' }}</span>
+                  </div>
+                  <div class="text-white mb-2">
+                    <strong>Costo:</strong> <span style="color: #7ae6ac;"> ${{ client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].cost : '' }}</span>
                   </div>
                 </div>
               </div>
@@ -750,6 +810,58 @@ You always want to make sure that your fonts work well together and try to limit
               </BTab>-->
             </BTabs>
             </BNav>
+          </BCardBody>
+        </BCard>
+        <BCard no-body>
+          <BCardHeader class="align-items-center d-flex py-0">
+            <BCardTitle class="mb-0 flex-grow-1">Mis Estaciones</BCardTitle>
+            <div class="flex-shrink-0">
+              <BDropdown variant="link" class="card-header-dropdown" toggle-class="text-reset dropdown-btn arrow-none"
+                         menu-class="dropdown-menu-end" aria-haspopup="true" :offset="{ alignmentAxis: 25, crossAxis: 0, mainAxis: 0 }">
+                <template #button-content> <span class="text-muted">01 Mar 2024 - 21 Jun 2024<i
+                    class="mdi mdi-chevron-down ms-1"></i></span>
+                </template>
+                <BDropdownItem>Today</BDropdownItem>
+                <BDropdownItem>Last Week</BDropdownItem>
+                <BDropdownItem>Last Month</BDropdownItem>
+                <BDropdownItem>Current Year</BDropdownItem>
+              </BDropdown>
+            </div>
+          </BCardHeader>
+
+          <BCardBody>
+            <div class="table-responsive table-card">
+              <table class="table table-borderless table-hover table-nowrap align-middle mb-0">
+                <thead class="table-light">
+                <tr class="text-muted">
+                  <th scope="col">Ubicación</th>
+                  <th scope="col" style="width: 20%">Última Carga</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col" style="width: 16%">Status</th>
+                  <th scope="col" style="width: 12%">Costo por kWh</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr v-for="(item, index) of dealsStatus" :key="index">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.date }}</td>
+                  <td>
+                    <img :src="`${item.img}`" alt="" class="avatar-xs me-2" />
+                    <BLink href="#javascript: void(0);" class="text-body fw-medium">{{ item.representativeName }}</BLink>
+                  </td>
+                  <td>
+                <span
+                    :class="{ 'badge bg-success-subtle text-success p-2': item.status == 'Disponible', 'badge bg-warning-subtle text-warning p-2': item.status == 'Llena', 'badge bg-danger-subtle text-danger p-2': item.status == 'No Disponible', 'badge bg-info-subtle text-info p-2': item.status == 'Terminando' }">{{
+                    item.status }}</span>
+                  </td>
+                  <td>
+                    <div class="text-nowrap">{{ item.statusValue }}</div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </BCardBody>
         </BCard>
       </BCol>

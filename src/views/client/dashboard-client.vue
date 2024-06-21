@@ -205,32 +205,44 @@ export default {
     </BRow>
     <BRow>
       <BCard no-body>
-        <BCardTitle class="mb-3 mt-3 flex-grow-1">Estaciones Visitadas</BCardTitle>
+        <BCardTitle class="mb-2 mt-2 flex-grow-1" style="font-size: 1rem;">Estaciones Cercanas</BCardTitle>
         <BCol sm="12">
           <BCard no-body>
             <BRow class="g-0">
               <BCol md="4">
                 <img class="rounded-start img-fluid h-100 object-fit-cover"
-                     src="https://img.remediosdigitales.com/a4e9df/electrify-america-chargers-by-btc-power/450_1000.jpg" alt="Card image" />
+                     src="https://img.remediosdigitales.com/a4e9df/electrify-america-chargers-by-btc-power/450_1000.jpg" alt="Card image"
+                     style="height: 120px;" />
               </BCol>
               <BCol md="8">
-                <BCardHeader>
-                  <h5 class="card-title mb-0">Estacion Clinica Vitacura</h5>
+                <BCardHeader style="padding: 0.5rem;">
+                  <h5 class="card-title mb-0" style="font-size: 1rem;">Estacion Clinica Vitacura</h5>
                 </BCardHeader>
-                <BCardBody>
-                  <BCardBody class="flex-grow-1 d-flex flex-column justify-content-between">
+                <BCardBody style="padding: 0.5rem;">
+                  <BCardBody class="flex-grow-1 d-flex flex-column justify-content-between" style="padding: 0.5rem;">
                     <div>
-                      <p class="card-text mb-2">Puertos Disponibles: 10</p>
-                      <p class="card-text mb-2">Empresa: EvolGreen</p>
-                      <p class="card-text mb-2">Tipos de Conector: 4</p>
-                      <p class="card-text mb-2">Reserva: Disponible</p>
-                      <p class="card-text mb-2">Auto: Compatible</p>
-                      <p class="card-text">
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">Puertos Disponibles: 10</p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">Empresa: EvolGreen</p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">
+                        Tipos de Carga:
+                        <span style="color: #4b7dd3;">Normal</span> -
+                        <span style="color: #2acfc0;">Rápida</span> -
+                        <span style="color: #25dd8f;">Muy rápida</span>
+                      </p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">
+                      Reserva:
+                      <span style="color: #25dd8f;">Disponible</span>
+                    </p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">
+                        Conector:
+                        <span style="color: #25dd8f;">Compatible</span>
+                      </p>
+                      <p class="card-text" style="font-size: 0.75rem;">
                         <small class="text-muted">Última carga hace 3 minutos</small>
                       </p>
                     </div>
-                    <div class="text-end mt-2">
-                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold;">Reserva Ahora</BButton>
+                    <div class="text-end mt-1">
+                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold; font-size: 1rem; ">Reserva Ahora</BButton>
                     </div>
                   </BCardBody>
                 </BCardBody>
@@ -238,31 +250,43 @@ export default {
             </BRow>
           </BCard>
         </BCol>
+
         <BCol sm="12">
           <BCard no-body>
             <BRow class="g-0">
               <BCol md="4">
                 <img class="rounded-start img-fluid h-100 object-fit-cover"
-                     src="https://www.reasonwhy.es/media/library/carga-coches-electricos.jpg" alt="Card image" />
+                     src="https://www.reasonwhy.es/media/library/carga-coches-electricos.jpg" alt="Card image"
+                     style="height: 120px;" />
               </BCol>
               <BCol md="8">
-                <BCardHeader>
-                  <h5 class="card-title mb-0">Estacion Viña del Mar</h5>
+                <BCardHeader style="padding: 0.5rem;">
+                  <h5 class="card-title mb-0" style="font-size: 1rem;">Estacion Viña del Mar</h5>
                 </BCardHeader>
-                <BCardBody>
-                  <BCardBody>
+                <BCardBody style="padding: 0.5rem;">
+                  <BCardBody class="flex-grow-1 d-flex flex-column justify-content-between" style="padding: 0.5rem;">
                     <div>
-                      <p class="card-text mb-2">Puertos Disponibles: 18</p>
-                      <p class="card-text mb-2">Empresa: EvolGreen</p>
-                      <p class="card-text mb-2">Tipos de Conector: 2</p>
-                      <p class="card-text mb-2">Reserva: Disponible</p>
-                      <p class="card-text mb-2">Auto: Compatible</p>
-                      <p class="card-text">
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">Puertos Disponibles: 18</p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">Empresa: EvolGreen</p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">
+                        Tipos de Carga:
+                        <span style="color: #4b7dd3;">Normal</span> -
+                        <span style="color: #2acfc0;">Rápida</span>
+                      </p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">
+                        Reserva:
+                        <span style="color: #25dd8f;">Disponible</span>
+                      </p>
+                      <p class="card-text mb-1" style="font-size: 0.875rem;">
+                        Conector:
+                        <span style="color: #25dd8f;">Compatible</span>
+                      </p>
+                      <p class="card-text" style="font-size: 0.75rem;">
                         <small class="text-muted">Última carga hace 1 día</small>
                       </p>
                     </div>
-                    <div class="text-end mt-2">
-                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold;">Reserva Ahora</BButton>
+                    <div class="text-end mt-1">
+                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold; font-size: 1rem;">Reserva Ahora</BButton>
                     </div>
                   </BCardBody>
                 </BCardBody>
