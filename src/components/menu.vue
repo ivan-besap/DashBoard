@@ -248,6 +248,24 @@ export default {
     <template v-if="layoutType === 'vertical' || layoutType === 'semibox'">
       <ul class="navbar-nav h-100" id="navbar-nav">
         <li class="menu-title">
+          <span data-key="t-menu"><a href="/company/dashboard-company"> Dashboard</a></span>
+        </li>
+        <li class="menu-title">
+          <span data-key="t-menu"> <a href="/company/profile-company">Compañia</a></span>
+        </li>
+        
+        <li class="menu-title">
+          <span data-key="t-menu"><a href="/company/stations-company"> Estaciones de Carga</a></span>
+        </li>
+        <li class="menu-title">
+          <span data-key="t-menu"><a href="/company/reserve-company"> Reservas</a></span>
+        </li>
+        <li class="menu-title">
+          <span data-key="t-menu"><a href="/company/reserve-company"> Plan
+          </a></span>
+        </li>
+       
+        <li class="menu-title">
           <span data-key="t-menu"> {{ $t("t-menu") }}</span>
         </li>
         <li class="nav-item">

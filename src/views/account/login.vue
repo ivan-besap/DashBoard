@@ -1,4 +1,6 @@
 <script>
+
+
 import {
   required,
   email,
@@ -54,18 +56,24 @@ export default {
       this.authError = result.data.data;
       return;
     }
-
+   
     // Suponiendo que el token se encuentra en result.data.token
     localStorage.setItem('jwt', result.data.token);
-    console.log(result.data.token)
+    console.log('Primero'+result.data.token)
+    
+    
+
     // Otras posibles acciones con los datos del usuario
     const { userType, userData } = result.data;
-    localStorage.setItem('userType', userType);
+     localStorage.setItem('userType', userType);
     localStorage.setItem('userData', JSON.stringify(userData));
-
+  
+    const userRole = localStorage.getItem('userType'); 
+     console.log(userRole)
+   
     // Redirige a la página principal o a una página específica del usuario
     this.$router.push({
-      path: '/client/dashboard-client' // Asegúrate de que esta ruta existe
+      path: '/company/dashboard-company' // Asegúrate de que esta ruta existe
     });
   } catch (error) {
     console.error('Error during login:', error);

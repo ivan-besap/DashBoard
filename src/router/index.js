@@ -48,10 +48,10 @@ const router = createRouter({
 
      switch (userType) {
        case 'client':
-         // Lógica específica para clientes
+         
          break;
        case 'company':
-         // Lógica específica para compañías
+              
          break;
        case 'employee':
          // Lógica específica para empleados

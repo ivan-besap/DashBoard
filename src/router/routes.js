@@ -1266,4 +1266,41 @@ export default [
     meta: { title: "Suscripcion Plan", authRequired: true },
     component: () => import("../views/client/subscription-plan"),
   },
+  {
+    path: "/company/account-company",
+    name: "Account Company",
+    meta: { title: "Cuenta", authRequired: true },
+    component: () => import("../views/company/account-company"),
+  },
+  {
+    path: "/company/dashboard-company",
+    name: "Dashboard Company",
+    meta: { title: "Dashboard", authRequired: true },
+    component: () => import("../views/company/dashboard-company"),
+  },
+  {
+    path: "/company/stations-company",
+    name: "Profile Company",
+    meta: { title: "Perfil", authRequired: true },
+    component: () => import("../views/company/stations-company"),
+  },
+  {
+    path: "/company/reserve-company",
+    name: "Reserve Company",
+    meta: { title: "Reserva", authRequired: true },
+    component: () => import("../views/company/reserve-company"),
+  },
+    {
+    path: "/company/suscription-company",
+    name: "Subscription Company",
+    meta: { title: "Suscripcion Plan", authRequired: true },
+    component: () => import("../views/company/suscription-company"),
+  },
+
+  {
+    path: "/company/profile-company",
+    name: "Perfil Company",
+    meta: { title: "Perfil Company", authRequired: true },
+    component: () => import("../views/company/profile-company"),
+  },
 ];
