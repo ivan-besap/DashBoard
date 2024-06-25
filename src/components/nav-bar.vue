@@ -884,7 +884,7 @@ export default {
             menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -14, crossAxis: 0, mainAxis: 0 }">
             <template #button-content>
               <span class="d-flex align-items-center">
-                <img class="rounded-circle header-profile-user" src="@/assets/images/users/avatar-1.jpg"
+                <img class="rounded-circle header-profile-user" src="@/assets/images/users/avatar-8.jpg"
                      alt="Header Avatar">
                 <span class="text-start ms-xl-2" v-if="userData">
                   <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ userData.firstName }} {{ userData.lastName }}</span>

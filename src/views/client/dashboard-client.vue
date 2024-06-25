@@ -2,6 +2,9 @@
 import Layout from "@/layouts/main.vue";
 import {CountTo} from "vue3-count-to";
 import getChartColorsArray from "@/common/getChartColorsArray";
+import flatPickr from "vue-flatpickr-component";
+import axios from "axios";
+import moment from 'moment';
 /*import PageHeader from "@/components/page-header";*/
 
 export default {
@@ -107,7 +110,92 @@ export default {
       },
     };
   },
+  data(){
+    return{
+      modalShow2: false,
+      date1: null,
+      client: null,
+      chargers: [],
+      connectors: [],
+      selectedChargerId: null,
+      selectedConnectorId: null,
+      dateTimeConfig: {
+        enableTime: true,
+        dateFormat: "d-m-y H:i",
+      }
+    }
+  },
+  methods: {
+    async getUser() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/clients/current');
+        this.client = response.data;
+        this.populateChargers();
+      } catch (error) {
+        console.error('Error fetching client data:', error);
+      }
+    },
+    populateChargers() {
+      if (this.client && this.client.account.length > 0) {
+        const chargingStations = this.client.account[0].chargingStations;
+        if (chargingStations.length > 0) {
+          this.chargers = chargingStations[0].chargers;
+        }
+      }
+    },
+    updateConnectors(chargerId) {
+      const selectedCharger = this.chargers.find(charger => charger.id === chargerId);
+      if (selectedCharger) {
+        this.connectors = selectedCharger.connectors;
+      } else {
+        this.connectors = [];
+      }
+    },
+    async reserve() {
+      if (!this.selectedChargerId || !this.selectedConnectorId || !this.date1) {
+        alert("Please select charger, connector and date");
+        return;
+      }
+
+      const dateFormateada = this.date1;
+
+      // Convert the user-friendly date to ISO-8601 format
+      const isoDate = moment(dateFormateada, "DD-MM-YY HH:mm").toISOString();
+
+      const reservationRequest = {
+        chargerId: this.selectedChargerId,
+        connectorId: this.selectedConnectorId,
+        startTime: isoDate,  // Use the ISO-8601 formatted date
+      };
+
+
+      try {
+        await axios.post('http://localhost:8080/api/reservations', reservationRequest);
+        alert('Reservación creada con éxito!');
+      } catch (error) {
+        console.error('Error creating reservation:', error);
+        alert('Error al crear la reservación , intente nuevamente!');
+      } finally {
+        this.resetForm();  // Reset form fields
+        this.modalShow2 = false  // Close the modal in both success and error cases
+    }
+    },
+    resetForm() {
+      this.selectedChargerId = null;
+      this.selectedConnectorId = null;
+      this.date1 = null;
+    }
+  },
+  mounted() {
+    this.getUser();
+  },
+  watch: {
+    selectedChargerId(newVal) {
+      this.updateConnectors(newVal);
+    },
+  },
   components: {
+    flatPickr,
     CountTo,
     Layout
   }
@@ -242,7 +330,7 @@ export default {
                       </p>
                     </div>
                     <div class="text-end mt-1">
-                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold; font-size: 1rem; ">Reserva Ahora</BButton>
+                      <BButton pill variant="success" @click="modalShow2 = !modalShow2" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold; font-size: 1rem; ">Reserva Ahora</BButton>
                     </div>
                   </BCardBody>
                 </BCardBody>
@@ -286,7 +374,7 @@ export default {
                       </p>
                     </div>
                     <div class="text-end mt-1">
-                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold; font-size: 1rem;">Reserva Ahora</BButton>
+                      <BButton pill variant="success" @click="modalShow2 = !modalShow2" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold; font-size: 1rem;">Reserva Ahora</BButton>
                     </div>
                   </BCardBody>
                 </BCardBody>
@@ -296,5 +384,36 @@ export default {
         </BCol>
       </BCard>
     </BRow>
+    <BModal v-model="modalShow2" hide-footer title="Solicitar Reserva" class="v-modal-custom">
+      <form action="javascript:void(0);">
+        <BRow>
+          <BCol md="6">
+            <label for="chargerSelect" class="form-label">Cargador</label>
+            <select id="chargerSelect" class="form-select mb-3" v-model="selectedChargerId">
+              <option v-for="charger in chargers" :key="charger.id" :value="charger.id">{{ charger.model }}</option>
+            </select>
+          </BCol>
+          <BCol md="6">
+            <label for="connectorSelect" class="form-label">Conector</label>
+            <select id="connectorSelect" class="form-select mb-3" v-model="selectedConnectorId" :disabled="!selectedChargerId">
+              <option v-for="connector in connectors" :key="connector.id" :value="connector.id">{{ connector.name }}</option>
+            </select>
+          </BCol>
+          <BCol md="6">
+            <div>
+              <label class="form-label mb-0">Fecha Reserva</label>
+              <flat-pickr v-model="date1" :config="dateTimeConfig" class="form-control"></flat-pickr>
+            </div>
+          </BCol>
+          <BCol lg="12">
+            <div class="hstack gap-2 justify-content-end">
+              <BButton type="button" variant="light" @click="modalShow2 = false">
+                Close</BButton>
+              <BButton type="button" variant="success" @click="reserve">Reservar</BButton>
+            </div>
+          </BCol>
+        </BRow>
+      </form>
+    </BModal>
   </Layout>
 </template>
