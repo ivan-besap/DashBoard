@@ -160,7 +160,7 @@ export default {
                   mx-auto
                   mb-4
                 ">
-                <img src="@/assets/images/users/avatar-1.jpg" class="
+                <img src="@/assets/images/users/avatar-8.jpg" class="
                     rounded-circle
                     avatar-xl
                     img-thumbnail
