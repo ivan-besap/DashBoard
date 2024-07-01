@@ -1285,10 +1285,10 @@ export default [
     component: () => import("../views/company/stations-company"),
   },
   {
-    path: "/company/reserve-company",
-    name: "Reserve Company",
-    meta: { title: "Reserva", authRequired: true },
-    component: () => import("../views/company/reserve-company"),
+    path: "/company/cargadores-company",
+    name: "Cargadores",
+    meta: { title: "Cargadores", authRequired: true },
+    component: () => import("../views/company/cargadores-company"),
   },
     {
     path: "/company/suscription-company",
@@ -1303,4 +1303,32 @@ export default [
     meta: { title: "Perfil Company", authRequired: true },
     component: () => import("../views/company/profile-company"),
   },
+
+  {
+    path: "/company/create-stations-company",
+    name: "Crear Company",
+    meta: { title: "Crear Company", authRequired: true },
+    component: () => import("../views/company/create-stations-company"),
+  },
+
+  {
+    path: "/company/empleados-company",
+    name: "Empleados",
+    meta: { title: "Empleados", authRequired: true },
+    component: () => import("../views/company/empleados-company"),
+  },
+
+  {
+    path: "/company/create-empleados-company",
+    name: "Crear Empleados",
+    meta: { title: "Crear Empleados", authRequired: true },
+    component: () => import("../views/company/create-empleados-company"),
+  },
+
+  {
+    path: "/company/plan-company",
+    name: "Planes",
+    meta: { title: "Planes", authRequired: true },
+    component: () => import("../views/company/plan-company"),
+  }
 ];

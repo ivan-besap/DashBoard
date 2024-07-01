@@ -2,9 +2,23 @@
 import Layout from "@/layouts/main.vue";
 import {CountTo} from "vue3-count-to";
 import getChartColorsArray from "@/common/getChartColorsArray";
-/*import PageHeader from "@/components/page-header";*/
+import PageHeader from "@/components/page-header"
+
+import {
+  basicLineChart,
+  zoomableChart,
+  
+} from "../charts/apex/line/data";
 
 export default {
+  data() {
+    return {
+      basicLineChart: basicLineChart,
+      zoomableChart: zoomableChart,
+     
+    };
+  },
+
   setup() {
     return {
       series: [{
@@ -109,46 +123,38 @@ export default {
   },
   components: {
     CountTo,
-    Layout
+    Layout,
+    PageHeader
   }
 };
 </script>
     
 <template>
   <Layout>
+    <PageHeader title="Dashboard Compañia" pageTitle="items" />
     <BRow>
-      <BCol cols="12">
-        <BRow>
-          <BCol lg="12">
-            <BCard no-body>
-              <BCardBody>
-                <h6 class="card-title d-flex justify-content-between align-items-center mb-4">
-                  EV Autos
-                  <span class="fs-6">Tesla X</span>
-                </h6>
-                <div class="d-flex justify-content-between mb-4">
-                  <div class="text-column">
-                    <strong><span class="fs-6" style="color: gray">Tiempo</span></strong>
-                    <div class="sub-text fs-6">5:21 <span style="color: #6ae4a7;">h</span></div>
-                  </div>
-                  <div class="text-column">
-                    <strong><span class="fs-6" style="color: gray">Batería</span></strong>
-                    <div class="sub-text fs-6">88 <span style="color: #6ae4a7;">%</span></div>
-                  </div>
-                  <div class="text-column">
-                    <strong><span class="fs-6" style="color: gray">Voltaje</span></strong>
-                    <div class="sub-text fs-6">50 <span style="color: #6ae4a7;">V</span></div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2" style="color: #6ae4a7">
-                  <i class="mdi mdi-flash"></i> <!-- Icono de rayo de Material Design Icons -->
-                  <span class="fs-6">Cargando</span>
-                </div>
-                <BProgress striped animated :value="70" variant="success" style="height: 50px"></BProgress>
-              </BCardBody>
-            </BCard>
-          </BCol>
-        </BRow>
+      <BCol lg="6">
+        <BCard no-body>
+          <BCardHeader>
+            <BCardTitle class="mb-0">Energia Entregada</BCardTitle>
+          </BCardHeader>
+          <BCardBody>
+            <apexchart class="apex-charts" height="350" dir="ltr" :series="basicLineChart.series"
+              :options="basicLineChart.chartOptions"></apexchart>
+          </BCardBody>
+        </BCard>
+      </BCol>
+
+      <BCol lg="6">
+        <BCard no-body>
+          <BCardHeader>
+            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>
+          </BCardHeader>
+          <BCardBody>
+            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"
+              :options="zoomableChart.chartOptions"></apexchart>
+          </BCardBody>
+        </BCard>
       </BCol>
     </BRow>
     <BRow>
@@ -205,13 +211,13 @@ export default {
     </BRow>
     <BRow>
       <BCard no-body>
-        <BCardTitle class="mb-3 mt-3 flex-grow-1">Estaciones Visitadas</BCardTitle>
+        <BCardTitle class="mb-3 mt-3 flex-grow-1">Estaciones </BCardTitle>
         <BCol sm="12">
           <BCard no-body>
             <BRow class="g-0">
               <BCol md="4">
                 <img class="rounded-start img-fluid h-100 object-fit-cover"
-                     src="https://img.remediosdigitales.com/a4e9df/electrify-america-chargers-by-btc-power/450_1000.jpg" alt="Card image" />
+                     src="https://img.remediosdigitales.com/a4e9df/electrify-america-chargers-by-btc-power/450_1000.jpg" width="100%" alt="Card image" />
               </BCol>
               <BCol md="8">
                 <BCardHeader>
@@ -229,9 +235,7 @@ export default {
                         <small class="text-muted">Última carga hace 3 minutos</small>
                       </p>
                     </div>
-                    <div class="text-end mt-2">
-                      <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold;">Reserva Ahora</BButton>
-                    </div>
+                    
                   </BCardBody>
                 </BCardBody>
               </BCol>
@@ -243,7 +247,7 @@ export default {
             <BRow class="g-0">
               <BCol md="4">
                 <img class="rounded-start img-fluid h-100 object-fit-cover"
-                     src="https://www.reasonwhy.es/media/library/carga-coches-electricos.jpg" alt="Card image" />
+                     src="https://www.reasonwhy.es/media/library/carga-coches-electricos.jpg" width="100%" alt="Card image" />
               </BCol>
               <BCol md="8">
                 <BCardHeader>
@@ -261,9 +265,9 @@ export default {
                         <small class="text-muted">Última carga hace 1 día</small>
                       </p>
                     </div>
-                    <div class="text-end mt-2">
+                    <!--<div class="text-end mt-2">
                       <BButton pill variant="success" class="waves-effect waves-light btn-lg" style="color: black; font-weight: bold;">Reserva Ahora</BButton>
-                    </div>
+                    </div>-->
                   </BCardBody>
                 </BCardBody>
               </BCol>
