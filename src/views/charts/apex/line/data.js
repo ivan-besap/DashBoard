@@ -31,7 +31,7 @@ const basicLineChart = {
     },
     colors: getChartColorsArray('["--vz-primary"]'),
     title: {
-      text: "Product Trends by Month",
+      text: "KWh",
       align: "left",
       style: {
         fontWeight: 500,
@@ -588,7 +588,7 @@ const zoomableChart = {
       size: 0,
     },
     title: {
-      text: "Stock Price Movement",
+      text: "kW",
       align: "left",
       style: {
         fontWeight: 500,
