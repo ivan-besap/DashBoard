@@ -139,8 +139,8 @@ export default {
             <div class="p-0 ms-auto rounded-circle profile-photo-edit">
               <input id="profile-foreground-img-file-input" type="file" class="profile-foreground-img-file-input" />
               <label for="profile-foreground-img-file-input" class="profile-photo-edit btn btn-light">
-                <i class="ri-image-edit-line align-bottom me-1"></i> Change
-                Cover
+                <i class="ri-image-edit-line align-bottom me-1"></i> Cambiar
+                Fondo
               </label>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default {
                   mx-auto
                   mb-4
                 ">
-                <img src="@/assets/images/users/avatar-8.jpg" class="
+                <img src="https://cdn-icons-png.flaticon.com/512/3607/3607444.png" class="
                     rounded-circle
                     avatar-xl
                     img-thumbnail
@@ -270,10 +270,10 @@ export default {
                     <BCol lg="12">
                       <div class="hstack gap-2 justify-content-end">
                         <BButton type="submit" variant="secondary" @click="updatedata">
-                          Updates
+                          Actualizar
                         </BButton>
                         <BButton type="button" variant="soft-danger">
-                          Cancel
+                          Cancelar
                         </BButton>
                       </div>
                     </BCol>
@@ -313,10 +313,10 @@ export default {
                     <BCol lg="12">
                       <div class="hstack gap-2 justify-content-end">
                         <BButton type="submit" variant="secondary" @click="updatedata">
-                          Updates
+                          Actualizar
                         </BButton>
                         <BButton type="button" variant="soft-danger">
-                          Cancel
+                          Cancelar
                         </BButton>
                       </div>
                     </BCol>
@@ -373,10 +373,10 @@ export default {
                     <BCol lg="12">
                       <div class="hstack gap-2 justify-content-end">
                         <BButton type="submit" variant="secondary" @click="updatedata">
-                          Updates
+                          Actualizar
                         </BButton>
                         <BButton type="button" variant="soft-danger">
-                          Cancel
+                          Cancelar
                         </BButton>
                       </div>
                     </BCol>
@@ -416,16 +416,62 @@ export default {
                         <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].totalKWh : ''" />
                       </div>
                     </BCol>
-                    <BCol lg="12">
-                      <div class="hstack gap-2 justify-content-end">
-                        <BButton type="submit" variant="secondary" @click="updatedata">
-                          Updates
-                        </BButton>
-                        <BButton type="button" variant="soft-danger">
-                          Cancel
-                        </BButton>
+                  </BRow>
+                </form>
+              </BTab>
+              <BTab class="nav-item" title="Reservas" :active="activeTab === 'reservas'" @click="setActiveTab('reservas')">
+                <form action="javascript:void(0);">
+                  <BRow class="pt-4">
+                    <!-- Tables Without Borders -->
+                    <div class="table-responsive w-100">
+                      <table class="table table-borderless table-nowrap w-100">
+                        <thead>
+                        <tr>
+                          <th scope="col">Estación</th>
+                          <th scope="col">Fecha Inicio</th>
+                          <th scope="col">Fecha Fin</th>
+                          <th scope="col">Cargador</th>
+                          <th scope="col">Conector</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td>Estación Clínica Vitacura</td>
+                          <td>20-06-2024 15:50:00</td>
+                          <td>20-06-2024 16:20:00</td>
+                          <td>Modelo X</td>
+                          <td>Conector Tipo A</td>
+<!--                          <td><span class="badge bg-success-subtle text-success">Active</span></td>-->
+                          <td>
+                            <div class="hstack gap-3 fs-15">
+<!--                              <a href="javascript:void(0);" class="link-primary"><i class="ri-settings-4-line"></i></a>-->
+                              <a href="javascript:void(0);" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Estación Viña del Mar</td>
+                          <td>22-06-2024 13:50:00</td>
+                          <td>22-06-2024 14:20:00</td>
+                          <td>Modelo X</td>
+                          <td>Conector Tipo A</td>
+<!--                          <td><span class="badge bg-danger-subtle text-danger">Disabled</span></td>-->
+                          <td>
+                            <div class="hstack gap-3 fs-15">
+<!--                              <a href="javascript:void(0);" class="link-primary"><i class="ri-settings-4-line"></i></a>-->
+                              <a href="javascript:void(0);" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                            </div>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+<!--                    <BCol lg="6">
+                      <div class="mb-3">
+                        <label for="firstnameInput" class="form-label">Fecha Inicio</label>
+                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value=" client && client.account[0] && client.account[0].plans[0] ? client.account[0].plans[0].name : ''" />
                       </div>
-                    </BCol>
+                    </BCol>-->
+                    </div>
                   </BRow>
                 </form>
               </BTab>

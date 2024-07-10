@@ -117,52 +117,57 @@ export default {
       const userType = localStorage.getItem('userType');
 
       this.userData = userData || {};
-      this.userRole = userType === 'client' ? 'Cliente' : userType;
-      console.log(this.userData)
+      if (userType === 'client') {
+        this.userRole = 'Cliente';
+      } else if (userType === 'company') {
+        this.userRole = 'Compañia';
+      } else {
+        this.userRole = userType; // En caso de que haya otro tipo de usuario
+      }
 
     },
     ...layoutMethods,
-    isCustomDropdown() {
-      //Search bar
-      var searchOptions = document.getElementById("search-close-options");
-      var dropdown = document.getElementById("search-dropdown");
-      var searchInput = document.getElementById("search-options");
-
-      searchInput.addEventListener("focus", () => {
-        var inputLength = searchInput.value.length;
-        if (inputLength > 0) {
-          dropdown.classList.add("show");
-          searchOptions.classList.remove("d-none");
-        } else {
-          dropdown.classList.remove("show");
-          searchOptions.classList.add("d-none");
-        }
-      });
-
-      searchInput.addEventListener("keyup", () => {
-        var inputLength = searchInput.value.length;
-        if (inputLength > 0) {
-          dropdown.classList.add("show");
-          searchOptions.classList.remove("d-none");
-        } else {
-          dropdown.classList.remove("show");
-          searchOptions.classList.add("d-none");
-        }
-      });
-
-      searchOptions.addEventListener("click", () => {
-        searchInput.value = "";
-        dropdown.classList.remove("show");
-        searchOptions.classList.add("d-none");
-      });
-
-      document.body.addEventListener("click", (e) => {
-        if (e.target.getAttribute("id") !== "search-options") {
-          dropdown.classList.remove("show");
-          searchOptions.classList.add("d-none");
-        }
-      });
-    },
+    // isCustomDropdown() {
+    //   //Search bar
+    //   var searchOptions = document.getElementById("search-close-options");
+    //   var dropdown = document.getElementById("search-dropdown");
+    //   var searchInput = document.getElementById("search-options");
+    //
+    //   searchInput.addEventListener("focus", () => {
+    //     var inputLength = searchInput.value.length;
+    //     if (inputLength > 0) {
+    //       dropdown.classList.add("show");
+    //       searchOptions.classList.remove("d-none");
+    //     } else {
+    //       dropdown.classList.remove("show");
+    //       searchOptions.classList.add("d-none");
+    //     }
+    //   });
+    //
+    //   searchInput.addEventListener("keyup", () => {
+    //     var inputLength = searchInput.value.length;
+    //     if (inputLength > 0) {
+    //       dropdown.classList.add("show");
+    //       searchOptions.classList.remove("d-none");
+    //     } else {
+    //       dropdown.classList.remove("show");
+    //       searchOptions.classList.add("d-none");
+    //     }
+    //   });
+    //
+    //   searchOptions.addEventListener("click", () => {
+    //     searchInput.value = "";
+    //     dropdown.classList.remove("show");
+    //     searchOptions.classList.add("d-none");
+    //   });
+    //
+    //   document.body.addEventListener("click", (e) => {
+    //     if (e.target.getAttribute("id") !== "search-options") {
+    //       dropdown.classList.remove("show");
+    //       searchOptions.classList.add("d-none");
+    //     }
+    //   });
+    // },
     toggleHamburgerMenu() {
       var windowSize = document.documentElement.clientWidth;
       let layoutType = document.documentElement.getAttribute("data-layout");
@@ -296,7 +301,7 @@ export default {
         .getElementById("topnav-hamburger-icon")
         .addEventListener("click", this.toggleHamburgerMenu);
 
-    this.isCustomDropdown();
+    // this.isCustomDropdown();
   },
 };
 </script>
@@ -337,86 +342,86 @@ export default {
           </BButton>
 
           <!-- App Search-->
-          <form class="app-search d-none d-md-block">
-            <div class="position-relative">
-              <input type="text" class="form-control" placeholder="Search..." autocomplete="off" id="search-options"
-                value="" />
-              <span class="mdi mdi-magnify search-widget-icon"></span>
-              <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
-                id="search-close-options"></span>
-            </div>
-            <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">
-              <simplebar data-simplebar style="max-height: 320px">
-                <div class="dropdown-header">
-                  <h6 class="text-overflow text-muted mb-0 text-uppercase">
-                    Recent Searches
-                  </h6>
-                </div>
+<!--          <form class="app-search d-none d-md-block">-->
+<!--            <div class="position-relative">-->
+<!--              <input type="text" class="form-control" placeholder="Search..." autocomplete="off" id="search-options"-->
+<!--                value="" />-->
+<!--              <span class="mdi mdi-magnify search-widget-icon"></span>-->
+<!--              <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"-->
+<!--                id="search-close-options"></span>-->
+<!--            </div>-->
+<!--            <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">-->
+<!--              <simplebar data-simplebar style="max-height: 320px">-->
+<!--                <div class="dropdown-header">-->
+<!--                  <h6 class="text-overflow text-muted mb-0 text-uppercase">-->
+<!--                    Recent Searches-->
+<!--                  </h6>-->
+<!--                </div>-->
 
-                <div class="dropdown-item bg-transparent text-wrap">
-                  <router-link to="/" class="btn btn-soft-secondary btn-sm rounded-pill">how to setup <i
-                      class="mdi mdi-magnify ms-1"></i></router-link>
-                  <router-link to="/" class="btn btn-soft-secondary btn-sm rounded-pill">buttons <i
-                      class="mdi mdi-magnify ms-1"></i></router-link>
-                </div>
-                <div class="dropdown-header mt-2">
-                  <h6 class="text-overflow text-muted mb-1 text-uppercase">
-                    Pages
-                  </h6>
-                </div>
+<!--                <div class="dropdown-item bg-transparent text-wrap">-->
+<!--                  <router-link to="/" class="btn btn-soft-secondary btn-sm rounded-pill">how to setup <i-->
+<!--                      class="mdi mdi-magnify ms-1"></i></router-link>-->
+<!--                  <router-link to="/" class="btn btn-soft-secondary btn-sm rounded-pill">buttons <i-->
+<!--                      class="mdi mdi-magnify ms-1"></i></router-link>-->
+<!--                </div>-->
+<!--                <div class="dropdown-header mt-2">-->
+<!--                  <h6 class="text-overflow text-muted mb-1 text-uppercase">-->
+<!--                    Pages-->
+<!--                  </h6>-->
+<!--                </div>-->
 
-                <BLink href="javascript:void(0);" class="dropdown-item notify-item">
-                  <i class=" ri-bubble-chart-line align-middle fs-18 text-muted me-2"></i>
-                  <span>Analytics Dashboard</span>
-                </BLink>
+<!--                <BLink href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                  <i class=" ri-bubble-chart-line align-middle fs-18 text-muted me-2"></i>-->
+<!--                  <span>Analytics Dashboard</span>-->
+<!--                </BLink>-->
 
-                <BLink href="javascript:void(0);" class="dropdown-item notify-item">
-                  <i class="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>
-                  <span>Help Center</span>
-                </BLink>
+<!--                <BLink href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                  <i class="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>-->
+<!--                  <span>Help Center</span>-->
+<!--                </BLink>-->
 
-                <BLink href="javascript:void(0);" class="dropdown-item notify-item">
-                  <i class=" ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
-                  <span>My account settings</span>
-                </BLink>
+<!--                <BLink href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                  <i class=" ri-user-settings-line align-middle fs-18 text-muted me-2"></i>-->
+<!--                  <span>My account settings</span>-->
+<!--                </BLink>-->
 
-                <div class="dropdown-header mt-2">
-                  <h6 class="text-overflow text-muted mb-2 text-uppercase">
-                    Members
-                  </h6>
-                </div>
+<!--                <div class="dropdown-header mt-2">-->
+<!--                  <h6 class="text-overflow text-muted mb-2 text-uppercase">-->
+<!--                    Members-->
+<!--                  </h6>-->
+<!--                </div>-->
 
-                <div class="notification-list">
-                  <BLink href="javascript:void(0);" class="d-flex dropdown-item notify-item py-2">
-                    <img src="@/assets/images/users/avatar-2.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
-                    <div class="flex-grow-1">
-                      <h6 class="m-0">Angela Bernier</h6>
-                      <span class="fs-11 mb-0 text-muted">Manager</span>
-                    </div>
-                  </BLink>
-                  <BLink href="javascript:void(0);" class="d-flex dropdown-item notify-item py-2">
-                    <img src="@/assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
-                    <div class="flex-grow-1">
-                      <h6 class="m-0">David Grasso</h6>
-                      <span class="fs-11 mb-0 text-muted">Web Designer</span>
-                    </div>
-                  </BLink>
-                  <BLink href="javascript:void(0);" class="d-flex dropdown-item notify-item py-2">
-                    <img src="@/assets/images/users/avatar-5.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
-                    <div class="flex-grow-1">
-                      <h6 class="m-0">Mike Bunch</h6>
-                      <span class="fs-11 mb-0 text-muted">React Developer</span>
-                    </div>
-                  </BLink>
-                </div>
-              </simplebar>
+<!--                <div class="notification-list">-->
+<!--                  <BLink href="javascript:void(0);" class="d-flex dropdown-item notify-item py-2">-->
+<!--                    <img src="@/assets/images/users/avatar-2.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />-->
+<!--                    <div class="flex-grow-1">-->
+<!--                      <h6 class="m-0">Angela Bernier</h6>-->
+<!--                      <span class="fs-11 mb-0 text-muted">Manager</span>-->
+<!--                    </div>-->
+<!--                  </BLink>-->
+<!--                  <BLink href="javascript:void(0);" class="d-flex dropdown-item notify-item py-2">-->
+<!--                    <img src="@/assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />-->
+<!--                    <div class="flex-grow-1">-->
+<!--                      <h6 class="m-0">David Grasso</h6>-->
+<!--                      <span class="fs-11 mb-0 text-muted">Web Designer</span>-->
+<!--                    </div>-->
+<!--                  </BLink>-->
+<!--                  <BLink href="javascript:void(0);" class="d-flex dropdown-item notify-item py-2">-->
+<!--                    <img src="@/assets/images/users/avatar-5.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />-->
+<!--                    <div class="flex-grow-1">-->
+<!--                      <h6 class="m-0">Mike Bunch</h6>-->
+<!--                      <span class="fs-11 mb-0 text-muted">React Developer</span>-->
+<!--                    </div>-->
+<!--                  </BLink>-->
+<!--                </div>-->
+<!--              </simplebar>-->
 
-              <div class="text-center pt-3 pb-1">
-                <router-link to="/pages/search-results" class="btn btn-primary btn-sm">View All Results <i
-                    class="ri-arrow-right-line ms-1"></i></router-link>
-              </div>
-            </div>
-          </form>
+<!--              <div class="text-center pt-3 pb-1">-->
+<!--                <router-link to="/pages/search-results" class="btn btn-primary btn-sm">View All Results <i-->
+<!--                    class="ri-arrow-right-line ms-1"></i></router-link>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </form>-->
         </div>
 
         <div class="d-flex align-items-center">
@@ -445,9 +450,9 @@ export default {
             :offset="{ alignmentAxis: 55, crossAxis: 15, mainAxis: -50 }"
             toggle-class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle arrow-none"
             menu-class="dropdown-menu-end">
-            <template #button-content> <img id="header-lang-img" src="@/assets/images/flags/us.svg" alt="Header Language"
-                height="20" class="rounded">
-            </template>
+<!--            <template #button-content> <img id="header-lang-img" src="@/assets/images/flags/us.svg" alt="Header Language"-->
+<!--                height="20" class="rounded">-->
+<!--            </template>-->
             <BLink href="javascript:void(0);" class="dropdown-item notify-item language py-2"
               v-for="(entry, key) in languages" :data-lang="entry.language" :title="entry.title"
               @click="setLanguage(entry.language, entry.title, entry.flag)" :key="key">
@@ -456,7 +461,7 @@ export default {
             </BLink>
           </BDropdown>
 
-          <BDropdown class="dropdown" variant="ghost-secondary" dropstart
+<!--          <BDropdown class="dropdown" variant="ghost-secondary" dropstart
             :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"
             toggle-class="btn-icon btn-topbar rounded-circle mode-layout ms-1 arrow-none"
             menu-class="p-0 dropdown-menu-end">
@@ -520,9 +525,9 @@ export default {
                 </BCol>
               </BRow>
             </div>
-          </BDropdown>
+          </BDropdown>-->
 
-          <BDropdown variant="ghost-secondary" dropstart :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"
+<!--          <BDropdown variant="ghost-secondary" dropstart :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"
             class="ms-1 dropdown" toggle-class="btn-icon btn-topbar rounded-circle mode-layout arrow-none"
             menu-class="dropdown-menu-xl dropdown-menu-end p-0" text="Manual close (auto-close=false)"
             auto-close="outside">
@@ -594,14 +599,14 @@ export default {
                 Checkout
               </router-link>
             </div>
-          </BDropdown>
+          </BDropdown>-->
 
-          <div class="ms-1 header-item d-none d-sm-flex">
+<!--          <div class="ms-1 header-item d-none d-sm-flex">
             <BButton type="button" variant="ghost-secondary" class="btn-icon btn-topbar rounded-circle"
               data-toggle="fullscreen" @click="initFullScreen">
               <i class="bx bx-fullscreen fs-22"></i>
             </BButton>
-          </div>
+          </div>-->
 
           <div class="ms-1 header-item d-none d-sm-flex">
             <BButton type="button" variant="ghost-secondary" class="btn-icon btn-topbar rounded-circle light-dark-mode"
@@ -616,28 +621,28 @@ export default {
             menu-class="dropdown-menu-lg dropdown-menu-end p-0" auto-close="outside">
             <template #button-content>
               <i class='bx bx-bell fs-22'></i>
-              <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><span
+<!--              <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><span
                   class="notification-badge">3</span><span class="visually-hidden">unread
                   messages
                 </span>
-              </span>
+              </span>-->
             </template>
             <div class="dropdown-head bg-primary bg-pattern rounded-top dropdown-menu-lg">
               <div class="p-3">
                 <BRow class="align-items-center">
                   <BCol>
                     <h6 class="m-0 fs-16 fw-semibold text-white">
-                      Notifications
+                      Notificaciones
                     </h6>
                   </BCol>
                   <BCol cols="auto" class="dropdown-tabs">
-                    <BBadge variant="light-subtle" class="bg-light-subtle text-body fs-13"> 4 New</BBadge>
+                    <BBadge variant="light-subtle" class="bg-light-subtle text-body fs-13"> </BBadge>
                   </BCol>
                 </BRow>
               </div>
             </div>
             <BTabs nav-class="dropdown-tabs nav-tab-custom bg-primary px-2 pt-2">
-              <BTab title=" All (4) " class="tab-pane fade py-2 ps-2 show" id="all-noti-tab" role="tabpanel">
+<!--              <BTab title=" All (4) " class="tab-pane fade py-2 ps-2 show" id="all-noti-tab" role="tabpanel">
                 <simplebar data-simplebar style="max-height: 300px" class="pe-2">
                   <div class="text-reset notification-item d-block dropdown-item position-relative">
                     <div class="d-flex">
@@ -746,9 +751,9 @@ export default {
                     </BButton>
                   </div>
                 </simplebar>
-              </BTab>
+              </BTab>-->
 
-              <BTab title="Messages" class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel"
+<!--              <BTab title="Messages" class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel"
                 aria-labelledby="messages-tab">
                 <simplebar data-simplebar style="max-height: 300px" class="pe-2">
                   <div class="text-reset notification-item d-block dropdown-item">
@@ -863,16 +868,16 @@ export default {
                     </BButton>
                   </div>
                 </simplebar>
-              </BTab>
+              </BTab>-->
 
-              <BTab title="Alerts" class="p-4">
+              <BTab title="Alertas" class="p-4">
                 <simplebar data-simplebar style="max-height: 300px" class="pe-2">
                   <div class="w-25 w-sm-50 pt-3 mx-auto">
                     <img src="@/assets/images/svg/bell.svg" class="img-fluid" alt="user-pic" />
                   </div>
                   <div class="text-center pb-5 mt-2">
                     <h6 class="fs-18 fw-semibold lh-base">
-                      Hey! You have no any notifications
+                      Hey! No tienes ninguna alerta
                     </h6>
                   </div>
                 </simplebar>
@@ -884,7 +889,7 @@ export default {
             menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -14, crossAxis: 0, mainAxis: 0 }">
             <template #button-content>
               <span class="d-flex align-items-center">
-                <img class="rounded-circle header-profile-user" src="@/assets/images/users/avatar-8.jpg"
+                <img class="rounded-circle header-profile-user" src="https://cdn-icons-png.flaticon.com/512/3607/3607444.png"
                      alt="Header Avatar">
                 <span class="text-start ms-xl-2" v-if="userData">
                   <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ userData.firstName }} {{ userData.lastName }}</span>
@@ -892,41 +897,41 @@ export default {
                 </span>
               </span>
             </template>
-            <h6 class="dropdown-header">Welcome Anna!</h6>
+            <h6 v-if="userData" class="dropdown-header">Bienvenido {{ userData.firstName }} {{ userData.lastName }}</h6>
             <router-link class="dropdown-item" to="/client/profile-client"><i
                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-              <span class="align-middle"> Profile</span>
+              <span class="align-middle"> Perfil</span>
             </router-link>
             <router-link class="dropdown-item" to="/client/dashboard-client"><i
                 class="mdi mdi-view-dashboard text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Dashboard</span>
             </router-link>
-            <router-link class="dropdown-item" to="/chat">
+<!--            <router-link class="dropdown-item" to="/chat">
               <i class=" mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Messages</span>
-            </router-link>
-            <router-link class="dropdown-item" to="/apps/tasks-kanban">
+            </router-link>-->
+<!--            <router-link class="dropdown-item" to="/apps/tasks-kanban">
               <i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Taskboard</span>
-            </router-link>
-            <router-link class="dropdown-item" to="/pages/faqs"><i
+            </router-link>-->
+<!--            <router-link class="dropdown-item" to="/pages/faqs"><i
                 class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Help</span>
-            </router-link>
+            </router-link>-->
             <div class="dropdown-divider"></div>
-            <router-link class="dropdown-item" to="/pages/profile"><i
+<!--            <router-link class="dropdown-item" to="/pages/profile"><i
                 class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Balance : <b>$5971.67</b></span>
-            </router-link>
-            <router-link class="dropdown-item" to="/pages/profile-setting">
-              <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">New</BBadge><i
+            </router-link>-->
+            <router-link class="dropdown-item" to="">
+              <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">Beta</BBadge><i
                 class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
-              <span class="align-middle"> Settings</span>
+              <span class="align-middle"> Ajustes</span>
             </router-link>
-            <router-link class="dropdown-item" to="/auth/lockscreen-basic"><i
+<!--            <router-link class="dropdown-item" to="/auth/lockscreen-basic"><i
                 class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Lock screen</span>
-            </router-link>
+            </router-link>-->
             <router-link class="dropdown-item" to="/logout"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle" data-key="t-logout"> Logout</span>
             </router-link>

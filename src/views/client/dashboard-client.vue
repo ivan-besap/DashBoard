@@ -5,6 +5,7 @@ import getChartColorsArray from "@/common/getChartColorsArray";
 import flatPickr from "vue-flatpickr-component";
 import axios from "axios";
 import moment from 'moment';
+import {columnDatalabelChart} from "@/views/charts/apex/column/data";
 /*import PageHeader from "@/components/page-header";*/
 
 export default {
@@ -112,6 +113,7 @@ export default {
   },
   data(){
     return{
+      columnDatalabelChart: columnDatalabelChart,
       modalShow2: false,
       date1: null,
       client: null,
@@ -217,15 +219,15 @@ export default {
                 <div class="d-flex justify-content-between mb-4">
                   <div class="text-column">
                     <strong><span class="fs-6" style="color: gray">Tiempo</span></strong>
-                    <div class="sub-text fs-6">5:21 <span style="color: #6ae4a7;">h</span></div>
+                    <div class="sub-text fs-6">28:21 <span style="color: #6ae4a7;">min</span></div>
                   </div>
                   <div class="text-column">
                     <strong><span class="fs-6" style="color: gray">Batería</span></strong>
                     <div class="sub-text fs-6">88 <span style="color: #6ae4a7;">%</span></div>
                   </div>
                   <div class="text-column">
-                    <strong><span class="fs-6" style="color: gray">Voltaje</span></strong>
-                    <div class="sub-text fs-6">50 <span style="color: #6ae4a7;">V</span></div>
+                    <strong><span class="fs-6" style="color: gray">Potencia</span></strong>
+                    <div class="sub-text fs-6">50 <span style="color: #6ae4a7;">kW</span></div>
                   </div>
                 </div>
                 <div class="d-flex align-items-center mb-2" style="color: #6ae4a7">
@@ -242,7 +244,7 @@ export default {
     <BRow>
       <BCard no-body>
         <BCardHeader class="border-0 align-items-center d-flex">
-          <BCardTitle class="mb-0 flex-grow-1">Cargas Mensuales</BCardTitle>
+          <BCardTitle class="mb-0 flex-grow-1">Carga Anual</BCardTitle>
           <div class="hstack gap-1">
             <BButton type="button" variant="soft-secondary" size="sm">ALL</BButton>
             <BButton type="button" variant="soft-secondary" size="sm">1M</BButton>
@@ -275,8 +277,8 @@ export default {
             <BCol cols="6" sm="4">
               <div class="p-3 border border-dashed border-start-0 border-end-0">
                 <h5 class="mb-1">
-                  <count-to :startVal='0' :endVal='3' :duration='4000'></count-to>m
-                  <count-to :startVal='0' :endVal='40' :duration='4000'></count-to>seg
+                  <count-to :startVal='0' :endVal='40' :duration='4000'></count-to>m
+                  <count-to :startVal='0' :endVal='55' :duration='4000'></count-to>seg
                   <span class="text-success ms-1 fs-12"> 37%<i class="ri-arrow-right-up-line ms-1 align-middle"></i></span>
                 </h5>
                 <p class="text-muted mb-0">Duración Aproximada Por Carga</p>
@@ -290,6 +292,24 @@ export default {
           </div>
         </BCard-body>
       </BCard>
+    </BRow>
+    <BRow>
+      <BCol lg="12">
+      <BCard no-body>
+        <BCardHeader class="
+              justify-content-between
+              d-flex
+              align-items-center
+            ">
+          <BCardTitle>Potencia Cargada Anual</BCardTitle>
+
+        </BCardHeader>
+        <BCardBody>
+          <apexchart class="apex-charts" height="350" dir="ltr" :series="columnDatalabelChart.series"
+                     :options="columnDatalabelChart.chartOptions"></apexchart>
+        </BCardBody>
+      </BCard>
+    </BCol>
     </BRow>
     <BRow>
       <BCard no-body>

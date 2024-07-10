@@ -142,7 +142,7 @@ export default {
         <simplebar id="scrollbar" class="h-100" ref="scrollbar">
           <Menu></Menu>
         </simplebar>
-        <div class="sidebar-background"></div>
+<!--        <div class="sidebar-background"></div>-->
       </div>
       <!-- Left Sidebar End -->
       <!-- Vertical Overlay-->

@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import appConfig from "../../app.config";
 import axios from 'axios';
 import routes from './routes';
-import store from '@/state/store';
+/*import store from '@/state/store';*/
 
 const router = createRouter({
    history: createWebHistory(),
@@ -41,14 +41,14 @@ const router = createRouter({
      localStorage.setItem('userType', userType);
      localStorage.setItem('userData', JSON.stringify(userData));
  
-     store.commit('auth/setUser', userData);
-     store.commit('auth/setUserType', userType);
+     /*store.commit('auth/setUser', userData);
+     store.commit('auth/setUserType', userType);*/
  
     console.log(`Usuario autenticado con tipo de usuario ${userType}`);
 
      switch (userType) {
        case 'client':
-         
+
          break;
        case 'company':
               

@@ -59,25 +59,18 @@ export default {
    
     // Suponiendo que el token se encuentra en result.data.token
     localStorage.setItem('jwt', result.data.token);
-    console.log('Primero'+result.data.token)
-    
-    
+    localStorage.setItem('role', result.data.role);
 
-    // Otras posibles acciones con los datos del usuario
-    const { userType, userData } = result.data;
-     localStorage.setItem('userType', userType);
-    localStorage.setItem('userData', JSON.stringify(userData));
-  
-    const userRole = localStorage.getItem('userType'); 
-     console.log(userRole)
-   
-    // Redirige a la página principal o a una página específica del usuario
-    this.$router.push({
-      path: '/company/dashboard-company' // Asegúrate de que esta ruta existe
-    });
+    let role = result.data.role;
+
+    if (role === 'CLIENT') {
+      this.$router.push({ path: '/client/dashboard-client' });
+    } else if (role === 'COMPANY') {
+      this.$router.push({ path: '/company/dashboard-company' });
+      }
   } catch (error) {
     console.error('Error during login:', error);
-    this.authError = 'Login failed. Please check your credentials and try again.';
+    this.authError = 'Inicio de sesión fallido. Porfavor revise sus datos e intente denuevo.';
   } finally {
     this.processing = false;
   }
@@ -147,8 +140,8 @@ export default {
 
 <template>
   <div class="auth-page-wrapper pt-5">
-    <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
-      <div class="bg-overlay"></div>
+    <div class="auth-one-bg-position" style="background-color: #222c27" id="auth-particles">
+      <div class=""></div>
 
       <div class="shape">
 
@@ -164,14 +157,14 @@ export default {
         <BRow>
           <BCol lg="12">
             <div class="text-center mt-sm-5 mb-4 text-white-50">
-              <div>
-                <router-link to="/" class="d-inline-block auth-logo">
-                  <img src="@/assets/images/logo-light.png" alt="" height="20" />
-                </router-link>
-              </div>
-              <p class="mt-3 fs-15 fw-medium">
+<!--              <div>-->
+<!--                <router-link to="/" class="d-inline-block auth-logo">-->
+<!--                  <img src="@/assets/images/logo-light.png" alt="" height="20" />-->
+<!--                </router-link>-->
+<!--              </div>-->
+<!--              <p class="mt-3 fs-15 fw-medium">
                 Premium Admin & Dashboard Template
-              </p>
+              </p>-->
             </div>
           </BCol>
         </BRow>
@@ -181,8 +174,8 @@ export default {
             <BCard no-body class="mt-4">
               <BCardBody class="p-4">
                 <div class="text-center mt-2">
-                  <h5 class="text-primary">Welcome Back !</h5>
-                  <p class="text-muted">Sign in to continue to Velzon.</p>
+                  <h5 class="text-primary">Bienvenido !</h5>
+                  <p class="text-muted">Inicia Sesión en EvolGreen.</p>
                 </div>
                 <div class="p-2 mt-4">
                   <b-alert v-model="authError" variant="danger" class="mt-3" dismissible>{{ authError }}</b-alert>
@@ -193,8 +186,8 @@ export default {
 
                   <form @submit.prevent="tryToLogIn">
                     <div class="mb-3">
-                      <label for="email" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="email" placeholder="Enter email" v-model="email" />
+                      <label for="email" class="form-label">Correo</label>
+                      <input type="email" class="form-control" id="email" placeholder="Ingrese correo" v-model="email" />
                       <div class="invalid-feedback">
                         <span></span>
                       </div>
@@ -202,12 +195,12 @@ export default {
 
                     <div class="mb-3">
                       <div class="float-end">
-                        <router-link to="/forgot-password" class="text-muted">Forgot
-                          password?</router-link>
+                        <router-link to="/forgot-password" class="text-muted">Olvidaste
+                          tu contraseña?</router-link>
                       </div>
-                      <label class="form-label" for="password-input">Password</label>
+                      <label class="form-label" for="password-input">Contraseña</label>
                       <div class="position-relative auth-pass-inputgroup mb-3">
-                        <input type="password" v-model="password" class="form-control pe-5" placeholder="Enter password"
+                        <input type="password" v-model="password" class="form-control pe-5" placeholder="Ingrese contraseña"
                           id="password-input" />
                         <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted"
                           type="button" id="password-addon">
@@ -221,19 +214,19 @@ export default {
 
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" id="auth-remember-check" />
-                      <label class="form-check-label" for="auth-remember-check">Remember
-                        me</label>
+                      <label class="form-check-label" for="auth-remember-check">Recuerdame
+                        </label>
                     </div>
 
                     <div class="mt-4">
                       <BButton variant="success" class="w-100" type="submit" @click="signinapi" :disabled="processing">
-                        {{ processing ? "Please wait" : "Sign In" }}
+                        {{ processing ? "Espere un momento" : "Iniciar Sesión" }}
                       </BButton>
                     </div>
 
                     <div class="mt-4 text-center">
                       <div class="signin-other-title">
-                        <h5 class="fs-13 mb-4 title">Sign In with</h5>
+                        <h5 class="fs-13 mb-4 title">Inicia Sesión Con</h5>
                       </div>
                       <div>
                         <BButton variant="primary" type="button" class="btn btn-primary btn-icon">
@@ -257,10 +250,10 @@ export default {
 
             <div class="mt-4 text-center">
               <p class="mb-0">
-                Don't have an account ?
+                No tienes cuenta ?
                 <router-link to="/register" class="fw-semibold text-primary
                   text-decoration-underline">
-                  Signup
+                  Registrate
                 </router-link>
               </p>
             </div>
@@ -275,8 +268,8 @@ export default {
           <BCol lg="12">
             <div class="text-center">
               <p class="mb-0 text-muted">
-                &copy; {{ new Date().getFullYear() }} Velzon. Crafted with
-                <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                &copy; {{ new Date().getFullYear() }} EvolGreen
+<!--                <i class="mdi mdi-heart text-danger"></i> by Themesbrand-->
               </p>
             </div>
           </BCol>

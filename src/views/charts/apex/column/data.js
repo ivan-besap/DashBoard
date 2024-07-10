@@ -77,8 +77,8 @@ const basicColumnChart = {
 
 const columnDatalabelChart = {
     series: [{
-        name: "Inflation",
-        data: [2.5, 3.2, 5.0, 10.1, 4.2, 3.8, 3, 2.4, 4.0, 1.2, 3.5, 0.8],
+        name: "potencia",
+        data: [10000, 13000, 6000, 3000, 24000, 12000,6800, 11800, 16500, 9990, 12760, 9000],
     },],
     chartOptions: {
         chart: {
@@ -98,7 +98,7 @@ const columnDatalabelChart = {
         dataLabels: {
             enabled: true,
             formatter: function (val) {
-                return val + "%";
+                return val + "kW";
             },
             offsetY: -20,
             style: {
@@ -112,28 +112,28 @@ const columnDatalabelChart = {
         },
         xaxis: {
             categories: [
-                "Jan",
+                "Ene",
                 "Feb",
                 "Mar",
-                "Apr",
+                "Abr",
                 "May",
                 "Jun",
                 "Jul",
-                "Aug",
+                "Ago",
                 "Sep",
                 "Oct",
                 "Nov",
-                "Dec",
+                "Dic",
             ],
-            position: "top",
+            position: "bottom", // Cambiado a "bottom"
             labels: {
-                offsetY: -18,
+                offsetY: 0, // Ajuste de posición
             },
             axisBorder: {
-                show: false,
+                show: true, // Mostrar el borde del eje
             },
             axisTicks: {
-                show: false,
+                show: true, // Mostrar las marcas del eje
             },
             crosshairs: {
                 fill: {
@@ -174,14 +174,14 @@ const columnDatalabelChart = {
             labels: {
                 show: false,
                 formatter: function (val) {
-                    return val + "%";
+                    return val + "kW";
                 },
             },
         },
         title: {
-            text: "Monthly Inflation in Argentina, 2002",
+            text: "",
             floating: true,
-            offsetY: 320,
+            offsetY: 330,
             align: "center",
             style: {
                 color: "#444",
