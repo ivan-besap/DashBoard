@@ -1330,5 +1330,32 @@ export default [
     name: "Planes",
     meta: { title: "Planes", authRequired: true },
     component: () => import("../views/company/plan-company"),
+  },
+
+  
+  {
+    path: "/company/crear-planes",
+    name: "Crear Planes",
+    meta: { title: " Crear Planes", authRequired: true },
+    component: () => import("../views/company/crear-planes"),
+  },
+
+  {
+    path: "/company/detalles-terminal",
+    name: "Detalles de Terminal",
+    meta: { title: " Detalles de Terminal", authRequired: true },
+    component: () => import("../views/company/detalles-terminal"),
+  },
+  {
+    path: "/company/crear-cargador",
+    name: "Crear Cargador",
+    meta: { title: " Crear Cargador", authRequired: true },
+    component: () => import("../views/company/crear-cargador"),
+  },
+  {
+    path: "/company/detalles-de-carga",
+    name: "Detalles de Carga",
+    meta: { title: "Detalles de Carga", authRequired: true },
+    component: () => import("../views/company/detalles-de-carga"),
   }
 ];

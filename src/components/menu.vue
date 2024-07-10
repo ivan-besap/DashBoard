@@ -317,7 +317,9 @@ export default {
               </li>
               <li class="nav-item">
                 <router-link class="nav-link menu-link" target="" to="#">
+                  <a href="/company/detalles-de-carga" >
                   <span data-key="t-landing">Detalles de Cargas</span>
+                  </a>
                 </router-link>
               </li>
               <li class="nav-item">
