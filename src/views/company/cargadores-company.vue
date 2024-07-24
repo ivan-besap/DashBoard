@@ -13,7 +13,7 @@
             <th scope="col">ID</th>
             <th scope="col">Nombre</th>
             <th scope="col">Potencia</th>
-            <th scope="col">Carga</th>
+           
             <th scope="col">Estado</th>
             <th scope="col">Carga en Curso</th>
             <th scope="col">Acciones</th>
@@ -24,7 +24,7 @@
             <td>{{ connector.id }}</td>
             <td>{{ connector.name }}</td>
             <td>{{ connector.power }} kW</td>
-            <td>{{ connector.charge }} kWh</td>
+           
             <td>
               <span :class="connector.connectorStatus === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'">
                 {{ connector.connectorStatus }}
@@ -71,16 +71,16 @@ export default {
     fetchConnectors() {
       // Datos estáticos para 10 estaciones de carga
       this.connectors = [
-        { id: 1, name: 'Cargador 1', power: 8.19, charge: 50, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 2, name: 'Cargador 2', power: 8.19, charge: 50, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 3, name: 'Cargador 3', power: 8.19, charge: 50, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 4, name: 'Cargador 4', power: 8.19, charge: 50, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 5, name: 'Cargador 5', power: 8.19, charge: 50, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 6, name: 'Cargador 6', power: 8.19, charge: 50, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 7, name: 'Cargador 7', power: 8.19, charge: 50, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 8, name: 'Cargador 8', power: 8.19, charge: 50, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 9, name: 'Cargador 9', power: 8.19, charge: 50, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 10, name: 'Cargador 10', power: 8.19, charge: 50, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) }
+        { id: 1, name: 'Cargador 1', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 2, name: 'Cargador 2', power: 8.19,  connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 3, name: 'Cargador 3', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 4, name: 'Cargador 4', power: 8.19,  connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 5, name: 'Cargador 5', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 6, name: 'Cargador 6', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 7, name: 'Cargador 7', power: 8.19, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 8, name: 'Cargador 8', power: 8.19,  connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 9, name: 'Cargador 9', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 10, name: 'Cargador 10', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) }
       ];
       console.log(this.connectors);
     },

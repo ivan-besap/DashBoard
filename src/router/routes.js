@@ -1357,5 +1357,11 @@ export default [
     name: "Detalles de Carga",
     meta: { title: "Detalles de Carga", authRequired: true },
     component: () => import("../views/company/detalles-de-carga"),
+  },
+  {
+    path: "/company/roles",
+    name: "Roles",
+    meta: { title: "Roles", authRequired: true },
+    component: () => import("../views/company/roles"),
   }
 ];

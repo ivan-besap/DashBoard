@@ -10,24 +10,14 @@
               <BForm @submit.prevent="createChargingStation">
                 <BRow>
                   <BCol lg="6">
-                    <div class="mt-3">
-                      <label class="form-label mb-0">Periodo</label>
-                      <flat-pickr v-model="chargingStation.period" :config="rangeDateconfig" class="form-control"></flat-pickr>
-                    </div>
+                   
                   </BCol>
                 </BRow>
                 <BRow>
                   <BCol md="6">
-                    <div class="mb-3">
-                      <label for="nombreEstacion" class="form-label">Nombre</label>
-                      <BFormInput 
-                        v-model="chargingStation.name" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Nombre de la estación" 
-                        id="nombreEstacion" 
-                        required 
-                      />
+                    <div class="mt-3">
+                      <label class="form-label mb-0">Periodo</label>
+                      <flat-pickr v-model="chargingStation.period" :config="rangeDateconfig" class="form-control"></flat-pickr>
                     </div>
                   </BCol>
                   <BCol md="6">

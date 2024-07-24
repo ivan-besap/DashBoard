@@ -62,7 +62,7 @@ export default {
     localStorage.setItem('role', result.data.role);
 
     let role = result.data.role;
-
+    console.log(role)
     if (role === 'CLIENT') {
       this.$router.push({ path: '/client/dashboard-client' });
     } else if (role === 'COMPANY') {

@@ -297,10 +297,16 @@ export default {
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link menu-link" href="/company/roles" >
+            <i class="ri-survey-line"></i>
+            <span data-key="t-dashboards"> Roles</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="#sidebarlanding" data-bs-toggle="collapse" role="button" aria-expanded="false"
              aria-controls="sidebarlanding" data-key="t-projects">
             <i class="ri-sticky-note-line"></i>
-            <span data-key="t-landing">Registros</span>
+            <span data-key="t-landing">Reportes</span>
           </a>
           <div class="collapse menu-dropdown" id="sidebarlanding">
             <ul class="nav nav-sm flex-column">
