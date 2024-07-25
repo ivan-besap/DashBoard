@@ -322,7 +322,7 @@ export default {
               </span>
             </router-link>
 
-            <router-link to="/" class="logo logo-light">
+            <router-link to="/client/dashboard-client" class="logo logo-light">
               <span class="logo-sm">
                 <img src="@/assets/images/logo-sm.png" alt="" height="22" />
               </span>

@@ -218,7 +218,7 @@ export default {
                 </h6>
                 <div class="d-flex justify-content-between mb-4">
                   <div class="text-column">
-                    <strong><span class="fs-6" style="color: gray">Tiempo</span></strong>
+                    <strong><span class="fs-6" style="color: gray">Tiempo Restante</span></strong>
                     <div class="sub-text fs-6">28:21 <span style="color: #6ae4a7;">min</span></div>
                   </div>
                   <div class="text-column">
@@ -342,8 +342,19 @@ export default {
                       <span style="color: #25dd8f;">Disponible</span>
                     </p>
                       <p class="card-text mb-1" style="font-size: 0.875rem;">
-                        Conector:
-                        <span style="color: #25dd8f;">Compatible</span>
+                        Conectores:
+                        <ul class="ms-3" style="list-style-type: none; padding-left: 0;">
+                          <li>
+                            <span style="color: #25dd8f;">Chademo</span>
+                            <span> - Precio: <span style="color: #25dd8f;">$210</span></span>
+                            <span> - Potencia: <span style="color: #25dd8f;">45 kWh</span></span>
+                          </li>
+                          <li>
+                            <span style="color: #25dd8f;">Tipo 2</span>
+                            <span> - Precio: <span style="color: #25dd8f;">$250</span></span>
+                            <span> - Potencia: <span style="color: #25dd8f;">60 kWh</span></span>
+                          </li>
+                        </ul>
                       </p>
                       <p class="card-text" style="font-size: 0.75rem;">
                         <small class="text-muted">Última carga hace 3 minutos</small>
@@ -386,8 +397,19 @@ export default {
                         <span style="color: #25dd8f;">Disponible</span>
                       </p>
                       <p class="card-text mb-1" style="font-size: 0.875rem;">
-                        Conector:
-                        <span style="color: #25dd8f;">Compatible</span>
+                        Conectores:
+                        <ul class="ms-3" style="list-style-type: none; padding-left: 0;">
+<!--                          <li>
+                            <span style="color: #25dd8f;">Chademo</span>
+                            <span> - Precio: <span style="color: #25dd8f;">$200</span></span>
+                            <span> - Potencia: <span style="color: #25dd8f;">45 kWh</span></span>
+                          </li>-->
+                          <li>
+                            <span style="color: #25dd8f;">Tipo 2</span>
+                            <span> - Precio: <span style="color: #25dd8f;">$230</span></span>
+                            <span> - Potencia: <span style="color: #25dd8f;">60 kWh</span></span>
+                          </li>
+                        </ul>
                       </p>
                       <p class="card-text" style="font-size: 0.75rem;">
                         <small class="text-muted">Última carga hace 1 día</small>

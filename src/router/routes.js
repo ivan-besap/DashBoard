@@ -1332,6 +1332,13 @@ export default [
     component: () => import("../views/company/plan-company"),
   },
 
+  {
+    path: "/company/asignar-plan",
+    name: "Asignar Plan",
+    meta: { title: "Asignar Plan", authRequired: true },
+    component: () => import("../views/company/asignar-plan"),
+  },
+
   
   {
     path: "/company/crear-planes",

@@ -21,6 +21,48 @@ export default {
 
   setup() {
     return {
+      donutChart: {
+        series: [7, 1, 1, 5],
+        chartOptions: {
+          chart: {
+            height: 300,
+            type: "donut",
+          },
+          legend: {
+            position: "bottom",
+          },
+          dataLabels: {
+            enabled: false // Disable data labels to remove percentages
+          },
+          labels: ['Cargando', 'Disponible', 'Con fallas', 'Sin conexión'],
+          colors: getChartColorsArray('["--vz-primary", "--vz-success", "--vz-danger", "--vz-info"]'),
+          annotations: {
+            position: 'front',
+            texts: [
+              {
+                text: 'Conectores',
+                x: '50%',
+                y: '45%',
+                textAnchor: 'middle',
+                fontSize: '20px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 'bold',
+                cssClass: 'apexcharts-custom-annotation'
+              },
+              {
+                text: '14',
+                x: '50%',
+                y: '55%',
+                textAnchor: 'middle',
+                fontSize: '20px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 'bold',
+                cssClass: 'apexcharts-custom-annotation'
+              }
+            ]
+          }
+        }
+      },
       series: [{
         name: "Potencia Cargada",
         data: [
@@ -133,6 +175,35 @@ export default {
   <Layout>
     <PageHeader title="Dashboard Compañia" pageTitle="items" />
     <BRow>
+      <BCol xxl="4">
+        <BCard no-body>
+          <BRow class="g-0">
+            <BCol md="12">
+              <BCardHeader>
+                <div class="text-end">
+                  <h5 class="card-title mb-0">Alarmas Diarias</h5>
+                </div>
+              </BCardHeader>
+              <BCardBody>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
+                    <i class="mdi mdi-eye"></i>
+                  </BButton>
+                  <p class="mb-0 text-end w-100">2 reinicios de cargadores</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
+                    <i class="mdi mdi-eye"></i>
+                  </BButton>
+                  <p class="mb-0 text-end w-100">0 errores de cargadores</p>
+                </div>
+              </BCardBody>
+            </BCol>
+          </BRow>
+        </BCard>
+      </BCol>
+    </BRow>
+    <BRow>
       <BCol lg="6">
         <BCard no-body>
           <BCardHeader>
@@ -144,15 +215,15 @@ export default {
           </BCardBody>
         </BCard>
       </BCol>
-
       <BCol lg="6">
-        <BCard no-body>
-          <BCardHeader>
-            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>
+        <BCard no-body style="height: 430px;">
+          <BCardHeader class="justify-content-between d-flex align-items-center">
+            <BCardTitle>Estado de conectores</BCardTitle>
+
           </BCardHeader>
           <BCardBody>
-            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"
-              :options="zoomableChart.chartOptions"></apexchart>
+            <apexchart class="apex-charts" height="300" dir="ltr" :series="donutChart.series"
+                       :options="donutChart.chartOptions"></apexchart>
           </BCardBody>
         </BCard>
       </BCol>
@@ -209,6 +280,24 @@ export default {
         </BCard-body>
       </BCard>
     </BRow>
+    <BRow>
+      <BCol lg="12">
+        <BCard no-body>
+          <BCardHeader>
+            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>
+          </BCardHeader>
+          <BCardBody>
+            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"
+                       :options="zoomableChart.chartOptions"></apexchart>
+          </BCardBody>
+        </BCard>
+      </BCol>
+    </BRow>
     
   </Layout>
 </template>
+<style>
+.apexcharts-custom-annotation {
+  fill: #ffffff !important; /* Force the fill color */
+}
+</style>

@@ -75,6 +75,7 @@ export default {
       try {
         const response = await axios.get('http://localhost:8080/api/companies/current');
         const accounts = response.data.accounts;
+        console.log(response.data.accounts)
         let stations = [];
         accounts.forEach(account => {
           if (account.chargingStations && account.chargingStations.length > 0) {

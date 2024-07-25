@@ -93,7 +93,7 @@
                       />
                     </div>
                   </BCol>
-                  <BCol md="6">
+<!--                  <BCol md="6">
                     <div class="mb-3">
                       <label for="ubicacionCPO" class="form-label">CPO</label>
                       <BFormInput 
@@ -105,7 +105,7 @@
                         required 
                       />
                     </div>
-                  </BCol>
+                  </BCol>-->
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="kwh" class="form-label">KWH</label>

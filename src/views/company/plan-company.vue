@@ -5,6 +5,9 @@
     <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
       <a href="crear-planes">Crear Plan</a>
     </BButton>
+    <BButton style="margin-bottom: 45px; margin-left: 20px" pill variant="primary" class="waves-effect waves-light">
+      <a href="asignar-plan">Asignar Plan</a>
+    </BButton>
     <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
         <thead class="table-light">
