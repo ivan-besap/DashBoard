@@ -22,7 +22,7 @@
             <th scope="col">Empresa</th>
             <th scope="col">Activo</th>
             <th scope="col">Plan</th>
-            
+            <th scope="col">Rol</th>
           </tr>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@
               </span>
             </td>
             <td>{{ employee.plan }}</td>
-            
+            <td>{{ employee.role }}</td>
           </tr>
         </tbody>
       </table>
@@ -76,7 +76,9 @@ export default {
         this.employees = response.data.map(employee => {
           // Asignar aleatoriamente un plan a cada empleado
           const plans = ["PLAN A BÁSICO", "PLAN B INTERMEDIO", "PLAN C AVANZADO"];
+          const roles = ["Administrador", "Usuario"];
           employee.plan = plans[Math.floor(Math.random() * plans.length)];
+          employee.role = roles[Math.floor(Math.random() * roles.length)];
           return employee;
         });
         console.log(this.employees);

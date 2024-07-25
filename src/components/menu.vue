@@ -264,43 +264,39 @@ export default {
             <span data-key="t-dashboards"> Dashboard</span>
           </a>
         </li>
+        <!--
         <li class="nav-item">
           <a class="nav-link menu-link" href="/company/profile-company" >
             <i class="ri-home-office-fill"></i>
             <span data-key="t-dashboards"> Compañia</span>
           </a>
+        </li>-->
+        
+        
+        <li class="nav-item">
+          <router-link class="nav-link menu-link"  target="" to="/company/tarifas">
+            <i class="ri-survey-line"></i>
+            <span data-key="t-dashboards"> Tarifas</span>
+          </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link menu-link" href="/company/empleados-company" >
+          <router-link class="nav-link menu-link"  target="" to="/company/plan-company">
+           <i class="ri-survey-line"></i>
+            <span data-key="t-dashboards"> Planes</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link menu-link"  target="" to="/company/empleados-company">
             <i class="ri-group-fill"></i>
             <span data-key="t-dashboards"> Empleados</span>
-          </a>
+          </router-link>
 
         </li>
         <li class="nav-item">
-          <a class="nav-link menu-link" href="/company/stations-company" >
-            <i class="ri-battery-charge-line"></i>
-            <span data-key="t-dashboards"> Estaciones de Carga</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link menu-link" href="/company/cargadores-company" >
-            <i class="ri-charging-pile-2-fill"></i>
-            <span data-key="t-dashboards"> Cargadores</span>
-          </a>
-
-        </li>
-        <li class="nav-item">
-          <a class="nav-link menu-link" href="/company/plan-company" >
+          <router-link class="nav-link menu-link"  target="" to="/company/flotas">
             <i class="ri-survey-line"></i>
-            <span data-key="t-dashboards"> Planes</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link menu-link" href="/company/roles" >
-            <i class="ri-survey-line"></i>
-            <span data-key="t-dashboards"> Roles</span>
-          </a>
+            <span data-key="t-dashboards"> Flota</span>
+          </router-link>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#sidebarlanding" data-bs-toggle="collapse" role="button" aria-expanded="false"
@@ -311,44 +307,88 @@ export default {
           <div class="collapse menu-dropdown" id="sidebarlanding">
             <ul class="nav nav-sm flex-column">
               <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="#">
+                <router-link class="nav-link menu-link"  target="" to="/company/registro-cargas">
                   <span data-key="t-landing">Cargas</span>
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="#">
-                  <a href="/company/detalles-de-carga" >
+                <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga">
+                
                     <span data-key="t-landing">Detalles de Cargas</span>
-                  </a>
+                
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="#">
-                  <span data-key="t-landing">Cargas por usuario</span>
-                </router-link>
-              </li>
-
-              <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="#">
-                  <span data-key="t-landing">Cargas por terminal</span>
-                </router-link>
-              </li>
-
-
-              <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="#">
-                  <span data-key="t-landing">Alarmas por cargador</span>
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-terminal">
+                  <span data-key="t-landing">Cargas por Terminal</span>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="#">
-                  <span data-key="t-landing">Errores de conector</span>
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-cargador">
+                  <span data-key="t-landing">Cargas por Cargador</span>
+                </router-link>
+              </li>
+
+              <li class="nav-item">
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-usuario">
+                  <span data-key="t-landing">Cargas por Usuario</span>
+                </router-link>
+              </li>
+
+              <li class="nav-item">
+                <router-link class="nav-link menu-link" target="" to="/company/errores-por-conector">
+                  <span data-key="t-landing">Errores por Conector</span>
+                </router-link>
+              </li>
+
+              <li class="nav-item">
+                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias">
+                  <span data-key="t-landing">Alarmas Diarias</span>
+                </router-link>
+              </li>
+
+              <li class="nav-item">
+                <router-link class="nav-link menu-link" target="" to="/company/errores">
+                  <span data-key="t-landing">Errores</span>
                 </router-link>
               </li>
             </ul>
           </div>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link menu-link" href="#sidebarMultilevel" data-bs-toggle="collapse" role="button"
+            aria-expanded="false" aria-controls="sidebarMultilevel">
+            <i class="ri-share-line"></i>
+            <span data-key="t-multi-level">Configuración</span>
+          </a>
+          <div class="collapse menu-dropdown" id="sidebarMultilevel">
+            <ul class="nav nav-sm flex-column">
+              <li class="nav-item">
+                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                  Roles
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                  Estaciones de Carga
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                 Cargadores
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                  Conectores
+                </a>
+              </li>
+              
+          </ul>
+        </div>
+      </li>
 
 <!--        MENU TEMPLATE-->
 <!--            <li class="menu-title">-->

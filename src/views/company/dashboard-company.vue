@@ -231,13 +231,13 @@ export default {
     <BRow>
       <BCard no-body>
         <BCardHeader class="border-0 align-items-center d-flex">
-          <BCardTitle class="mb-0 flex-grow-1">Cargas Mensuales</BCardTitle>
-          <div class="hstack gap-1">
+          <BCardTitle class="mb-0 flex-grow-1">Promedio de Cargas Mensuales</BCardTitle>
+         <!-- <div class="hstack gap-1">
             <BButton type="button" variant="soft-secondary" size="sm">ALL</BButton>
             <BButton type="button" variant="soft-secondary" size="sm">1M</BButton>
             <BButton type="button" variant="soft-secondary" size="sm">6M</BButton>
             <BButton type="button" variant="soft-primary" size="sm">1Y</BButton>
-          </div>
+          </div>-->
         </BCardHeader>
         <BCardHeader class="p-0 border-0 bg-light-subtle">
           <BRow class="g-0 text-center">

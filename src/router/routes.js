@@ -1370,5 +1370,101 @@ export default [
     name: "Roles",
     meta: { title: "Roles", authRequired: true },
     component: () => import("../views/company/roles"),
+  },
+
+  {
+    path: "/company/tarifas",
+    name: "Tarifas",
+    meta: { title: "Tarifas", authRequired: true },
+    component: () => import("../views/company/tarifas"),
+  },
+
+  {
+    path: "/company/crear-tarifas",
+    name: "Crear Tarifas",
+    meta: { title: "Crear Tarifas", authRequired: true },
+    component: () => import("../views/company/crear-tarifas"),
+  },
+  {
+    path: "/company/registro-cargas",
+    name: "Registro Cargas",
+    meta: { title: "Registro Cargas", authRequired: true },
+    component: () => import("../views/company/registro-cargas"),
+  },
+
+  {
+    path: "/company/detalles-de-carga",
+    name: "Detalles de  Cargas",
+    meta: { title: "Detalles de Cargas", authRequired: true },
+    component: () => import("../views/company/detalles-de-carga"),
+  },
+
+  {
+    path: "/company/cargas-por-terminal",
+    name: "Cargas por Terminal",
+    meta: { title: "Cargas por Terminal", authRequired: true },
+    component: () => import("../views/company/cargas-por-terminal"),
   }
+
+  ,
+
+  {
+    path: "/company/cargas-por-cargador",
+    name: "Cargas por Cargador",
+    meta: { title: "Cargas por Terminal", authRequired: true },
+    component: () => import("../views/company/cargas-por-cargador"),
+  },
+  {
+    path: "/company/cargas-por-usuario",
+    name: "Cargas por Usuario",
+    meta: { title: "Cargas por Terminal", authRequired: true },
+    component: () => import("../views/company/cargas-por-usuario"),
+  },
+  {
+    path: "/company/errores-por-conector",
+    name: "Errores por Conector",
+    meta: { title: "Errores por Conector", authRequired: true },
+    component: () => import("../views/company/errores-por-conector"),
+  }
+
+  ,
+  {
+    path: "/company/alarmas-diarias",
+    name: "Alarmas Diarias",
+    meta: { title: "Alarmas Diarias", authRequired: true },
+    component: () => import("../views/company/alarmas-diarias"),
+  }
+
+  ,
+  {
+    path: "/company/errores",
+    name: "Errores",
+    meta: { title: "Errores", authRequired: true },
+    component: () => import("../views/company/errores"),
+  }
+  ,
+  {
+    path: "/company/flotas",
+    name: "Flotas",
+    meta: { title: "Flotas", authRequired: true },
+    component: () => import("../views/company/flotas"),
+  },
+  {
+    path: "/company/crear-flota",
+    name: "Crear Flota",
+    meta: { title: "Crear Flota", authRequired: true },
+    component: () => import("../views/company/crear-flota"),
+  }
+  ,
+  {
+    path: "/company/crear-rol",
+    name: "Crear Rol",
+    meta: { title: "Crear Rol", authRequired: true },
+    component: () => import("../views/company/crear-rol"),
+  }
+
+
+
+  
+
 ];

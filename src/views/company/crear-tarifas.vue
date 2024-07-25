@@ -1,0 +1,136 @@
+<template>
+  <Layout>
+    <PageHeader title="Crear Tarifas" pagetitle="Forms" />
+    <BRow>
+      <BCol xxl="12">
+        <BCard no-body>
+          <CardHeader title="Crear Tarifas" />
+          <BCardBody>
+            <div class="live-preview">
+              <BForm @submit.prevent="createChargingStation">
+                
+                <BRow>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label class="form-label">Día de la semana</label>
+                     
+                     <div class="dias-semana" style="display: flex;">
+                      <div v-for="day in daysOfWeek" :key="day.value" class="form-check">
+                        <input class="form-check-input" type="checkbox" :value="day.value" v-model="chargingStation.dayOfWeek" :id="day.value">
+                        <label class="form-check-label" :for="day.value">{{ day.text }}</label>
+                      </div>
+                    </div>
+                  </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="tipoCargador" class="form-label">Tipo Conector</label>
+                      <BFormSelect 
+                        v-model="chargingStation.chargerType" 
+                        :options="chargerTypes" 
+                        id="tipoCargador" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="valorPlan" class="form-label">Valor Tarifa</label>
+                      <BFormInput 
+                        v-model="chargingStation.planValue" 
+                        type="number" 
+                        step="0.01" 
+                        class="form-control" 
+                        placeholder="Valor Plan" 
+                        id="valorPlan" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mt-3">
+                      <label class="form-label mb-0">Periodo</label>
+                      <flat-pickr v-model="chargingStation.period" :config="rangeDateconfig" class="form-control"></flat-pickr>
+                    </div>
+                  </BCol>
+                  <BCol lg="12">
+                    <div class="text-end">
+                      <BButton type="submit" variant="primary">
+                        Crear Tarifa
+                      </BButton>
+                    </div>
+                  </BCol>
+                </BRow>
+              </BForm>
+            </div>
+          </BCardBody>
+        </BCard>
+      </BCol>
+    </BRow>
+  </Layout>
+</template>
+
+<script>
+import axios from 'axios';
+import "flatpickr/dist/flatpickr.css";
+import flatPickr from "vue-flatpickr-component";
+import Layout from "@/layouts/main.vue";
+import PageHeader from "@/components/page-header";
+import CardHeader from "@/common/card-header";
+
+export default {
+  data() {
+    return {
+      chargingStation: {
+        dayOfWeek: [],
+        chargerType: '',
+        planValue: 0.0
+      },
+      daysOfWeek: [
+        { value: 'lunes', text: 'Lunes' },
+        { value: 'martes', text: 'Martes' },
+        { value: 'miércoles', text: 'Miércoles' },
+        { value: 'jueves', text: 'Jueves' },
+        { value: 'viernes', text: 'Viernes' },
+        { value: 'sábado', text: 'Sábado' },
+        { value: 'domingo', text: 'Domingo' }
+      ],
+      chargerTypes: [
+        { value: 'AC', text: 'AC' },
+        { value: 'DC', text: 'DC' }
+      ]
+    };
+  },
+  components: {
+    Layout,
+    PageHeader,
+    CardHeader,
+    flatPickr
+  },
+  methods: {
+    async createChargingStation() {
+      try {
+        await axios.post('http://localhost:8080/api/company/current/chargingStations', this.chargingStation);
+        alert('Estación de carga creada exitosamente');
+        this.resetForm();
+      } catch (error) {
+        console.error("Error creando la estación de carga:", error);
+        alert('Error creando la estación de carga');
+      }
+    },
+    resetForm() {
+      this.chargingStation = {
+        dayOfWeek: [],
+        chargerType: '',
+        planValue: 0.0
+      };
+    }
+  }
+};
+</script>
+
+<style>
+.flex-shrink-0 {
+  display: none;
+}
+</style>

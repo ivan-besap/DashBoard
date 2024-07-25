@@ -35,7 +35,7 @@ const router = createRouter({
    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
  
    try {
-     const response = await axios.get('http://localhost:8080/user/current');
+     const response = await axios.get('http://52.14.116.236:8088/user/current');
      const { userType, userData } = response.data;
  
      localStorage.setItem('userType', userType);

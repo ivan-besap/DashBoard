@@ -90,6 +90,22 @@
                       </BFormSelect>
                     </div>
                   </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="role" class="form-label">Rol</label>
+                      <BFormSelect 
+                        v-model="employee.role" 
+                        class="form-control" 
+                        id="role" 
+                        required
+                      >
+                        <option value="">Seleccionar un rol</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Electrobombero">Electrobombero</option>
+                        <option value="Gerente de Marketing">Gerente de Marketing</option>
+                      </BFormSelect>
+                    </div>
+                  </BCol>
                   <BCol lg="12">
                     <div class="text-end">
                       <BButton type="submit" variant="primary">
@@ -125,7 +141,8 @@ export default {
         lastSurname: '',
         email: '',
         password: '',
-        plan: ''
+        plan: '',
+        role: '' // Añadido campo para el rol
       },
       config: {
         wrap: true, // set wrap to true only when using 'input-group'
@@ -154,6 +171,7 @@ export default {
         this.employee.email = '';
         this.employee.password = '';
         this.employee.plan = '';
+        this.employee.role = ''; // Limpiar el campo rol
       } catch (error) {
         console.error("Error creando el empleado:", error);
         alert('Error creando el empleado');
