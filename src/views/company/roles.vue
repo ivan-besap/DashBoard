@@ -1,10 +1,30 @@
 <template>
   <Layout>
     <PageHeader title="Roles" pageTitle="items" />
+    <BRow>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="contenedor-inic">
+          <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+            <router-link class="nav-link menu-link" target="" to="/company/crear-rol">
+              Crear Rol
+            </router-link>
+          </BButton>
+      
+        </div>
+        <div class="contenedor-finac" style="width: 246px;">
+          <!-- Input de búsqueda -->
+          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+            <BFormInput
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar por Rol..."
+            />
+          </div>
+        </div>
+      </div>
+    </BRow>
   
-    <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-      <a href="/company/crear-rol">Crear Roles</a>
-    </BButton>
   
     <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
@@ -16,7 +36,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr >
             <td><a href="#" class="fw-semibold">Administrador</a></td>
             <td>
               <div class="permisos-wrapper">
@@ -54,6 +74,9 @@
               </div>
             </td>
             <td>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">Editar</router-link>
+              </BButton>
               <BButton variant="danger" type="button" id="sa-warning" @click="confirm">
                 Eliminar
               </BButton>
@@ -71,6 +94,9 @@
               </div>
             </td>
             <td>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">Editar</router-link>
+              </BButton>
               <BButton variant="danger" type="button" id="sa-warning" @click="confirm">
                 Eliminar
               </BButton>
@@ -94,6 +120,9 @@
               </div>
             </td>
             <td>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">Editar</router-link>
+              </BButton>
               <BButton variant="danger" type="button" id="sa-warning" @click="confirm">
                 Eliminar
               </BButton>

@@ -1461,10 +1461,89 @@ export default [
     name: "Crear Rol",
     meta: { title: "Crear Rol", authRequired: true },
     component: () => import("../views/company/crear-rol"),
+  },
+  {
+    path: "/company/asignar-tarifas",
+    name: "Asignar Tarifas",
+    meta: { title: "Asignar Tarifas", authRequired: true },
+    component: () => import("../views/company/asignar-tarifas"),
+  },
+
+  {
+    path: "/company/editar-tarifa",
+    name: "Editar Tarifa",
+    meta: { title: "Editar Tarifa", authRequired: true },
+    component: () => import("../views/company/editar-tarifa"),
   }
 
 
+  ,
 
+  {
+    path: "/company/editar-plan",
+    name: "Editar Plan",
+    meta: { title: "Editar Plan", authRequired: true },
+    component: () => import("../views/company/editar-plan"),
+  }
+
+  ,
+
+  {
+    path: "/company/editar-empleados",
+    name: "Editar Empleados",
+    meta: { title: "Editar Empleados", authRequired: true },
+    component: () => import("../views/company/editar-empleados"),
+  }
+
+  ,
+
+  {
+    path: "/company/editar-roles",
+    name: "Editar Roles",
+    meta: { title: "Editar Roles", authRequired: true },
+    component: () => import("../views/company/editar-roles"),
+  }
+
+  ,
+
+  {
+    path: "/company/editar-estacion",
+    name: "Editar Estacion",
+    meta: { title: "Editar Estacion", authRequired: true },
+    component: () => import("../views/company/editar-estacion"),
+  },
+
+  {
+    path: "/company/editar-cargador",
+    name: "Editar Cargador",
+    meta: { title: "Editar Cargador", authRequired: true },
+    component: () => import("../views/company/editar-cargador"),
+  }
+
+  ,
+
+  {
+    path: "/company/editar-conector",
+    name: "Editar Conector",
+    meta: { title: "Editar Conector", authRequired: true },
+    component: () => import("../views/company/editar-conector"),
+  }
+
+  ,
+
+  {
+    path: "/company/conector",
+    name: "Conector",
+    meta: { title: " Conector", authRequired: true },
+    component: () => import("../views/company/conector"),
+  }
+  ,
+
+  {
+    path: "/company/crear-conector",
+    name: "Crear Conector",
+    meta: { title: " Crear Conector", authRequired: true },
+    component: () => import("../views/company/crear-conector"),
+  }
   
-
 ];

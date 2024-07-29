@@ -371,19 +371,29 @@ export default {
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                
+                <router-link class="nav-link menu-link" target="" to="/company/stations-company">
                   Estaciones de Carga
-                </a>
+                </router-link>
               </li>
+            
+             
               <li class="nav-item">
-                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                <router-link class="nav-link menu-link" target="" to="/company/cargadores-company">
                  Cargadores
-                </a>
+                </router-link>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                <a class="nav-link" href="/company/conector" data-key="t-level-1.1">
                   Conectores
                 </a>
+              </li>
+
+              <li class="nav-item">
+                
+                <router-link class="nav-link menu-link" target="" to="/company/stations-company">
+                  Acciones OCPP
+                </router-link>
               </li>
               
           </ul>

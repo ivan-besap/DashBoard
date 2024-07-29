@@ -1,37 +1,55 @@
 <template>
   <Layout>
-    <PageHeader title="Estaciones de Carga" pageTitle="items" />
+    <PageHeader title="Cargadores" pageTitle="items" />
 
-    <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-      <a href="crear-cargador">Crear Cargador</a>
-    </BButton>
+    <BRow>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="contenedor-inic">
+          <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+            <router-link class="nav-link menu-link" target="" to="crear-cargador">
+              Crear Cargador
+            </router-link>
+          </BButton>
+        </div>
+        <div class="contenedor-finac" style="width: 246px;">
+          <!-- Input de búsqueda -->
+          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+            <BFormInput
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre de Cargador..."
+            />
+          </div>
+        </div>
+      </div>
+    </BRow>
 
-    <div class="table-responsive table-card" style="margin-top: 15px;">
+    <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
         <thead class="table-light">
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Nombre</th>
-            <th scope="col">Potencia</th>
-           
+            
             <th scope="col">Estado</th>
-            <th scope="col">Carga en Curso</th>
+          
+           <!-- <th scope="col">Comandos</th>-->
             <th scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="connector in connectors" :key="connector.id">
+          <tr v-for="connector in filteredConnectors" :key="connector.id">
             <td>{{ connector.id }}</td>
             <td>{{ connector.name }}</td>
-            <td>{{ connector.power }} kW</td>
-           
+          
             <td>
               <span :class="connector.connectorStatus === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'">
                 {{ connector.connectorStatus }}
               </span>
             </td>
-            <td>{{ connector.currentCharge }} kWh</td>
-            <td>
+            
+          <!--  <td>
               <select class="form-select" @change="handleCommand($event, connector.id)">
                 <option disabled selected>Comandos</option>
                 <option value="start">Iniciar Carga</option>
@@ -39,6 +57,14 @@
                 <option value="enable">Habilitar</option>
                 <option value="unlock">Desbloquear</option>
               </select>
+            </td>-->
+            <td>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-cargador/${connector.id}`">Editar</router-link>
+              </BButton>
+              <BButton pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
+                Eliminar
+              </BButton>
             </td>
           </tr>
         </tbody>
@@ -50,6 +76,7 @@
 <script>
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -59,7 +86,8 @@ export default {
 
   data() {
     return {
-      connectors: []
+      connectors: [],
+      searchQuery: ''
     };
   },
 
@@ -67,19 +95,43 @@ export default {
     this.fetchConnectors();
   },
 
+  computed: {
+    filteredConnectors() {
+      const query = this.searchQuery.toLowerCase();
+      return this.connectors.filter(connector => 
+        connector.name.toLowerCase().includes(query)
+      );
+    }
+  },
+
   methods: {
+    confirm() {
+      Swal.fire({
+        title: "¿Estás seguro de eliminar?",
+        text: "¡No podrás revertir la acción!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#34c38f",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Sí, eliminar!",
+      }).then((result) => {
+        if (result.value) {
+          Swal.fire("Cargador eliminado!", "", "success");
+        }
+      });
+    },
     fetchConnectors() {
       // Datos estáticos para 10 estaciones de carga
       this.connectors = [
-        { id: 1, name: 'Cargador 1', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 2, name: 'Cargador 2', power: 8.19,  connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 3, name: 'Cargador 3', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 4, name: 'Cargador 4', power: 8.19,  connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 5, name: 'Cargador 5', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 1, name: 'Cargador 1', power: 8.19, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 2, name: 'Cargador 2', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 3, name: 'Cargador 3', power: 8.19, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 4, name: 'Cargador 4', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 5, name: 'Cargador 5', power: 8.19, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
         { id: 6, name: 'Cargador 6', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
         { id: 7, name: 'Cargador 7', power: 8.19, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 8, name: 'Cargador 8', power: 8.19,  connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
-        { id: 9, name: 'Cargador 9', power: 8.19,  connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 8, name: 'Cargador 8', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
+        { id: 9, name: 'Cargador 9', power: 8.19, connectorStatus: 'CONNECTED', currentCharge: (Math.random() * 100).toFixed(2) },
         { id: 10, name: 'Cargador 10', power: 8.19, connectorStatus: 'DISCONNECTED', currentCharge: (Math.random() * 100).toFixed(2) }
       ];
       console.log(this.connectors);

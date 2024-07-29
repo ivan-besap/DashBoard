@@ -78,19 +78,7 @@
                       </BFormSelect>
                     </div>
                   </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="location" class="form-label">Ubicación</label>
-                      <BFormInput 
-                        v-model="charger.location" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Ubicación" 
-                        id="location" 
-                        required 
-                      />
-                    </div>
-                  </BCol>
+                  
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="station" class="form-label">Estaciones de carga</label>
@@ -109,27 +97,13 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary">
+                      <BButton type="submit" variant="primary" @click="successmsg">
                         Crear Cargador
                       </BButton>
                     </div>
                   </BCol>
                 </BRow>
-                <BRow>
-                  <BCol lg="6">
-                    <BCard no-body>
-                      <BCardBody>
-                        <BCardTitle>Ubicación</BCardTitle>
-                        <GoogleMap 
-                          api-key="AIzaSyAbvyBxmMbFhrzP9Z8moyYr6dCr-pzjhBE" 
-                          :center="{ lat: 2, lng: 2 }" 
-                          :zoom="5"
-                          style="height: 300px"
-                        ></GoogleMap>
-                      </BCardBody>
-                    </BCard>
-                  </BCol>
-                </BRow>
+             
               </BForm>
             </div>
           </BCardBody>
@@ -143,11 +117,10 @@
 import axios from 'axios';
 import "flatpickr/dist/flatpickr.css";
 import "@vueform/multiselect/themes/default.css";
-
+import Swal from "sweetalert2";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
-import { GoogleMap } from "vue3-google-map";
 
 export default {
   data() {
@@ -176,13 +149,25 @@ export default {
     Layout,
     PageHeader,
     CardHeader, 
-    GoogleMap
+    
   },
   methods: {
+    successmsg() {
+      Swal.fire({
+        title: "Rol creado!",
+        text: "Redirigiendo a la página de Cargadores...",
+        icon: "success",
+        timer: 2000, // Tiempo en milisegundos antes de redirigir
+        timerProgressBar: true,
+        willClose: () => {
+          this.$router.push('/company/cargadores-company'); // Redirigir a la página de planes
+        }
+      });
+    },
     async createCharger() {
       try {
         await axios.post('http://localhost:8080/api/chargers', this.charger);
-        alert('Cargador creado exitosamente');
+       // alert('Cargador creado exitosamente');
         this.charger.ocppId = '';
         this.charger.name = '';
         this.charger.alias = '';
@@ -192,7 +177,7 @@ export default {
         this.charger.station = '';
       } catch (error) {
         console.error("Error creando el cargador:", error);
-        alert('Error creando el cargador');
+       // alert('Error creando el cargador');
       }
     }
   }

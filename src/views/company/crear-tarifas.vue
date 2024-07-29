@@ -10,6 +10,39 @@
               <BForm @submit.prevent="createChargingStation">
                 
                 <BRow>
+
+                  <BCol md="6">
+                    <div class="mb-3">
+                  <label for="StartleaveDate" class="form-label">Fecha Inicial</label>
+
+                  <flat-pickr v-model="date" class="form-control"></flat-pickr>
+                </div>
+                
+
+                  </BCol>
+                  <BCol md="6">
+
+                    <div class="mb-3">
+                  <label for="EndleaveDate" class="form-label">Fecha Final</label>
+
+                  <flat-pickr v-model="date1" class="form-control"></flat-pickr>
+                </div>
+                    </BCol>
+                    <BCol md="6">
+                    <div class="mb-3">
+                      <label for="horarioInicio" class="form-label">Horario de inicio</label>
+                      <flat-pickr v-model="time3" :config="preloadingTime" class="form-control flatpickr-input">
+                      </flat-pickr>
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="horarioFin" class="form-label">Horario de fin</label>
+                      <flat-pickr v-model="time3" :config="preloadingTime" class="form-control flatpickr-input">
+                      </flat-pickr>
+                    </div>
+                  </BCol>
+
                   <BCol md="6">
                     <div class="mb-3">
                       <label class="form-label">Día de la semana</label>
@@ -24,7 +57,7 @@
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="tipoCargador" class="form-label">Tipo Conector</label>
+                      <label for="tipoCargador" class="form-label">Tipo Cargador</label>
                       <BFormSelect 
                         v-model="chargingStation.chargerType" 
                         :options="chargerTypes" 
@@ -47,20 +80,19 @@
                       />
                     </div>
                   </BCol>
-                  <BCol md="6">
-                    <div class="mt-3">
-                      <label class="form-label mb-0">Periodo</label>
-                      <flat-pickr v-model="chargingStation.period" :config="rangeDateconfig" class="form-control"></flat-pickr>
-                    </div>
-                  </BCol>
+                 
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary">
+                      <BButton type="submit" variant="primary" @click="successmsg">
                         Crear Tarifa
                       </BButton>
                     </div>
                   </BCol>
                 </BRow>
+                  Cargdor y Conector
+                
+
+               
               </BForm>
             </div>
           </BCardBody>
@@ -77,6 +109,8 @@ import flatPickr from "vue-flatpickr-component";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import Swal from "sweetalert2";
+
 
 export default {
   data() {
@@ -85,6 +119,20 @@ export default {
         dayOfWeek: [],
         chargerType: '',
         planValue: 0.0
+      },
+
+      timeConfig: {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+      },
+
+      preloadingTime: {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        defaultDate: "13:00",
       },
       daysOfWeek: [
         { value: 'lunes', text: 'Lunes' },
@@ -108,14 +156,18 @@ export default {
     flatPickr
   },
   methods: {
+
+    successmsg() {
+      Swal.fire("Tarifa creada!", "", "success");
+    },
     async createChargingStation() {
       try {
         await axios.post('http://localhost:8080/api/company/current/chargingStations', this.chargingStation);
-        alert('Estación de carga creada exitosamente');
+        // alert('Estación de carga creada exitosamente');
         this.resetForm();
       } catch (error) {
         console.error("Error creando la estación de carga:", error);
-        alert('Error creando la estación de carga');
+       // alert('Error creando la estación de carga');
       }
     },
     resetForm() {

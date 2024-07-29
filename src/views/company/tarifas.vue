@@ -2,12 +2,31 @@
   <Layout>
     <PageHeader title="Tarifas" pageTitle="Dashboard" />
 
+<BRow>
+    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+  <div class="contenedor-inic">  
+    
     <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
       <router-link class="nav-link menu-link" target="" to="/company/crear-tarifas">
         Crear Tarifa
       </router-link>
     </BButton>
-
+    <BButton style="margin-bottom: 45px; margin-left: 20px" pill variant="primary" class="waves-effect waves-light">
+      <router-link class="nav-link menu-link" target="" to="/company/asignar-tarifas">Asignar Tarifa</router-link>
+    </BButton>
+  </div>
+  <div class="contenedor-finac" style="    width: 246px;">  
+    <!-- Input de búsqueda -->
+    <div class="d-flex justify-content-sm-end " style="    height: 48px;" >
+     <BFormInput
+        v-model="searchQuery"
+        type="text"
+        class="form-control"
+        placeholder="Buscar por nombre de tarifa..."
+      />
+    </div>
+    </div>
+</div></BRow>
     <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
         <thead class="table-light">
@@ -24,10 +43,11 @@
             <th scope="col">Conector</th>
             <th scope="col">Valor</th>
             <th scope="col">Ubicación</th>
+            <th scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="plan in plans" :key="plan.id">
+          <tr v-for="plan in filteredPlans" :key="plan.id">
             <td>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">
@@ -40,6 +60,14 @@
             <td>{{ plan.chargerType }}</td>
             <td>{{ plan.value }}</td>
             <td>{{ plan.location }}</td>
+            <td>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-tarifa/`">Editar</router-link>
+              </BButton>
+              <BButton  pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
+                       Eliminar
+                      </BButton>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -50,6 +78,7 @@
 <script>
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -57,8 +86,27 @@ export default {
     PageHeader,
   },
 
+  methods: {
+    confirm() {
+      Swal.fire({
+        title: "Estas seguro de eliminar?",
+        text: "No podras revertir la accion!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#34c38f",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Si, eliminar!",
+      }).then((result) => {
+        if (result.value) {
+          Swal.fire("Tarifa 1 Eliminada", "", "success");
+        }
+      });
+    }
+  },
+
   data() {
     return {
+      searchQuery: '',
       plans: [
         { id: 1, name: 'Tarifa 1', period: '01/01 - 01/31', weekDays: ['Lunes', 'Martes'], chargerType: 'AC', location: 'Ubicación A', value: '$200' },
         { id: 2, name: 'Tarifa 2', period: '02/01 - 02/28', weekDays: ['Miércoles', 'Jueves'], chargerType: 'DC', location: 'Ubicación B', value: '$300' },
@@ -72,6 +120,12 @@ export default {
         { id: 10, name: 'Tarifa 10', period: '10/01 - 10/31', weekDays: ['Miércoles', 'Jueves'], chargerType: 'DC', location: 'Ubicación J', value: '$400' }
       ]
     };
+  },
+  computed: {
+    filteredPlans() {
+      const query = this.searchQuery.toLowerCase();
+      return this.plans.filter(plan => plan.name.toLowerCase().includes(query));
+    }
   }
 };
 </script>

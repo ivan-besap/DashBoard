@@ -108,7 +108,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary">
+                      <BButton type="submit" variant="primary"  @click="successmsg">
                         Crear Empleado
                       </BButton>
                     </div>
@@ -124,9 +124,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 import "flatpickr/dist/flatpickr.css";
 import "@vueform/multiselect/themes/default.css";
+import Swal from "sweetalert2";
 
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
@@ -161,17 +162,26 @@ export default {
     CardHeader,
   },
   methods: {
+
+    successmsg() {
+      Swal.fire({
+        title: "Empleado creado!",
+        text: "Redirigiendo a la página de Empleados...",
+        icon: "success",
+        timer: 2000, // Tiempo en milisegundos antes de redirigir
+        timerProgressBar: true,
+        willClose: () => {
+          this.$router.push('/company/empleados-company'); // Redirigir a la página de planes
+        }
+      });
+    },
     async createEmployee() {
       try {
-        await axios.post('http://localhost:8080/api/companies/employee', this.employee);
-        alert('Empleado creado exitosamente');
-        this.employee.name = '';
-        this.employee.firstSurname = '';
-        this.employee.lastSurname = '';
-        this.employee.email = '';
-        this.employee.password = '';
-        this.employee.plan = '';
-        this.employee.role = ''; // Limpiar el campo rol
+         // Simula una llamada de API exitosa
+         setTimeout(() => {
+            this.successmsg();
+            this.$router.push('/company/empleados-company');
+          }, 1000); // Retraso de 1 segundo para simular la llamada
       } catch (error) {
         console.error("Error creando el empleado:", error);
         alert('Error creando el empleado');

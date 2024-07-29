@@ -9,15 +9,28 @@
             <div class="live-preview">
               <BForm @submit.prevent="createChargingStation">
                 <BRow>
-                  <BCol lg="6">
-                   
-                  </BCol>
-                </BRow>
-                <BRow>
                   <BCol md="6">
-                    <div class="mt-3">
-                      <label class="form-label mb-0">Periodo</label>
-                      <flat-pickr v-model="chargingStation.period" :config="rangeDateconfig" class="form-control"></flat-pickr>
+                    <div class="mb-3">
+                      <label for="StartleaveDate" class="form-label">Fecha Inicial</label>
+                      <flat-pickr v-model="date" class="form-control"></flat-pickr>
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="EndleaveDate" class="form-label">Fecha Final</label>
+                      <flat-pickr v-model="date1" class="form-control"></flat-pickr>
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="horarioInicio" class="form-label">Horario de inicio</label>
+                      <flat-pickr v-model="time3" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="horarioFin" class="form-label">Horario de fin</label>
+                      <flat-pickr v-model="time3" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>
                     </div>
                   </BCol>
                   <BCol md="6">
@@ -36,7 +49,7 @@
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="plan" class="form-label">Plan</label>
+                      <label for="plan" class="form-label">Nombre Plan</label>
                       <BFormInput 
                         v-model="chargingStation.plan" 
                         type="text" 
@@ -50,27 +63,17 @@
                   <BCol md="6">
                     <div class="mb-3">
                       <label class="form-label">Día de la semana</label>
-                      <div v-for="day in daysOfWeek" :key="day.value" class="form-check">
-                        <input class="form-check-input" type="checkbox" :value="day.value" v-model="chargingStation.dayOfWeek" :id="day.value">
-                        <label class="form-check-label" :for="day.value">{{ day.text }}</label>
+                      <div class="dias-semana" style="display: flex; ">
+                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check">
+                          <input class="form-check-input" type="checkbox" :value="day.value" v-model="chargingStation.dayOfWeek" :id="day.value">
+                          <label class="form-check-label" :for="day.value">{{ day.text }}</label>
+                        </div>
                       </div>
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="horarioInicio" class="form-label">Horario de inicio</label>
-                      <flat-pickr v-model="chargingStation.startTime" :config="timeConfig" class="form-control"></flat-pickr>
-                    </div>
-                  </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="horarioFin" class="form-label">Horario de fin</label>
-                      <flat-pickr v-model="chargingStation.endTime" :config="timeConfig" class="form-control"></flat-pickr>
-                    </div>
-                  </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="tipoCargador" class="form-label">Tipo Cargador</label>
+                      <label for="tipoCargador" class="form-label">Tipo Conector</label>
                       <BFormSelect 
                         v-model="chargingStation.chargerType" 
                         :options="chargerTypes" 
@@ -93,19 +96,6 @@
                       />
                     </div>
                   </BCol>
-<!--                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="ubicacionCPO" class="form-label">CPO</label>
-                      <BFormInput 
-                        v-model="chargingStation.locationCPO" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Ubicación CPO" 
-                        id="ubicacionCPO" 
-                        required 
-                      />
-                    </div>
-                  </BCol>-->
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="kwh" class="form-label">KWH</label>
@@ -135,7 +125,7 @@
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="descuento" class="form-label">Descuento</label>
+                      <label for="descuento" class="form-label">% Descuento</label>
                       <BFormInput 
                         v-model="chargingStation.discount" 
                         type="number" 
@@ -163,7 +153,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary">
+                      <BButton type="submit" variant="primary" @click="createChargingStation">
                         Crear Plan
                       </BButton>
                     </div>
@@ -179,13 +169,12 @@
 </template>
 
 <script>
-import axios from 'axios';
 import "flatpickr/dist/flatpickr.css";
 import flatPickr from "vue-flatpickr-component";
-
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -206,6 +195,9 @@ export default {
         discount: 0.0,
         planValue: 0.0
       },
+      date: '',
+      date1: '',
+      time3: '',
       config: {
         wrap: true, 
         altFormat: "M j, Y",
@@ -244,15 +236,21 @@ export default {
     flatPickr
   },
   methods: {
-    async createChargingStation() {
-      try {
-        await axios.post('http://localhost:8080/api/company/current/chargingStations', this.chargingStation);
-        alert('Estación de carga creada exitosamente');
-        this.resetForm();
-      } catch (error) {
-        console.error("Error creando la estación de carga:", error);
-        alert('Error creando la estación de carga');
-      }
+    createChargingStation() {
+      // Mostrar el mensaje de éxito y redirigir
+      this.successmsg(); 
+    },
+    successmsg() {
+      Swal.fire({
+        title: "Tarifa creada!",
+        text: "Redirigiendo a la página de planes...",
+        icon: "success",
+        timer: 2000, // Tiempo en milisegundos antes de redirigir
+        timerProgressBar: true,
+        willClose: () => {
+          this.$router.push('/company/plan-company'); // Redirigir a la página de planes
+        }
+      });
     },
     resetForm() {
       this.chargingStation = {

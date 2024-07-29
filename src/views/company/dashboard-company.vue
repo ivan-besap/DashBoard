@@ -15,8 +15,20 @@ export default {
     return {
       basicLineChart: basicLineChart,
       zoomableChart: zoomableChart,
+      dailyEnergy: 2213.88,
+      maxPower: 188.40,
      
     };
+  },
+  mounted() {
+    this.updateValues();
+    setInterval(this.updateValues, 25000);
+  },
+  methods: {
+    updateValues() {
+      this.dailyEnergy = (Math.random() * (2500 - 2000) + 2000).toFixed(2);
+      this.maxPower = (Math.random() * (200 - 150) + 150).toFixed(2);
+    },
   },
 
   setup() {
@@ -175,10 +187,10 @@ export default {
   <Layout>
     <PageHeader title="Dashboard Compañia" pageTitle="items" />
     <BRow>
-      <BCol xxl="4">
+      <BCol class="col-xl-4">
         <BCard no-body>
-          <BRow class="g-0">
-            <BCol md="12">
+          <BRow class="g-0" style="    padding-bottom: 11px;" >
+            <BCol >
               <BCardHeader>
                 <div class="text-end">
                   <h5 class="card-title mb-0">Alarmas Diarias</h5>
@@ -199,6 +211,52 @@ export default {
                 </div>
               </BCardBody>
             </BCol>
+            
+          </BRow>
+        </BCard>
+      </BCol>
+      <BCol class="col-xl-4">
+        <BCard no-body>
+          <BRow class="g-0" style="    padding-bottom: 21px;">
+            <BCol >
+              <BCardHeader>
+                <div class="text-end">
+                  <h5 class="card-title mb-0">Energía entregada diaria</h5>
+                </div>
+              </BCardHeader>
+              <BCardBody>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                 
+                  <img src="../../assets/images/gas-station-fuel-svgrepo-com.svg" width="40px">
+              
+                  <p class="mb-0 w-40" style="font-size: 25px;">{{ dailyEnergy }} kWh</p>
+                </div>
+              </BCardBody>
+            </BCol>
+            
+          </BRow>
+        </BCard>
+      </BCol>
+      <BCol class="col-xl-4">
+        <BCard no-body>
+          <BRow class="g-0" style="    padding-bottom: 21px;">
+            <BCol >
+              <BCardHeader>
+                <div class="text-end">
+                  <h5 class="card-title mb-0">Potencia máxima diaria</h5>
+                </div>
+              </BCardHeader>
+              <BCardBody>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <img src="../../assets/images/lightning-charge-fill-green.svg">
+                  
+                 
+                  <p class="mb-0 w-50" style="font-size: 25px;">{{ maxPower }} kW</p>
+                </div>
+                
+              </BCardBody>
+            </BCol>
+            
           </BRow>
         </BCard>
       </BCol>
@@ -224,6 +282,19 @@ export default {
           <BCardBody>
             <apexchart class="apex-charts" height="300" dir="ltr" :series="donutChart.series"
                        :options="donutChart.chartOptions"></apexchart>
+          </BCardBody>
+        </BCard>
+      </BCol>
+    </BRow>
+    <BRow>
+      <BCol lg="12">
+        <BCard no-body>
+          <BCardHeader>
+            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>
+          </BCardHeader>
+          <BCardBody>
+            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"
+                       :options="zoomableChart.chartOptions"></apexchart>
           </BCardBody>
         </BCard>
       </BCol>
@@ -280,19 +351,7 @@ export default {
         </BCard-body>
       </BCard>
     </BRow>
-    <BRow>
-      <BCol lg="12">
-        <BCard no-body>
-          <BCardHeader>
-            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>
-          </BCardHeader>
-          <BCardBody>
-            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"
-                       :options="zoomableChart.chartOptions"></apexchart>
-          </BCardBody>
-        </BCard>
-      </BCol>
-    </BRow>
+  
     
   </Layout>
 </template>

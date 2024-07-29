@@ -2,12 +2,32 @@
   <Layout>
     <PageHeader title="Planes" pageTitle="Dashboard" />
 
-    <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-      <a href="crear-planes">Crear Plan</a>
-    </BButton>
-    <BButton style="margin-bottom: 45px; margin-left: 20px" pill variant="primary" class="waves-effect waves-light">
-      <a href="asignar-plan">Asignar Plan</a>
-    </BButton>
+    <BRow>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="contenedor-inic">
+          <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+            <router-link class="nav-link menu-link" target="" to="/company/crear-planes">
+              Crear Plan
+            </router-link>
+          </BButton>
+          <BButton style="margin-bottom: 45px; margin-left: 20px" pill variant="primary" class="waves-effect waves-light">
+            <router-link class="nav-link menu-link" target="" to="/company/asignar-plan">Asignar Plan</router-link>
+          </BButton>
+        </div>
+        <div class="contenedor-finac" style="width: 246px;">
+          <!-- Input de búsqueda -->
+          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+            <BFormInput
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre de Plan..."
+            />
+          </div>
+        </div>
+      </div>
+    </BRow>
+
     <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
         <thead class="table-light">
@@ -29,11 +49,11 @@
             <th scope="col">Minutos</th>
             <th scope="col">Descuento</th>
             <th scope="col">Valor Plan</th>
-           
+            <th scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="plan in plans" :key="plan.id">
+          <tr v-for="plan in filteredPlans" :key="plan.id">
             <td>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">
@@ -51,7 +71,14 @@
             <td>{{ plan.minutes }} min</td>
             <td>{{ plan.discount }}%</td>
             <td>{{ plan.value }}</td>
-           
+            <td>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-plan/`">Editar</router-link>
+              </BButton>
+              <BButton pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
+                Eliminar
+              </BButton>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -62,6 +89,7 @@
 <script>
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -71,6 +99,7 @@ export default {
 
   data() {
     return {
+      searchQuery: '',
       plans: [
         { id: 1, name: 'Plan 1', period: '01/01 - 01/31', weekDays: ['Lunes', 'Martes'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 22, location: 'Ubicación A', kwh: 100, minutes: 60, discount: 10, value: '$200' },
         { id: 2, name: 'Plan 2', period: '02/01 - 02/28', weekDays: ['Miércoles', 'Jueves'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 50, location: 'Ubicación B', kwh: 200, minutes: 120, discount: 15, value: '$300' },
@@ -84,7 +113,32 @@ export default {
         { id: 10, name: 'Plan 10', period: '10/01 - 10/31', weekDays: ['Miércoles', 'Jueves'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 85, location: 'Ubicación J', kwh: 300, minutes: 180, discount: 15, value: '$400' }
       ]
     };
-  }
+  },
+  
+  computed: {
+    filteredPlans() {
+      const query = this.searchQuery.toLowerCase();
+      return this.plans.filter(plan => plan.name.toLowerCase().includes(query));
+    }
+  },
+
+  methods: {
+    confirm() {
+      Swal.fire({
+        title: "Estas seguro de eliminar?",
+        text: "No podras revertir la accion!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#34c38f",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Si, eliminar!",
+      }).then((result) => {
+        if (result.value) {
+          Swal.fire("Plan 1 Eliminado", "", "success");
+        }
+      });
+    }
+  },
 };
 </script>
 

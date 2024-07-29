@@ -1,10 +1,28 @@
 <template>
   <Layout>
     <PageHeader title="Estaciones de Carga" pageTitle="items" />
-
-    <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-      <a href="create-stations-company">Crear Estación</a>
-    </BButton>
+    <BRow>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="contenedor-inic">
+          <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+            <router-link class="nav-link menu-link" target="" to="create-stations-company">
+              Crear Estación
+            </router-link>
+          </BButton>
+        </div>
+        <div class="contenedor-finac" style="width: 246px;">
+          <!-- Input de búsqueda -->
+          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+            <BFormInput
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre de Estación..."
+            />
+          </div>
+        </div>
+      </div>
+    </BRow>
 
     <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
@@ -26,11 +44,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="station in chargingStations" :key="station.id">
+          <tr v-for="station in filteredChargingStations" :key="station.id">
             <td>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">
-                <label class="form-check-label" for="cardtableCheck01"></label>
+                <input class="form-check-input" type="checkbox" value="" :id="'cardtableCheck' + station.id">
+                <label class="form-check-label" :for="'cardtableCheck' + station.id"></label>
               </div>
             </td>
             <td><a href="#" class="fw-semibold">{{ station.id }}</a></td>
@@ -40,7 +58,12 @@
             <td>{{ station.createdDay }}</td>
             <td><span class="badge bg-success">Active</span></td>
             <td>
-              <button type="button" class="btn btn-sm btn-light"><a href="detalles-terminal">Detalles</a></button>
+              <BButton pill variant="warning" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${station.id}`">Editar</router-link>
+              </BButton>
+              <BButton pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
+                Eliminar
+              </BButton>
             </td>
           </tr>
         </tbody>
@@ -52,7 +75,7 @@
 <script>
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
-import axios from 'axios';
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -62,40 +85,45 @@ export default {
 
   data() {
     return {
-      chargingStations: []
+      searchQuery: '',
+      chargingStations: [
+        { id: 1, name: "Estación 1", location: "Santiago", alarms: ["0 Alarmas"], createdDay: "2024-07-26" },
+        { id: 2, name: "Estación 2", location: "Lima", alarms: ["1 Alarma"], createdDay: "2024-07-25" },
+        { id: 3, name: "Estación 3", location: "Línea 1 T1", alarms: ["0 Alarmas"], createdDay: "2024-07-24" },
+        { id: 4, name: "Estación 4", location: "Línea 1 T2", alarms: ["2 Alarmas"], createdDay: "2024-07-23" },
+        { id: 5, name: "Estación 5", location: "Santiago", alarms: ["0 Alarmas"], createdDay: "2024-07-22" },
+        { id: 6, name: "Estación 6", location: "Lima", alarms: ["1 Alarma"], createdDay: "2024-07-21" },
+        { id: 7, name: "Estación 7", location: "Línea 1 T1", alarms: ["0 Alarmas"], createdDay: "2024-07-20" },
+      ]
     };
   },
 
-  mounted() {
-    this.fetchChargingStations();
+  computed: {
+    filteredChargingStations() {
+      const query = this.searchQuery.toLowerCase();
+      return this.chargingStations.filter(station =>
+        station.name.toLowerCase().includes(query)
+      );
+    }
   },
 
   methods: {
-    async fetchChargingStations() {
-      try {
-        const response = await axios.get('http://localhost:8080/api/companies/current');
-        const accounts = response.data.accounts;
-        console.log(response.data.accounts)
-        let stations = [];
-        accounts.forEach(account => {
-          if (account.chargingStations && account.chargingStations.length > 0) {
-            stations = stations.concat(account.chargingStations);
-          }
-        });
-        // Add random locations and example alarms to each station
-        const locations = ["Santiago", "Lima", "Línea 1 T1", "Línea 1 T2"];
-        stations = stations.map(station => {
-          station.location = locations[Math.floor(Math.random() * locations.length)];
-          station.alarms = ["0 Alarmas"]; // Example alarms
-          return station;
-        });
-        this.chargingStations = stations;
-        console.log(stations)
-      } catch (error) {
-        console.error("Error fetching charging stations:", error);
-      }
+    confirm() {
+      Swal.fire({
+        title: "¿Estás seguro de eliminar?",
+        text: "¡No podrás revertir la acción!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#34c38f",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Sí, eliminar!",
+      }).then((result) => {
+        if (result.value) {
+          Swal.fire("¡Estación eliminada!", "", "success");
+        }
+      });
     }
-  }
+  },
 };
 </script>
 
