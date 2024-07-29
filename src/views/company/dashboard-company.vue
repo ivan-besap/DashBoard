@@ -185,7 +185,7 @@ export default {
     
 <template>
   <Layout>
-    <PageHeader title="Dashboard Compañia" pageTitle="items" />
+    <PageHeader title="Dashboard Compañia" pageTitle="Compañía" />
     <BRow>
       <BCol class="col-xl-4">
         <BCard no-body>
@@ -357,6 +357,6 @@ export default {
 </template>
 <style>
 .apexcharts-custom-annotation {
-  fill: #ffffff !important; /* Force the fill color */
+  fill: #0c0c0c !important; /* Force the fill color */
 }
 </style>

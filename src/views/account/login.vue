@@ -47,7 +47,7 @@ export default {
     async signinapi() {
   this.processing = true;
   try {
-    const result = await axios.post('http://52.14.116.236:8088/auth/login', {
+    const result = await axios.post('http://localhost:8080/auth/login', {
       username: this.email,
       password: this.password
     });

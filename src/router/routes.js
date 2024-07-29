@@ -1339,6 +1339,27 @@ export default [
     component: () => import("../views/company/asignar-plan"),
   },
 
+  {
+    path: "/company/tarjetas-rfid",
+    name: "Tarjetas RFID",
+    meta: { title: "Tarjetas RFID", authRequired: true },
+    component: () => import("../views/company/tarjetas-rfid.vue"),
+  },
+
+  {
+    path: "/company/crear-tarjeta-rfid",
+    name: "Crear Tarjeta RFID",
+    meta: { title: " Crear Tarjeta RFID", authRequired: true },
+    component: () => import("../views/company/crear-tarjeta-rfid.vue"),
+  },
+
+  {
+    path: "/company/comandos-ocpp",
+    name: "Comandos OCPP",
+    meta: { title: " Comandos OCPP", authRequired: true },
+    component: () => import("../views/company/comandos-ocpp.vue"),
+  },
+
   
   {
     path: "/company/crear-planes",

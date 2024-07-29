@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Editar Conector" pagetitle="Forms" />
+    <PageHeader title="Editar Conector" pageTitle="Compañía" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
@@ -107,7 +107,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary">
+                      <BButton style="background-color: #dfe4ea" type="submit" variant="light">
                         Actualizar Conector
                       </BButton>
                     </div>

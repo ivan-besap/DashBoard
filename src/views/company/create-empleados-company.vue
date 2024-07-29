@@ -1,10 +1,10 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Empleados" pagetitle="Forms" />
+    <PageHeader title="Crear Usuario Empresa" pagetitle="Compañía" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
-          <CardHeader title="Crear Empleado" />
+          <CardHeader title="Crear Usuario" />
           <BCardBody>
             <div class="live-preview">
               <BForm @submit.prevent="createEmployee">
@@ -108,8 +108,8 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary"  @click="successmsg">
-                        Crear Empleado
+                      <BButton style="background-color: #dfe4ea" type="submit" variant="light"  @click="successmsg">
+                        Crear Usuario
                       </BButton>
                     </div>
                   </BCol>

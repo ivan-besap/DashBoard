@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <PageHeader title="Conectores" pageTitle="items" />
+      <PageHeader title="Conectores" pageTitle="Compañía" />
     
       <!--<BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
         <a href="/company/create-empleados-company">Detalle de Terminal</a>
@@ -9,7 +9,7 @@
       <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+          <BButton style="margin-bottom: 45px; background-color: white"  variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-conector">
               Crear Conector
             </router-link>
@@ -46,7 +46,7 @@
              
               
               <th scope="col">Cargadores</th>
-              <th scope="col">Acciones</th>
+              <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -65,12 +65,14 @@
               
               <td>{{ station.vehicle }}</td>
               <td>
-              <BButton pill variant="warning" class="waves-effect waves-light">
-                <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">Editar</router-link>
-              </BButton>
-              <BButton  pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
-                       Eliminar
-                      </BButton>
+                <BButton style="padding: 5px 10px; background-color: #95eac9" variant="light" class="waves-effect waves-light">
+                  <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">
+                    <i class="mdi mdi-pencil"></i>
+                  </router-link>
+                </BButton>
+                <BButton style="padding: 5px 10px; background-color: #ea9595; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                  <i class="mdi mdi-delete"></i>
+                </BButton>
             </td>
             </tr>
           </tbody>
@@ -112,7 +114,7 @@
         confirmButtonText: "Si, eliminar!",
       }).then((result) => {
         if (result.value) {
-          Swal.fire("Tarifa 1 Eliminada", "", "success");
+          Swal.fire("Conector Eliminado", "", "success");
         }
       });
     }

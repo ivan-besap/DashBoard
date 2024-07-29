@@ -313,16 +313,16 @@ export default {
         <div class="d-flex align-items-center">
           <!-- LOGO -->
           <div class="navbar-brand-box horizontal-logo">
-            <router-link to="/" class="logo logo-dark">
+            <router-link to="/company/dashboard-company" class="logo logo-dark">
               <span class="logo-sm">
                 <img src="@/assets/images/logo-sm.png" alt="" height="22" />
               </span>
               <span class="logo-lg">
-                <img src="@/assets/images/logo-dark.png" alt="" height="17" />
+                <img src="@/assets/images/logo-evol.png" alt="" height="160" style="margin-top: 6px;" />
               </span>
             </router-link>
 
-            <router-link to="/client/dashboard-client" class="logo logo-light">
+            <router-link to="/company/dashboard-company" class="logo logo-light">
               <span class="logo-sm">
                 <img src="@/assets/images/logo-sm.png" alt="" height="22" />
               </span>
@@ -446,20 +446,20 @@ export default {
             </BDropdownItem>
           </BDropdown>
 
-          <BDropdown class="dropdown" variant="ghost-secondary" dropstart
-            :offset="{ alignmentAxis: 55, crossAxis: 15, mainAxis: -50 }"
-            toggle-class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle arrow-none"
-            menu-class="dropdown-menu-end">
-<!--            <template #button-content> <img id="header-lang-img" src="@/assets/images/flags/us.svg" alt="Header Language"-->
-<!--                height="20" class="rounded">-->
-<!--            </template>-->
-            <BLink href="javascript:void(0);" class="dropdown-item notify-item language py-2"
-              v-for="(entry, key) in languages" :data-lang="entry.language" :title="entry.title"
-              @click="setLanguage(entry.language, entry.title, entry.flag)" :key="key">
-              <img :src="entry.flag" alt="user-image" class="me-2 rounded" height="18">
-              <span class="align-middle">{{ entry.title }}</span>
-            </BLink>
-          </BDropdown>
+<!--          <BDropdown class="dropdown" variant="ghost-secondary" dropstart-->
+<!--            :offset="{ alignmentAxis: 55, crossAxis: 15, mainAxis: -50 }"-->
+<!--            toggle-class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle arrow-none"-->
+<!--            menu-class="dropdown-menu-end">-->
+<!--&lt;!&ndash;            <template #button-content> <img id="header-lang-img" src="@/assets/images/flags/us.svg" alt="Header Language"&ndash;&gt;-->
+<!--&lt;!&ndash;                height="20" class="rounded">&ndash;&gt;-->
+<!--&lt;!&ndash;            </template>&ndash;&gt;-->
+<!--            <BLink href="javascript:void(0);" class="dropdown-item notify-item language py-2"-->
+<!--              v-for="(entry, key) in languages" :data-lang="entry.language" :title="entry.title"-->
+<!--              @click="setLanguage(entry.language, entry.title, entry.flag)" :key="key">-->
+<!--              <img :src="entry.flag" alt="user-image" class="me-2 rounded" height="18">-->
+<!--              <span class="align-middle">{{ entry.title }}</span>-->
+<!--            </BLink>-->
+<!--          </BDropdown>-->
 
 <!--          <BDropdown class="dropdown" variant="ghost-secondary" dropstart
             :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"
@@ -608,12 +608,12 @@ export default {
             </BButton>
           </div>-->
 
-          <div class="ms-1 header-item d-none d-sm-flex">
-            <BButton type="button" variant="ghost-secondary" class="btn-icon btn-topbar rounded-circle light-dark-mode"
-              @click="toggleDarkMode">
-              <i class="bx bx-moon fs-22"></i>
-            </BButton>
-          </div>
+<!--          <div class="ms-1 header-item d-none d-sm-flex">-->
+<!--            <BButton type="button" variant="ghost-secondary" class="btn-icon btn-topbar rounded-circle light-dark-mode"-->
+<!--              @click="toggleDarkMode">-->
+<!--              <i class="bx bx-moon fs-22"></i>-->
+<!--            </BButton>-->
+<!--          </div>-->
 
           <BDropdown variant="ghost-dark" dropstart class="ms-1 dropdown"
             :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"

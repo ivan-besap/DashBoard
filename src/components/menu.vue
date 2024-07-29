@@ -261,8 +261,15 @@ export default {
         <li class="nav-item">
           <a class="nav-link menu-link" href="/company/dashboard-company" >
             <i class="ri-dashboard-2-line"></i>
-            <span data-key="t-dashboards"> Dashboard</span>
+            <span> Dashboard</span>
           </a>
+        </li>
+        <li class="nav-item">
+
+          <router-link class="nav-link menu-link" target="" to="/company/comandos-ocpp">
+            <i class="mdi mdi-keyboard"></i>
+            Comandos OCPP
+          </router-link>
         </li>
         <!--
         <li class="nav-item">
@@ -279,22 +286,22 @@ export default {
             <span data-key="t-dashboards"> Tarifas</span>
           </router-link>
         </li>
-        <li class="nav-item">
-          <router-link class="nav-link menu-link"  target="" to="/company/plan-company">
-           <i class="ri-survey-line"></i>
-            <span data-key="t-dashboards"> Planes</span>
-          </router-link>
-        </li>
+<!--        <li class="nav-item">-->
+<!--          <router-link class="nav-link menu-link"  target="" to="/company/plan-company">-->
+<!--           <i class="ri-survey-line"></i>-->
+<!--            <span data-key="t-dashboards"> Planes</span>-->
+<!--          </router-link>-->
+<!--        </li>-->
         <li class="nav-item">
           <router-link class="nav-link menu-link"  target="" to="/company/empleados-company">
             <i class="ri-group-fill"></i>
-            <span data-key="t-dashboards"> Empleados</span>
+            <span data-key="t-dashboards"> Usuarios Empresa</span>
           </router-link>
 
         </li>
         <li class="nav-item">
           <router-link class="nav-link menu-link"  target="" to="/company/flotas">
-            <i class="ri-survey-line"></i>
+            <i class="mdi mdi-car-connected"></i>
             <span data-key="t-dashboards"> Flota</span>
           </router-link>
         </li>
@@ -388,14 +395,11 @@ export default {
                   Conectores
                 </a>
               </li>
-
               <li class="nav-item">
-                
-                <router-link class="nav-link menu-link" target="" to="/company/stations-company">
-                  Acciones OCPP
-                </router-link>
+                <a class="nav-link" href="/company/tarjetas-rfid" data-key="t-level-1.1">
+                  Tarjetas RFID
+                </a>
               </li>
-              
           </ul>
         </div>
       </li>

@@ -4,7 +4,7 @@
 
     <BRow>
       <BCol xl="6">
-        <div class="table-responsive">
+        <div class="table-responsive" style="background-color: white">
           <table class="table table-hover align-middle table-nowrap mb-0">
             <thead class="table-light">
               <tr>
@@ -34,7 +34,7 @@
         </div>
       </BCol>
       <BCol xl="6">
-        <BCardBody class="border-end">
+        <BCardBody class="border-end" style="background-color: white">
           <div class="search-box">
             <input
                 type="text"
@@ -52,7 +52,7 @@
                 <BLink href="javascript:void(0);" class="d-flex align-items-center py-2">
                   <div class="flex-grow-1">
                     <h5 class="fs-13 mb-1 text-truncate">
-                      <span class="candidate-name">{{ data.name }}</span>
+                      <span style="margin-left: 10px;" class="candidate-name">{{ data.name }}</span>
                       <span class="ms-2 text-muted fw-normal">{{ data.value }}</span>
                     </h5>
                   </div>
@@ -60,14 +60,14 @@
               </li>
             </ul>
           </simplebar>
-          <div v-if="selectedPlan" class="mt-3 d-flex justify-content-between align-items-center">
+          <div v-if="selectedPlan" class="mt-3 d-flex justify-content-between align-items-center" style="margin-left: 10px">
             <div>
               <h5>Tarifa Seleccionada</h5>
               <p class="mb-1"><strong>Nombre:</strong> {{ selectedPlan.name }}</p>
               <p><strong>Costo:</strong> {{ selectedPlan.value }}</p>
             </div>
             <div class="ms-auto me-3">
-              <BButton variant="primary" @click="assignPlan">Asignar Tarifa</BButton>
+              <BButton style="background-color: #dfe4ea;" variant="light" @click="assignPlan">Asignar Tarifa</BButton>
             </div>
           </div>
         </BCardBody>

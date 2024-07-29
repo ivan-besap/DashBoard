@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <PageHeader title="Crear Cargador" pagetitle="Forms" />
+      <PageHeader title="Crear Conector" pageTitle="Compañía" />
       <BRow>
         <BCol xxl="12">
           <BCard no-body>
@@ -111,8 +111,8 @@
                     </BCol>
                     <BCol lg="12">
                       <div class="text-end">
-                        <BButton type="submit" variant="primary" @click="successmsg">
-                          Crear Cargador
+                        <BButton style="background-color: #dfe4ea" type="submit" variant="light" @click="successmsg">
+                          Crear Conector
                         </BButton>
                       </div>
                     </BCol>

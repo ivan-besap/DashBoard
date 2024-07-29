@@ -1,11 +1,11 @@
 <template>
   <Layout>
-    <PageHeader title="Cargadores" pageTitle="items" />
+    <PageHeader title="Cargadores" pageTitle="Compañía" />
 
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+          <BButton style="margin-bottom: 45px; background-color: white"  variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="crear-cargador">
               Crear Cargador
             </router-link>
@@ -35,7 +35,7 @@
             <th scope="col">Estado</th>
           
            <!-- <th scope="col">Comandos</th>-->
-            <th scope="col">Acciones</th>
+            <th scope="col" style="width: 1%;">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -59,11 +59,13 @@
               </select>
             </td>-->
             <td>
-              <BButton pill variant="warning" class="waves-effect waves-light">
-                <router-link class="nav-link menu-link" :to="`/company/editar-cargador/${connector.id}`">Editar</router-link>
+              <BButton style="padding: 5px 10px; background-color: #95eac9" variant="light" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-cargador/${connector.id}`">
+                  <i class="mdi mdi-pencil"></i>
+                </router-link>
               </BButton>
-              <BButton pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
-                Eliminar
+              <BButton style="padding: 5px 10px; background-color: #ea9595; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                <i class="mdi mdi-delete"></i>
               </BButton>
             </td>
           </tr>

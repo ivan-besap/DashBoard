@@ -12,11 +12,10 @@
                 <BRow>
 
                   <BCol md="6">
-                    <div class="mb-3">
-                  <label for="StartleaveDate" class="form-label">Fecha Inicial</label>
-
-                  <flat-pickr v-model="date" class="form-control"></flat-pickr>
-                </div>
+                  <div class="mb-3">
+                    <label for="StartleaveDate" class="form-label">Fecha Inicial</label>
+                    <flat-pickr v-model="date" class="form-control"></flat-pickr>
+                  </div>
                 
 
                   </BCol>
@@ -83,7 +82,7 @@
                  
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary" @click="successmsg">
+                      <BButton style="background-color: #dfe4ea" type="submit" variant="light" @click="successmsg">
                         Crear Tarifa
                       </BButton>
                     </div>

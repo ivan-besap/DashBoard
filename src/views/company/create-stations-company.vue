@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Estación" pagetitle="Forms" />
+    <PageHeader title="Crear Estación" pageTitle="Compañía" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
@@ -39,7 +39,7 @@
                   
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="primary">
+                      <BButton style="background-color: #dfe4ea" type="submit" variant="light">
                         Crear Estación
                       </BButton>
                     </div>

@@ -1,11 +1,11 @@
 <template>
   <Layout>
-    <PageHeader title="Reportes de Carga" pageTitle="Reporte de Carga" />
+    <PageHeader title="Reportes de Carga" pageTitle="Compañía" />
     
     <div style="margin-top:10px;" class="table-responsive table-card">
       <div class="mb-3" style="text-align: right;">
-        <b-button @click="exportToCSV" variant="primary">Exportar a CSV</b-button>&nbsp;&nbsp;
-        <b-button @click="exportToExcel" variant="success">Exportar a Excel</b-button>
+        <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
+        <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
       </div>
       
       <table class="table table-nowrap table-striped-columns mb-0">

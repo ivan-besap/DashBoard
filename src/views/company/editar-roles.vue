@@ -1,10 +1,10 @@
 <template>
     <Layout>
-      <PageHeader title="Crear Rol" pagetitle="Forms" />
+      <PageHeader title="Editar Rol" pageTitle="Compañía" />
       <BRow>
         <BCol xxl="12">
           <BCard no-body>
-            <CardHeader title="Crear Rol" />
+            <CardHeader title="Editar Rol" />
             <BCardBody>
               <div class="live-preview">
                 <BForm @submit.prevent="createRole">
@@ -264,7 +264,7 @@
   
                     <BCol lg="12">
                       <div class="text-end">
-                        <BButton type="submit" variant="primary" @click="successmsg">
+                        <BButton style="background-color: #dfe4ea" type="submit" variant="light" @click="successmsg">
                           Actualizar Rol
                         </BButton>
                       </div>

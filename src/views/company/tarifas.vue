@@ -1,17 +1,17 @@
 <template>
   <Layout>
-    <PageHeader title="Tarifas" pageTitle="Dashboard" />
+    <PageHeader title="Tarifas" pageTitle="Compañía" />
 
 <BRow>
     <div style="display: flex;flex-direction: row;justify-content: space-between;">
   <div class="contenedor-inic">  
     
-    <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
+    <BButton style="margin-bottom: 45px; background-color: white"  variant="light" class="waves-effect waves-light">
       <router-link class="nav-link menu-link" target="" to="/company/crear-tarifas">
         Crear Tarifa
       </router-link>
     </BButton>
-    <BButton style="margin-bottom: 45px; margin-left: 20px" pill variant="primary" class="waves-effect waves-light">
+    <BButton style="margin-bottom: 45px;  margin-left: 20px; background-color: white"  variant="light" class="waves-effect waves-light">
       <router-link class="nav-link menu-link" target="" to="/company/asignar-tarifas">Asignar Tarifa</router-link>
     </BButton>
   </div>
@@ -43,7 +43,7 @@
             <th scope="col">Conector</th>
             <th scope="col">Valor</th>
             <th scope="col">Ubicación</th>
-            <th scope="col">Acciones</th>
+            <th scope="col" style="width: 1%;">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -61,12 +61,14 @@
             <td>{{ plan.value }}</td>
             <td>{{ plan.location }}</td>
             <td>
-              <BButton pill variant="warning" class="waves-effect waves-light">
-                <router-link class="nav-link menu-link" :to="`/company/editar-tarifa/`">Editar</router-link>
+              <BButton style="padding: 5px 10px; background-color: #95eac9" variant="light" class="waves-effect waves-light">
+                <router-link class="nav-link menu-link" :to="`/company/editar-tarifa/`">
+                  <i class="mdi mdi-pencil"></i>
+                </router-link>
               </BButton>
-              <BButton  pill variant="danger" style="margin-left: 5px;" class="waves-effect waves-light" @click="confirm">
-                       Eliminar
-                      </BButton>
+              <BButton style="padding: 5px 10px; background-color: #ea9595; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                  <i class="mdi mdi-delete"></i>
+              </BButton>
             </td>
           </tr>
         </tbody>
