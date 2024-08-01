@@ -898,7 +898,7 @@ export default {
               </span>
             </template>
             <h6 v-if="userData" class="dropdown-header">Bienvenido {{ userData.firstName }} {{ userData.lastName }}</h6>
-            <router-link class="dropdown-item" to="/client/profile-client"><i
+            <router-link class="dropdown-item" to="/company/profile-company"><i
                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Perfil</span>
             </router-link>
@@ -933,7 +933,7 @@ export default {
               <span class="align-middle"> Lock screen</span>
             </router-link>-->
             <router-link class="dropdown-item" to="/logout"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
-              <span class="align-middle" data-key="t-logout"> Logout</span>
+              <span class="align-middle" data-key="t-logout"> Cerrar sesión</span>
             </router-link>
           </BDropdown>
         </div>

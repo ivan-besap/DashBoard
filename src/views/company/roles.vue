@@ -24,9 +24,11 @@
         </div>
       </div>
     </BRow>
-  
-  
-    <div class="table-responsive table-card">
+
+
+    <BCard no-body class="card-body">
+      <BCardBody>
+        <div class="table-responsive table-card">
       <table class="table table-nowrap table-striped-columns mb-0">
         <thead class="table-light">
           <tr>
@@ -74,12 +76,12 @@
               </div>
             </td>
             <td>
-              <BButton style="padding: 5px 10px; background-color: #95eac9" variant="light" class="waves-effect waves-light">
+              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
                 <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">
                   <i class="mdi mdi-pencil"></i>
                 </router-link>
               </BButton>
-              <BButton style="padding: 5px 10px; background-color: #ea9595; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                 <i class="mdi mdi-delete"></i>
               </BButton>
             </td>
@@ -96,12 +98,12 @@
               </div>
             </td>
             <td>
-              <BButton style="padding: 5px 10px; background-color: #95eac9" variant="light" class="waves-effect waves-light">
+              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
                 <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">
                   <i class="mdi mdi-pencil"></i>
                 </router-link>
               </BButton>
-              <BButton style="padding: 5px 10px; background-color: #ea9595; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                 <i class="mdi mdi-delete"></i>
               </BButton>
             </td>
@@ -124,12 +126,12 @@
               </div>
             </td>
             <td>
-              <BButton style="padding: 5px 10px; background-color: #95eac9" variant="light" class="waves-effect waves-light">
+              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
                 <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">
                   <i class="mdi mdi-pencil"></i>
                 </router-link>
               </BButton>
-              <BButton style="padding: 5px 10px; background-color: #ea9595; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                 <i class="mdi mdi-delete"></i>
               </BButton>
             </td>
@@ -137,6 +139,8 @@
         </tbody>
       </table>
     </div>
+      </BCardBody>
+    </BCard>
   </Layout>
 </template>
 

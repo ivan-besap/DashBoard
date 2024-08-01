@@ -85,15 +85,15 @@ export default {
  
   <Layout>
     <div class="position-relative mx-n4 mt-n4">
-      <div class="profile-wid-bg profile-setting-img">
-        <img src="@/assets/images/profile-bg.jpg" class="profile-wid-img" alt="" />
+      <div style="background-color: #18d0c4 " class=" profile-setting-img">
+<!--        <img src="@/assets/images/profile-bg.jpg" class="profile-wid-img" alt="" />-->
         <div class="overlay-content">
           <div class="text-end p-3">
             <div class="p-0 ms-auto rounded-circle profile-photo-edit">
               <input id="profile-foreground-img-file-input" type="file" class="profile-foreground-img-file-input" />
               <label for="profile-foreground-img-file-input" class="profile-photo-edit btn btn-light">
-                <i class="ri-image-edit-line align-bottom me-1"></i> Change
-                Cover
+                <i class="ri-image-edit-line align-bottom me-1"></i> Cambiar
+                Fondo
               </label>
             </div>
           </div>
@@ -113,7 +113,7 @@ export default {
                   mx-auto
                   mb-4
                 ">
-                <img src="@/assets/images/users/avatar-1.jpg" class="
+                <img src="https://cdn-icons-png.flaticon.com/512/3607/3607444.png" class="
                     rounded-circle
                     avatar-xl
                     img-thumbnail
@@ -153,33 +153,33 @@ export default {
             </BProgress>
           </BCardBody>
         </BCard>-->
-        <BCard no-body>
-          <BCardBody>
-            <div class="d-flex align-items-center mb-4">
-              <div class="flex-grow-1">
-                <h5 class="card-title mb-0">Mis Autos</h5>
-              </div>
-              <div class="flex-shrink-0">
-                <BLink href="javascript:void(0);" class="badge bg-light text-primary fs-12">
-                  <i class="ri-add-fill align-bottom me-1"></i> Add
-                </BLink>
-              </div>
-            </div>
-            <div class="mt-6">
-              <div class="space-y-4">
-                <div class="bg-dark p-4 rounded-lg">
-                  <img src="https://i.blogs.es/efcca7/screenshot/1366_521.jpg" alt="Tesla Model X" class="mb-2 img-fluid rounded" @click="goToTab('autos')" />
-                  <div class="text-white mb-2">
-                    <strong>Modelo:</strong> <span style="color: #7ae6ac;">{{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].model : '' }}</span>
-                  </div>
-                  <div class="text-white mb-2">
-                    <strong>Capacidad Total:</strong> <span style="color: #7ae6ac;"> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].capacityFullPower : '' }} kWh </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </BCardBody>
-        </BCard>
+<!--        <BCard no-body>-->
+<!--          <BCardBody>-->
+<!--            <div class="d-flex align-items-center mb-4">-->
+<!--              <div class="flex-grow-1">-->
+<!--                <h5 class="card-title mb-0">Mis Autos</h5>-->
+<!--              </div>-->
+<!--              <div class="flex-shrink-0">-->
+<!--                <BLink href="javascript:void(0);" class="badge bg-light text-primary fs-12">-->
+<!--                  <i class="ri-add-fill align-bottom me-1"></i> Add-->
+<!--                </BLink>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="mt-6">-->
+<!--              <div class="space-y-4">-->
+<!--                <div class="bg-dark p-4 rounded-lg">-->
+<!--                  <img src="https://i.blogs.es/efcca7/screenshot/1366_521.jpg" alt="Tesla Model X" class="mb-2 img-fluid rounded" @click="goToTab('autos')" />-->
+<!--                  <div class="text-white mb-2">-->
+<!--                    <strong>Modelo:</strong> <span style="color: #7ae6ac;">{{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].model : '' }}</span>-->
+<!--                  </div>-->
+<!--                  <div class="text-white mb-2">-->
+<!--                    <strong>Capacidad Total:</strong> <span style="color: #7ae6ac;"> {{ client && client.account[0] && client.account[0].cars[0] ? client.account[0].cars[0].capacityFullPower : '' }} kWh </span>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </BCardBody>-->
+<!--        </BCard>-->
       </BCol>
       <BCol xxl="9">
         <BCard no-body class="mt-xxl-n5">
@@ -216,10 +216,10 @@ export default {
                     <BCol lg="12">
                       <div class="hstack gap-2 justify-content-end">
                         <BButton type="submit" variant="secondary" @click="updatedata">
-                          Updates
+                          Actualizar
                         </BButton>
                         <BButton type="button" variant="soft-danger">
-                          Cancel
+                          Cancelar
                         </BButton>
                       </div>
                     </BCol>
