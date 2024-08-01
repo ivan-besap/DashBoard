@@ -40,7 +40,8 @@ const router = createRouter({
  
      localStorage.setItem('userType', userType);
      localStorage.setItem('userData', JSON.stringify(userData));
- 
+     localStorage.setItem('active', userData.active);
+
      /*store.commit('auth/setUser', userData);
      store.commit('auth/setUserType', userType);*/
  

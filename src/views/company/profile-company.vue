@@ -5,6 +5,7 @@ import "@vueform/multiselect/themes/default.css";
 import "flatpickr/dist/flatpickr.css";
 import axios from 'axios';
 import Layout from "@/layouts/main.vue";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -33,7 +34,7 @@ export default {
       try {
         const response = await axios.get('http://localhost:8080/api/companies/current');
          this.company = response.data;
-         console.log("Comañia" + JSON.stringify( this.company));
+         // console.log("Comañia" + JSON.stringify( this.company));
       
 
       } catch (error) {
@@ -51,6 +52,26 @@ export default {
       }).catch((e) => {
         console.log(e);
       });
+    },
+    async cambiarActivoUsuario(activeStatus) {
+      try {
+        const response = await axios.put('http://localhost:8080/api/companies/change-active-status', null, {
+          params: {
+            activeStatus: activeStatus
+          }
+        });
+        if (response.status === 200) {
+          Swal.fire("Estado de usuario Actualizado!", "", "success");
+          if (activeStatus === true) {
+            this.$router.push('/company/dashboard-company');
+          } else {
+            this.$router.push('/company/profile-company');
+            location.reload()
+          }
+        }
+      } catch (error) {
+        console.error("Error Actualizando usuario activo:", error);
+      }
     },
     updatedata() {
       var userid = localStorage.getItem('userid');
@@ -215,9 +236,12 @@ export default {
                     </BCol>
                     <BCol lg="12">
                       <div class="hstack gap-2 justify-content-end">
-                        <BButton type="submit" variant="secondary" @click="updatedata">
-                          Actualizar
+                        <BButton type="submit" variant="secondary" @click="cambiarActivoUsuario(true)">
+                         Guardar Datos
                         </BButton>
+<!--                        <BButton type="submit" variant="secondary" @click="cambiarActivoUsuario(false)">-->
+<!--                          Actualizar a Inactivo-->
+<!--                        </BButton>-->
                         <BButton type="button" variant="soft-danger">
                           Cancelar
                         </BButton>
@@ -614,6 +638,4 @@ You always want to make sure that your fonts work well together and try to limit
       </BCol>
     </BRow>
   </Layout>
-
-<h3>sdsd</h3>
 </template>

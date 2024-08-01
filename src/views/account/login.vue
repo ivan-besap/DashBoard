@@ -60,14 +60,21 @@ export default {
     // Suponiendo que el token se encuentra en result.data.token
     localStorage.setItem('jwt', result.data.token);
     localStorage.setItem('role', result.data.role);
+    localStorage.setItem('isActive', result.data.isActive);
+    let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
 
     let role = result.data.role;
-    console.log(role)
-    if (role === 'CLIENT') {
-      this.$router.push({ path: '/client/dashboard-client' });
-    } else if (role === 'COMPANY') {
+    console.log(role);
+    console.log(isActive);
+
+// if (role === 'CLIENT') {
+//   this.$router.push({ path: '/client/dashboard-client' });
+// }
+    if (role === 'COMPANY' && isActive) {
       this.$router.push({ path: '/company/dashboard-company' });
-      }
+    } else if (role === 'COMPANY' && !isActive) {
+      this.$router.push({ path: '/company/profile-company' });
+    }
   } catch (error) {
     console.error('Error during login:', error);
     this.authError = 'Inicio de sesión fallido. Porfavor revise sus datos e intente denuevo.';

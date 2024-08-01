@@ -6,6 +6,7 @@ import {
 export default {
   data() {
     return {
+      active : null,
       userRole: null,
       settings: {
         minScrollbarLength: 60,
@@ -131,7 +132,8 @@ export default {
   methods: {
     loadUserData() {
       const role = localStorage.getItem('userType');
-      console.log(role); // Para verificar que se está obteniendo el rol correctamente
+      this.active = localStorage.getItem('active');
+      // console.log(role); // Para verificar que se está obteniendo el rol correctamente
       this.userRole = role;
     },
     onRoutechange(ele) {
@@ -254,7 +256,7 @@ export default {
 
     <template v-if="layoutType === 'vertical' || layoutType === 'semibox'">
       <!--        MENU COMPAÑIA-->
-      <ul v-if="userRole === 'company'" class="navbar-nav h-100" id="navbar-nav">
+      <ul v-if="userRole === 'company' && active ==='true'" class="navbar-nav h-100" id="navbar-nav">
         <li class="menu-title">
           <span data-key="t-menu"> {{ $t("t-menu") }}</span>
         </li>
