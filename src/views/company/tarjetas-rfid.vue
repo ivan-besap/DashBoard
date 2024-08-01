@@ -9,13 +9,13 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="margin-bottom: 45px; background-color: white"  variant="light" class="waves-effect waves-light">
+          <BButton style=" background-color: white"  variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-tarjeta-rfid">
               Crear Tarjeta RFID
             </router-link>
           </BButton>
         </div>
-        <div class="contenedor-finac" style="width: 246px;">
+        <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px;">
           <!-- Input de búsqueda -->
           <div class="d-flex justify-content-sm-end" style="height: 48px;">
             <BFormInput
@@ -29,48 +29,100 @@
       </div>
     </BRow>
 
-    <div class="table-responsive table-card">
-      <table class="table table-nowrap table-striped-columns mb-0">
-        <thead class="table-light">
-        <tr>
-<!--          <th scope="col">-->
-<!--            <div class="form-check">-->
-<!--              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">-->
-<!--              <label class="form-check-label" for="cardtableCheck"></label>-->
-<!--            </div>-->
-<!--          </th>-->
-          <th scope="col">Nombre</th>
-          <th scope="col">Código Tarjeta</th>
-          <th scope="col">Fecha Expiración</th>
-          <th style="width: 1%" scope="col">Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="tarjeta in tarjetas" :key="tarjeta.id">
-<!--          <td>-->
-<!--            <div class="form-check">-->
-<!--              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">-->
-<!--              <label class="form-check-label" for="cardtableCheck01"></label>-->
-<!--            </div>-->
-<!--          </td>-->
-          <td>{{ tarjeta.nombre }}</td>
-          <td>{{ tarjeta.codigo }}</td>
-          <td>{{ tarjeta.fechaExpiracion }}</td>
+<!--    <div class="table-responsive table-card">-->
+<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
+<!--        <thead class="table-light">-->
+<!--        <tr>-->
+<!--&lt;!&ndash;          <th scope="col">&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="form-check">&ndash;&gt;-->
+<!--&lt;!&ndash;              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">&ndash;&gt;-->
+<!--&lt;!&ndash;              <label class="form-check-label" for="cardtableCheck"></label>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          </th>&ndash;&gt;-->
+<!--          <th scope="col">Nombre</th>-->
+<!--          <th scope="col">Código Tarjeta</th>-->
+<!--          <th scope="col">Fecha Expiración</th>-->
+<!--          <th style="width: 1%" scope="col">Acciones</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr v-for="tarjeta in tarjetas" :key="tarjeta.id">-->
+<!--&lt;!&ndash;          <td>&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="form-check">&ndash;&gt;-->
+<!--&lt;!&ndash;              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">&ndash;&gt;-->
+<!--&lt;!&ndash;              <label class="form-check-label" for="cardtableCheck01"></label>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          </td>&ndash;&gt;-->
+<!--          <td>{{ tarjeta.nombre }}</td>-->
+<!--          <td>{{ tarjeta.codigo }}</td>-->
+<!--          <td>{{ tarjeta.fechaExpiracion }}</td>-->
 
-          <td>
-            <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
-              <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">
-                <i class="mdi mdi-pencil"></i>
-              </router-link>
-            </BButton>
-            <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
-              <i class="mdi mdi-delete"></i>
-            </BButton>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+<!--          <td>-->
+<!--            <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
+<!--              <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">-->
+<!--                <i class="mdi mdi-pencil"></i>-->
+<!--              </router-link>-->
+<!--            </BButton>-->
+<!--            <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
+<!--              <i class="mdi mdi-delete"></i>-->
+<!--            </BButton>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </div>-->
+    <BCard no-body class="card-body">
+      <BCardBody>
+        <div class="table-responsive table-card">
+          <table class="table align-middle table-nowrap" id="customerTable">
+            <thead class="table-light text-muted">
+            <tr>
+              <th class="sort" data-sort="current_value" scope="col" @click="onSort('nombre')">Nombre</th>
+              <th class="sort" data-sort="pairs" scope="col" @click="onSort('codigo')">Código</th>
+              <th class="sort" data-sort="high" scope="col" @click="onSort('fechaExpiracion')">Fecha de expiración</th>
+              <th scope="col" style="width: 1%;">Acciones</th>
+            </tr>
+            </thead>
+            <tbody class="list form-check-all">
+            <tr v-for="dat of filteredPlans" :key="dat.id">
+              <td>{{ dat.nombre }}</td>
+              <td class="pairs">{{ dat.codigo }}</td>
+              <td class="pairs">{{ dat.fechaExpiracion }}</td>
+              <td>
+                <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
+                  <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/`">
+                    <i class="mdi mdi-pencil"></i>
+                  </router-link>
+                </BButton>
+                <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                  <i class="mdi mdi-delete"></i>
+                </BButton>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
+          <div class="pagination-wrap hstack gap-2">
+            <BLink  class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="page--">
+              Previous
+            </BLink >
+            <ul class="pagination listjs-pagination mb-0">
+              <li :class="{
+                  active: pageNumber == page,
+                  disabled: pageNumber == '...',
+                }" v-for="(pageNumber, index) in pages.slice(page - 1, page + 5)" :key="index"
+                  @click="page = pageNumber">
+                <BLink  class="page" href="#">{{ pageNumber }}</BLink >
+              </li>
+            </ul>
+            <BLink  class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="page++">
+              Next
+            </BLink >
+          </div>
+        </div>
+      </BCardBody>
+    </BCard>
   </Layout>
 </template>
 
@@ -85,7 +137,14 @@ export default {
   },
   data() {
     return {
-      tarjetas: [
+      // tarjetas: [
+      //   { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
+      //   { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
+      //   { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
+      //   { id: 4, nombre: "Tarjeta Oficina 453", codigo: "88554796002145575", fechaExpiracion: "28-10-2024"},
+      // ],
+      searchQuery: '',
+      data: [
         { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
         { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
         { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
@@ -93,8 +152,67 @@ export default {
       ]
     };
   },
+  computed: {
+    filteredPlans() {
+      const query = this.searchQuery.toLowerCase();
+      return this.data.filter(dat => dat.nombre.toLowerCase().includes(query));
+    },
+    displayedPosts() {
+      return this.paginate(this.data);
+    },
+    resultQuery() {
+      if (this.searchQuery) {
+        const search = this.searchQuery.toLowerCase();
+        return this.displayedPosts.filter((data) => {
+          return (
+              data.nombre.toLowerCase().includes(search) ||
+              data.codigo.toLowerCase().includes(search) ||
+              data.fechaExpiracion.toLowerCase().includes(search)
+          );
+        });
+      } else {
+        return this.displayedPosts;
+      }
+    },
+  },
+  watch: {
+    posts() {
+      this.setPages();
+    },
+  },
+  created() {
+    this.setPages();
+  },
+  filters: {
+    trimWords(value) {
+      return value.split(" ").splice(0, 20).join(" ") + "...";
+    },
+  },
 
   methods: {
+    setPages() {
+      let numberOfPages = Math.ceil(this.data.length / this.perPage);
+      this.pages = [];
+      for (let index = 1; index <= numberOfPages; index++) {
+        this.pages.push(index);
+      }
+    },
+    paginate(data) {
+      let page = this.page;
+      let perPage = this.perPage;
+      let from = page * perPage - perPage;
+      let to = page * perPage;
+      return data.slice(from, to);
+    },
+    onSort(column) {
+      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
+      const sortedArray = [...this.data];
+      sortedArray.sort((a, b) => {
+        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
+        return this.direction === 'asc' ? res : -res;
+      });
+      this.data = sortedArray;
+    },
     confirm() {
       Swal.fire({
         title: "Estas seguro de eliminar?",

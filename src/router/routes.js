@@ -1345,6 +1345,12 @@ export default [
     meta: { title: "Tarjetas RFID", authRequired: true },
     component: () => import("../views/company/tarjetas-rfid.vue"),
   },
+  {
+    path: "/company/editar-tarjeta-rfid",
+    name: "Editar Tarjeta RFID",
+    meta: { title: "Editar Tarjeta RFID", authRequired: true },
+    component: () => import("../views/company/editar-tarjeta-rfid.vue"),
+  },
 
   {
     path: "/company/crear-tarjeta-rfid",
