@@ -1,11 +1,8 @@
 <script>
-import {
-  required,
-  email,
-  helpers
-} from "@vuelidate/validators";
+import { required, email, sameAs, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 export default {
   setup() {
@@ -13,36 +10,39 @@ export default {
       v$: useVuelidate()
     };
   },
-  components: {},
   data() {
     return {
       user: {
-        username: "",
-        email: "",
+        businessName: "",
+        emailCompany: "",
+        phoneCompany: "",
+        rut: "",
         password: "",
         confirm_password: "",
       },
-      submitted: false,
-      regError: null,
-      tryingToRegister: false,
-      isRegisterError: false,
-      registerSuccess: false,
     };
   },
   validations: {
     user: {
-      username: {
-        required: helpers.withMessage("Username is required", required),
+      businessName: {
+        required: helpers.withMessage("Ingrese un nombre de la compañía", required),
       },
-      email: {
-        required: helpers.withMessage("Email is required", required),
-        email: helpers.withMessage("Please enter valid email", email),
+      emailCompany: {
+        required: helpers.withMessage("Ingrese un email de la compañía", required),
+        email: helpers.withMessage("Ingrese un email válido", email),
+      },
+      rut: {
+        required: helpers.withMessage("Ingrese un rut de la compañía", required),
+      },
+      phoneCompany: {
+        required: helpers.withMessage("Ingrese un teléfono de la compañía", required),
       },
       password: {
-        required: helpers.withMessage("Password is required", required),
+        required: helpers.withMessage("Ingrese contraseña", required),
       },
       confirm_password: {
-        required: helpers.withMessage("Confirm Password is required", required),
+        required: helpers.withMessage("Ingrese contraseña", required),
+        sameAsPassword: helpers.withMessage("Las contraseñas no coinciden", sameAs('password')),
       },
     },
   },
@@ -52,29 +52,50 @@ export default {
     },
   },
   methods: {
+    async submitForm() {
+      this.v$.$touch();
+      if (this.v$.$invalid) {
+        return;
+      }
 
+      try {
+        const response = await axios.post('http://localhost:8080/auth/registerCompany', this.user);
+        if (response.data.status === 'errors') {
+          this.authError = response.data.data;
+          return;
+        } else {
+          Swal.fire("Cuenta compañía creada!", "", "success");
+          this.$router.push({ path: '/login' });
+        }
+        console.log(response.data.status)
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error during registration:', error);
+        this.authError = 'Registro fallido. Por favor revise sus datos e intente de nuevo.';
+      }
+    }
 
     // Try to register the user in with the email, username
     // and password they provided.
-    async tryToRegisterIn() {
-      this.submitted = true;
-      // stop here if form is invalid
-      this.v$.$touch();
-      const result = await axios.post('https://api-node.themesbrand.website/auth/signup', {
-        email: this.user.email,
-        password: this.user.password,
-        confirm_password: this.user.confirm_password
-      });
-      if (result.data.status == 'errors') {
-        this.isRegisterError = true;
-        return this.regError = result.data.message;
-      }
-      localStorage.setItem('jwt', result.data.token);
-      this.$router.push({
-        path: '/'
-      });
-
-    },
+    // async tryToRegisterIn() {
+    //   this.submitted = true;
+    //   // stop here if form is invalid
+    //   this.v$.$touch();
+    //   const result = await axios.post('https://api-node.themesbrand.website/auth/signup', {
+    //     email: this.user.email,
+    //     password: this.user.password,
+    //     confirm_password: this.user.confirm_password
+    //   });
+    //   if (result.data.status == 'errors') {
+    //     this.isRegisterError = true;
+    //     return this.regError = result.data.message;
+    //   }
+    //   // localStorage.setItem('jwt', result.data.token);
+    //   // this.$router.push({
+    //   //   path: '/'
+    //   // });
+    //
+    // },
   },
 };
 </script>
@@ -118,99 +139,42 @@ export default {
                   <p class="text-muted">Crea tu cuenta en EvolGreen</p>
                 </div>
                 <div class="p-2 mt-4">
-                  <form class="needs-validation" @submit.prevent="tryToRegisterIn">
-                    <BAlert v-model="registerSuccess" class="mt-3" variant="success" dismissible>Registration
-                      successfull.</BAlert>
-
-                    <BAlert v-model="isRegisterError" class="mt-3" variant="danger" dismissible>{{ regError }}
-                    </BAlert>
-
-                    <div v-if="notification.message" :class="'alert ' + notification.type">
-                      {{ notification.message }}
-                    </div>
-                    <div class="mb-3">
-                      <label for="username" class="form-label">Nombre Compañía <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" v-model="user.username" :class="{
-                        'is-invalid': submitted && v$.user.username.$error,
-                      }" id="username" placeholder="Ingrese nombre">
-                      <div v-if="submitted && v$.user.username.$error" class="invalid-feedback">
-                        <span v-if="v$.user.username.required.$message">{{
-                            v$.user.username.required.$message
-                          }}</span>
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="rut" class="form-label">Rut <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="rut" placeholder="Ingrese Rut">
-                    </div>
-                    <div class="mb-3">
-                      <label for="numeroTelefono" class="form-label">Número Teléfono <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="numeroTelefono" placeholder="Ingrese Teléfono">
-                    </div>
-                    <div class="mb-3">
-                      <label for="useremail" class="form-label">Email <span class="text-danger">*</span></label>
-                      <input type="email" class="form-control" v-model="user.email" id="useremail" :class="{
-                        'is-invalid': submitted && v$.user.email.$error,
-                      }" placeholder="Ingrese email">
-                      <div v-for="(item, index) in v$.user.email.$errors" :key="index" class="invalid-feedback">
-                        <span v-if="item.$message">{{ item.$message }}</span>
-                      </div>
-                    </div>
-
-                    <div class="mb-2">
-                      <label for="userpassword" class="form-label">Contraseña <span class="text-danger">*</span></label>
-                      <input type="password" class="form-control" v-model="user.password" :class="{
-                        'is-invalid': submitted && v$.user.password.$error,
-                      }" id="userpassword" placeholder="Ingrese contraseña">
-                      <div v-if="submitted && v$.user.password.$error" class="invalid-feedback">
-                        <span v-if="v$.user.password.required.$message">{{
-                            v$.user.password.required.$message
-                        }}</span>
-                      </div>
-                    </div>
-
-                    <div class="mb-2">
-                      <label for="userpassword" class="form-label">Confirmar Contraseña <span
-                          class="text-danger">*</span></label>
-                      <input type="password" class="form-control" v-model="user.confirm_password" :class="{
-                        'is-invalid': submitted && v$.user.password.$error,
-                      }" id="userconfirmpassword" placeholder="Ingrese contraseña">
-                      <div v-if="submitted && v$.user.confirm_password.$error" class="invalid-feedback">
-                        <span v-if="v$.user.password.required.$message">{{
-                            v$.user.confirm_password.required.$message
-                        }}</span>
-                      </div>
-                    </div>
-
-                    <div class="mb-4">
-                      <p class="mb-0 fs-12 text-muted fst-italic">Al registrarse en EvolGreen acepta <BLink
-                          href="#" class="text-primary text-decoration-underline fst-normal fw-medium">Terminos de uso
-                        </BLink>
-                      </p>
-                    </div>
-
-                    <div class="mt-4">
-                      <BButton variant="success" class="w-100" type="submit">Registrarse</BButton>
-                    </div>
-
-<!--                    <div class="mt-4 text-center">-->
-<!--                      <div class="signin-other-title">-->
-<!--                        <h5 class="fs-13 mb-4 title text-muted">Create account with</h5>-->
-<!--                      </div>-->
-
-<!--                      <div>-->
-<!--                        <BButton type="button" variant="primary" class="btn-icon"><i-->
-<!--                            class="ri-facebook-fill fs-16"></i></BButton>-->
-<!--                        <BButton type="button" variant="danger" class="btn-icon ms-1"><i-->
-<!--                            class="ri-google-fill fs-16"></i></BButton>-->
-<!--                        <BButton type="button" variant="dark" class="btn-icon ms-1"><i-->
-<!--                            class="ri-github-fill fs-16"></i></BButton>-->
-<!--                        <BButton type="button" variant="info" class="btn-icon ms-1"><i-->
-<!--                            class="ri-twitter-fill fs-16"></i></BButton>-->
-<!--                      </div>-->
-<!--                    </div>-->
-                  </form>
-
+                  <div class="mb-3" :class="{ 'has-error': v$.user.businessName.$invalid && v$.user.businessName.$dirty }">
+                    <label for="businessName" class="form-label">Nombre Compañía <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.businessName" id="businessName" placeholder="Ingrese nombre" @blur="v$.user.businessName.$touch()">
+                    <span v-if="v$.user.businessName.$invalid && v$.user.businessName.$dirty" class="text-danger">{{ v$.user.businessName.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.rut.$invalid && v$.user.rut.$dirty }">
+                    <label for="rut" class="form-label">Rut <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Rut" @blur="v$.user.rut.$touch()">
+                    <span v-if="v$.user.rut.$invalid && v$.user.rut.$dirty" class="text-danger">{{ v$.user.rut.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.phoneCompany.$invalid && v$.user.phoneCompany.$dirty }">
+                    <label for="phoneCompany" class="form-label">Número Teléfono <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" v-model="user.phoneCompany" id="phoneCompany" placeholder="Ingrese Teléfono" @blur="v$.user.phoneCompany.$touch()">
+                    <span v-if="v$.user.phoneCompany.$invalid && v$.user.phoneCompany.$dirty" class="text-danger">{{ v$.user.phoneCompany.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.emailCompany.$invalid && v$.user.emailCompany.$dirty }">
+                    <label for="emailCompany" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" v-model="user.emailCompany" id="emailCompany" placeholder="Ingrese email" @blur="v$.user.emailCompany.$touch()">
+                    <span v-if="v$.user.emailCompany.$invalid && v$.user.emailCompany.$dirty" class="text-danger">{{ v$.user.emailCompany.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-2" :class="{ 'has-error': v$.user.password.$invalid && v$.user.password.$dirty }">
+                    <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control" v-model="user.password" id="password" placeholder="Ingrese contraseña" @blur="v$.user.password.$touch()">
+                    <span v-if="v$.user.password.$invalid && v$.user.password.$dirty" class="text-danger">{{ v$.user.password.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-2" :class="{ 'has-error': v$.user.confirm_password.$invalid && v$.user.confirm_password.$dirty }">
+                    <label for="confirm_password" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control" v-model="user.confirm_password" id="confirm_password" placeholder="Ingrese contraseña" @blur="v$.user.confirm_password.$touch()">
+                    <span v-if="v$.user.confirm_password.$invalid && v$.user.confirm_password.$dirty" class="text-danger">{{ v$.user.confirm_password.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-4">
+                    <p class="mb-0 fs-12 text-muted fst-italic">Al registrarse en EvolGreen acepta <BLink href="#" class="text-primary text-decoration-underline fst-normal fw-medium">Terminos de uso</BLink></p>
+                  </div>
+                  <div class="mt-4">
+                    <BButton variant="success" class="w-100" type="submit" @click="submitForm">Registrarse</BButton>
+                  </div>
                 </div>
               </BCardBody>
             </BCard>
@@ -239,3 +203,11 @@ export default {
 <!--    </footer>-->
   </div>
 </template>
+<style scoped>
+.has-error input {
+  border-color: red;
+}
+.text-danger {
+  color: red;
+}
+</style>

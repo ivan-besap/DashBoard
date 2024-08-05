@@ -44,44 +44,41 @@ export default {
     ...authFackMethods,
     ...notificationMethods,
 
-    async signinapi() {
-  this.processing = true;
-  try {
-    const result = await axios.post('http://localhost:8080/auth/login', {
-      username: this.email,
-      password: this.password
-    });
+  async signinapi() {
+    this.processing = true;
+    try {
+      const result = await axios.post('http://localhost:8080/auth/login', {
+        username: this.email,
+        password: this.password
+      });
 
-    if (result.data.status === 'errors') {
-      this.authError = result.data.data;
-      return;
+      if (result.data.status === 'errors') {
+        this.authError = result.data.data;
+        return;
+      }
+
+      // Suponiendo que el token se encuentra en result.data.token
+      localStorage.setItem('jwt', result.data.token);
+      localStorage.setItem('role', result.data.role);
+      localStorage.setItem('isActive', result.data.isActive);
+      let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
+
+      let role = result.data.role;
+  // if (role === 'CLIENT') {
+  //   this.$router.push({ path: '/client/dashboard-client' });
+  // }
+      if (role === 'COMPANY' && isActive) {
+        this.$router.push({ path: '/company/dashboard-company' });
+      } else if (role === 'COMPANY' && !isActive) {
+        this.$router.push({ path: '/company/profile-company' });
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      this.authError = 'Inicio de sesión fallido. Porfavor revise sus datos e intente denuevo.';
+    } finally {
+      this.processing = false;
     }
-   
-    // Suponiendo que el token se encuentra en result.data.token
-    localStorage.setItem('jwt', result.data.token);
-    localStorage.setItem('role', result.data.role);
-    localStorage.setItem('isActive', result.data.isActive);
-    let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
-
-    let role = result.data.role;
-    console.log(role);
-    console.log(isActive);
-
-// if (role === 'CLIENT') {
-//   this.$router.push({ path: '/client/dashboard-client' });
-// }
-    if (role === 'COMPANY' && isActive) {
-      this.$router.push({ path: '/company/dashboard-company' });
-    } else if (role === 'COMPANY' && !isActive) {
-      this.$router.push({ path: '/company/profile-company' });
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-    this.authError = 'Inicio de sesión fallido. Porfavor revise sus datos e intente denuevo.';
-  } finally {
-    this.processing = false;
-  }
-},
+  },
 
 
     // Try to log the user in with the username
