@@ -11,11 +11,10 @@ export default [
         // If the user is already logged in
         if (store.getters["auth/loggedIn"]) {
           // Redirect to the home page instead
-          next({ name: "default" });
-          next();
+          return next({ name: "default" });
         } else {
           // Continue to the login page
-          next();
+          return next();
         }
       },
     },
@@ -30,10 +29,10 @@ export default [
         // If the user is already logged in
         if (store.getters["auth/loggedIn"]) {
           // Redirect to the home page instead
-          next({ name: "default" });
+          return next({ name: "default" });
         } else {
-          // Continue to the login page
-          next();
+          // Continue to the register page
+          return next();
         }
       },
     },
@@ -48,10 +47,10 @@ export default [
         // If the user is already logged in
         if (store.getters["auth/loggedIn"]) {
           // Redirect to the home page instead
-          next({ name: "default" });
+          return next({ name: "default" });
         } else {
-          // Continue to the login page
-          next();
+          // Continue to the forgot password page
+          return next();
         }
       },
     },
@@ -118,14 +117,15 @@ export default [
     path: "/logout",
     name: "logout",
     meta: {
-      title: "Logout", authRequired: true,
+      title: "Logout",
+      authRequired: true,
       beforeResolve(routeTo, routeFrom, next) {
         localStorage.clear();
         sessionStorage.clear();
         next();
       },
     },
-    component: () => import("../views/auth/logout/basic")
+    component: () => import("../views/auth/logout/basic"),
   },
   {
     path: "/main-calendar",
@@ -1413,10 +1413,17 @@ export default [
     component: () => import("../views/company/crear-tarifas"),
   },
   {
+    path: "/company/cargas",
+    name: "Cargas",
+    meta: { title: "Cargas", authRequired: true },
+    component: () => import("../views/company/cargas.vue"),
+  },
+
+  {
     path: "/company/registro-cargas",
-    name: "Registro Cargas",
-    meta: { title: "Registro Cargas", authRequired: true },
-    component: () => import("../views/company/registro-cargas"),
+    name: "Registro de Cargas",
+    meta: { title: "Registro de Cargas", authRequired: true },
+    component: () => import("../views/company/registro-cargas.vue"),
   },
 
   {

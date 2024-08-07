@@ -41,7 +41,7 @@
                     
                     <BCol lg="12">
                       <div class="text-end">
-                        <BButton style="background-color: #dfe4ea" type="submit" variant="light" @click="successmsg">
+                        <BButton style="" type="submit" variant="light" @click="successmsg">
                           Actualizar Estación
                         </BButton>
                       </div>

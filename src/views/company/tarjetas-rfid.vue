@@ -9,7 +9,7 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" background-color: white"  variant="light" class="waves-effect waves-light">
+          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-tarjeta-rfid">
               Crear Tarjeta RFID
             </router-link>
@@ -84,17 +84,17 @@
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="dat of filteredPlans" :key="dat.id">
+            <tr v-for="(dat, index) in resultQuery" :key="index">
               <td>{{ dat.nombre }}</td>
               <td class="pairs">{{ dat.codigo }}</td>
               <td class="pairs">{{ dat.fechaExpiracion }}</td>
               <td>
-                <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
+                <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
                   <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -104,21 +104,21 @@
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
-            <BLink  class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="page--">
-              Previous
-            </BLink >
+            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+              Anterior
+            </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-                  active: pageNumber == page,
-                  disabled: pageNumber == '...',
-                }" v-for="(pageNumber, index) in pages.slice(page - 1, page + 5)" :key="index"
-                  @click="page = pageNumber">
-                <BLink  class="page" href="#">{{ pageNumber }}</BLink >
+              active: pageNumber == page,
+              disabled: pageNumber == '...',
+            }" v-for="pageNumber in displayedPages" :key="pageNumber"
+                  @click="goToPage(pageNumber)">
+                <BLink class="page" href="#">{{ pageNumber }}</BLink>
               </li>
             </ul>
-            <BLink  class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="page++">
-              Next
-            </BLink >
+            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+              Siguiente
+            </BLink>
           </div>
         </div>
       </BCardBody>
@@ -149,10 +149,27 @@ export default {
         { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
         { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
         { id: 4, nombre: "Tarjeta Oficina 453", codigo: "88554796002145575", fechaExpiracion: "28-10-2024"},
-      ]
+      ],
+      page: 1,
+      perPage: 5,
+      pages: [],
     };
   },
   computed: {
+    displayedPages() {
+      let startPage = Math.max(this.page - 1, 1);
+      let endPage = Math.min(startPage + 2, this.pages.length);
+
+      if (endPage - startPage < 2) {
+        startPage = Math.max(endPage - 2, 1);
+      }
+
+      let pages = [];
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
+    },
     filteredPlans() {
       const query = this.searchQuery.toLowerCase();
       return this.data.filter(dat => dat.nombre.toLowerCase().includes(query));
@@ -203,6 +220,21 @@ export default {
       let from = page * perPage - perPage;
       let to = page * perPage;
       return data.slice(from, to);
+    },
+    goToPage(pageNumber) {
+      if (pageNumber !== '...') {
+        this.page = pageNumber;
+      }
+    },
+    previousPage() {
+      if (this.page > 1) {
+        this.page--;
+      }
+    },
+    nextPage() {
+      if (this.page < this.pages.length) {
+        this.page++;
+      }
     },
     onSort(column) {
       this.direction = this.direction === 'asc' ? 'desc' : 'asc';

@@ -39,7 +39,7 @@
                   
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton style="background-color: #dfe4ea" type="submit" variant="light">
+                      <BButton style="" type="submit" variant="light">
                         Crear Estación
                       </BButton>
                     </div>

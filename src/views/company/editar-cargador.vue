@@ -109,7 +109,7 @@
                     </BCol>
                     <BCol lg="12">
                       <div class="text-end">
-                        <BButton type="submit" style="background-color: #dfe4ea" variant="light" @click="successmsg">
+                        <BButton type="submit" style="" variant="light" @click="successmsg">
                           Actualizar Cargador
                         </BButton>
                       </div>

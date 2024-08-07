@@ -145,7 +145,7 @@ export default {
                     <span v-if="v$.user.businessName.$invalid && v$.user.businessName.$dirty" class="text-danger">{{ v$.user.businessName.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-3" :class="{ 'has-error': v$.user.rut.$invalid && v$.user.rut.$dirty }">
-                    <label for="rut" class="form-label">Rut <span class="text-danger">*</span></label>
+                    <label for="rut" class="form-label">Número de registro único <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Rut" @blur="v$.user.rut.$touch()">
                     <span v-if="v$.user.rut.$invalid && v$.user.rut.$dirty" class="text-danger">{{ v$.user.rut.$errors[0].$message }}</span>
                   </div>

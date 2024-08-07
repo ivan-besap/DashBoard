@@ -67,7 +67,7 @@
               <p><strong>Costo:</strong> {{ selectedPlan.value }}</p>
             </div>
             <div class="ms-auto me-3">
-              <BButton style="background-color: #dfe4ea;" variant="light" @click="assignPlan">Asignar Tarifa</BButton>
+              <BButton style="" variant="light" @click="assignPlan">Asignar Tarifa</BButton>
             </div>
           </div>
         </BCardBody>

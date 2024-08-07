@@ -4,7 +4,7 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="margin-bottom: 45px; background-color: white"  variant="light" class="waves-effect waves-light">
+          <BButton style="margin-bottom: 45px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-rol">
               Crear Rol
             </router-link>
@@ -39,7 +39,7 @@
         </thead>
         <tbody>
           <tr >
-            <td><a style="color: #292dc1" href="#" class="fw-semibold">Administrador</a></td>
+            <td><a style="color: #0c0c0c" href="#" class="fw-semibold">Administrador</a></td>
             <td>
               <div class="permisos-wrapper">
                 <span class="badge border border-dark text-body tama-dark">Cargadores - Crear</span>
@@ -76,12 +76,12 @@
               </div>
             </td>
             <td>
-              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
+              <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
                 <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">
                   <i class="mdi mdi-pencil"></i>
                 </router-link>
               </BButton>
-              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+              <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                 <i class="mdi mdi-delete"></i>
               </BButton>
             </td>
@@ -98,18 +98,18 @@
               </div>
             </td>
             <td>
-              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
+              <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
                 <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">
                   <i class="mdi mdi-pencil"></i>
                 </router-link>
               </BButton>
-              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+              <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                 <i class="mdi mdi-delete"></i>
               </BButton>
             </td>
           </tr>
           <tr>
-            <td><a style="color: #292dc1" href="#" class="fw-semibold">Reporte</a></td>
+            <td><a style="color: #0c0c0c" href="#" class="fw-semibold">Reporte</a></td>
             <td>
               <div class="permisos-wrapper">
                 <span class="badge border border-dark text-body tama-dark">Cargadores por usuario</span>
@@ -126,12 +126,12 @@
               </div>
             </td>
             <td>
-              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">
+              <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
                 <router-link class="nav-link menu-link" :to="`/company/editar-roles/`">
                   <i class="mdi mdi-pencil"></i>
                 </router-link>
               </BButton>
-              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+              <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
                 <i class="mdi mdi-delete"></i>
               </BButton>
             </td>

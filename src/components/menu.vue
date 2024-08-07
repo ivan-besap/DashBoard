@@ -316,8 +316,13 @@ export default {
           <div class="collapse menu-dropdown" id="sidebarlanding">
             <ul class="nav nav-sm flex-column">
               <li class="nav-item">
-                <router-link class="nav-link menu-link"  target="" to="/company/registro-cargas">
+                <router-link class="nav-link menu-link"  target="" to="/company/cargas">
                   <span data-key="t-landing">Cargas</span>
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link menu-link"  target="" to="/company/registro-cargas">
+                  <span data-key="t-landing">Registro de Cargas</span>
                 </router-link>
               </li>
               <li class="nav-item">
