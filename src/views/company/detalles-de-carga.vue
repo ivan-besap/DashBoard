@@ -3,37 +3,33 @@
     <PageHeader title="Reportes de Carga" pageTitle="Compañía" />
 
     <div style="margin-top:10px;" class="table-responsive table-card">
-      <div class="mb-3" style="text-align: right;">
-        <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
-        <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
+      <div class="d-flex justify-content-between mb-3 align-items-center">
+        <div class="d-flex align-items-center">
+          <!-- Input de búsqueda -->
+          <BFormInput
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar"
+              style="margin-right: 15px;"
+          />
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center me-3">
+            <flat-pickr
+                v-model="dateRange"
+                class="form-control"
+                style="width: auto;"
+                placeholder="Seleccionar Fecha"
+            ></flat-pickr>
+            <BButton style="padding: 5px 10px; margin-left: 10px; border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" @click="clearDateRange">
+              <i class="mdi mdi-delete"></i>
+            </BButton>
+          </div>
+          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
+          <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
+        </div>
       </div>
-
-      <!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-      <!--        <thead class="table-light">-->
-      <!--          <tr>-->
-      <!--            <th scope="col">Inicio de Carga</th>-->
-      <!--            <th scope="col">Usuario</th>-->
-      <!--            <th scope="col">Cargador</th>-->
-      <!--            <th scope="col">ID Cargador</th>-->
-      <!--            <th scope="col">Conector</th>-->
-      <!--            <th scope="col">Fin Carga</th>-->
-      <!--            <th scope="col">Energía</th>-->
-      <!--            <th scope="col">Tiempo</th>-->
-      <!--          </tr>-->
-      <!--        </thead>-->
-      <!--        <tbody>-->
-      <!--          <tr v-for="(item, index) in filteredData" :key="index">-->
-      <!--            <td>{{ item.inicioCarga }}</td>-->
-      <!--            <td>{{ item.usuario }}</td>-->
-      <!--            <td>{{ item.cargador }}</td>-->
-      <!--            <td>{{ item.idCargador }}</td>-->
-      <!--            <td>{{ item.conector }}</td>-->
-      <!--            <td>{{ item.finCarga }}</td>-->
-      <!--            <td>{{ item.energia }}</td>-->
-      <!--            <td>{{ item.tiempo }}</td>-->
-      <!--          </tr>-->
-      <!--        </tbody>-->
-      <!--      </table>-->
       <BCard no-body class="card-body">
         <BCardBody>
           <div class="table-responsive table-card">
@@ -132,14 +128,17 @@ import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import * as XLSX from 'xlsx';
 import Swal from "sweetalert2";
+import flatPickr from "vue-flatpickr-component";
 
 export default {
   components: {
+    flatPickr,
     Layout,
     PageHeader,
   },
   data() {
     return {
+      dateRange: null,
       modalContent: '',
       isModalVisible: false,
       searchQuery: null,
@@ -536,6 +535,9 @@ export default {
     },
   },
   methods: {
+    clearDateRange() {
+      this.dateRange = null;
+    },
     updateRoute() {
       this.$router.push({ query: { page: this.page } });
     },
