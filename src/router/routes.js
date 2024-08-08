@@ -1579,5 +1579,45 @@ export default [
     meta: { title: " Crear Conector", authRequired: true },
     component: () => import("../views/company/crear-conector"),
   }
+
+  ,
+
+  {
+    path: "/company/alertas-correos",
+    name: "Alertas Correos",
+    meta: { title: " Alertas Correos", authRequired: true },
+    component: () => import("../views/company/alertas-correos"),
+  }
+
+  ,
+
+  {
+    path: "/company/editar-flota",
+    name: "Editar Flota",
+    meta: { title: " Editar Flota", authRequired: true },
+    component: () => import("../views/company/editar-flota"),
+  }
+
+  ,
+
+  {
+    path: "/company/mantenimiento-cargador",
+    name: "Mantenimiento Cargador",
+    meta: { title: "Mantenimiento Cargador", authRequired: true },
+    component: () => import("../views/company/mantenimiento-cargador"),
+  }
+
+  ,
+
+  {
+    path: "/company/asignar-mantenimiento",
+    name: "Asignar Mantenimiento Cargador",
+    meta: { title: " Asignar Mantenimiento Cargador", authRequired: true },
+    component: () => import("../views/company/asignar-mantenimiento"),
+  }
+
+
+
+
   
 ];

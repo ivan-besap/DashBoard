@@ -5,6 +5,17 @@
     <BRow>
       <BCol xl="6">
         <div class="table-responsive" style="background-color: white">
+          <div class="search-box">
+            <input
+                type="text"
+                class="form-control bg-light border-light"
+                autocomplete="off"
+                id="searchStations"
+                placeholder="Buscar estación..."
+                v-model="stationSearchQuery"
+            />
+            <i class="ri-search-line search-icon"></i>
+          </div>
           <table class="table table-hover align-middle table-nowrap mb-0">
             <thead class="table-light">
               <tr>
@@ -14,20 +25,22 @@
                     <label class="form-check-label" for="cardtableCheck"></label>
                   </div>
                 </th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Ubicación</th>
+                <th scope="col">Estación</th>
+                <th scope="col">Cargador</th>
+                <th scope="col">Conector</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="station in chargingStations" :key="station.id">
+              <tr v-for="station in filteredStations" :key="station.id">
                 <td>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">
-                    <label class="form-check-label" for="cardtableCheck01"></label>
+                    <input class="form-check-input" type="checkbox" :id="'check' + station.id">
+                    <label class="form-check-label" :for="'check' + station.id"></label>
                   </div>
                 </td>
                 <td>{{ station.name }}</td>
-                <td>{{ station.location }}</td>
+                <td>{{ station.charger }}</td>
+                <td>{{ station.connector }}</td>
               </tr>
             </tbody>
           </table>
@@ -91,17 +104,17 @@ export default {
   data() {
     return {
       searchQuery: '',
+      stationSearchQuery: '',
       selectedPlan: null,
-      exManualSelected: null,
       chargingStations: [
-        { id: 1, name: 'Estación 1', location: 'Santiago' },
-        { id: 2, name: 'Estación 2', location: 'Lima' },
-        { id: 3, name: 'Estación 3', location: 'Línea 1 T1' },
-        { id: 4, name: 'Estación 4', location: 'Línea 1 T2' },
-        { id: 5, name: 'Estación 5', location: 'Santiago' },
-        { id: 6, name: 'Estación 6', location: 'Lima' },
-        { id: 7, name: 'Estación 7', location: 'Línea 1 T1' },
-        { id: 8, name: 'Estación 8', location: 'Línea 1 T2' },
+        { id: 1, name: 'Oficina Santiago', charger: 'STG-EMU-00009', connector: 'CCS Combo 2' },
+        { id: 2, name: 'Lima', charger: 'STG-EMU-00007', connector: 'IEC Tipo 2' },
+        { id: 3, name: 'Santiago ', charger: 'STG-EMU-00008', connector: 'Tipo 1 - J1772' },
+        { id: 4, name: 'Las Condes ', charger: 'STG-EMU-00010', connector: 'CCS Combo 2' },
+        { id: 5, name: 'San Isidro', charger: 'STG-EMU-00011', connector: 'CCS Combo 2' },
+        { id: 6, name: 'Miraflores', charger: 'STG-EMU-00012', connector: 'CCS Combo 2' },
+        { id: 7, name: 'Asia', charger: 'Cargador G', connector: 'CCS Combo 2' },
+        { id: 8, name: 'Metropolitano', charger: 'Cargador H', connector: 'CCS Combo 2' },
       ],
       plans: [
         { id: 1, name: 'Tarifa 1', period: '01/01 - 01/31', weekDays: ['Lunes', 'Martes'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 22, location: 'Ubicación A', kwh: 100, minutes: 60, discount: 10, value: '$200' },
@@ -117,45 +130,47 @@ export default {
       ],
     };
   },
-  computed:{
-    displayedPosts() {
-      return this.plans;
-    },
+
+  computed: {
     resultQuery() {
-      if (this.searchQuery) {
-        const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
-          return (
-              data.name.toLowerCase().includes(search) ||
-              data.value.toLowerCase().includes(search)
-          );
-        });
-      } else {
-        return this.displayedPosts;
-      }
+      return this.plans.filter((plan) => {
+        return plan.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      });
+    },
+    filteredStations() {
+      return this.chargingStations.filter(station =>
+        station.name.toLowerCase().includes(this.stationSearchQuery.toLowerCase())
+      );
     },
   },
 
-  methods:
-  {
-selectPlan(plan) {
-this.selectedPlan = plan;
-this.searchQuery = ''; // Clear the search query after selection
-},
-assignPlan() {
-// Aquí puedes agregar la lógica para asignar el plan seleccionado
-// alert(Plan ${this.selectedPlan.name} asignado con éxito!);
-this.selectedPlan = null; // Deselect plan after assigning
-},
-deselectPlan() {
-this.selectedPlan = null;
-}
-}
+  methods: {
+    selectPlan(plan) {
+      this.selectedPlan = plan;
+    },
+    assignPlan() {
+      if (this.selectedPlan) {
+        // Aquí puedes agregar la lógica para asignar la tarifa seleccionada a la estación de carga seleccionada
+        console.log('Tarifa asignada:', this.selectedPlan);
+      }
+    },
+  },
 };
 </script>
 
-<style>
-.flex-shrink-0 {
-  display: none;
+<style scoped>
+.search-box {
+  position: relative;
+}
+
+.search-box .form-control {
+  padding-left: 40px;
+}
+
+.search-box .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
 }
 </style>

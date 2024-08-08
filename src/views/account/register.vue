@@ -59,7 +59,7 @@ export default {
       }
 
       try {
-        const response = await axios.post('http://localhost:8080/auth/registerCompany', this.user);
+        const response = await axios.post('http://52.14.116.236:8088/auth/registerCompany', this.user);
         if (response.data.status === 'errors') {
           this.authError = response.data.data;
           return;
@@ -135,7 +135,9 @@ export default {
 
               <BCardBody class="p-4">
                 <div class="text-center mt-2">
-                  <h5 class="text-primary">Crear Nueva Cuenta</h5>
+                  <img src="@/assets/images/evol.png" width="270px" alt="">
+              
+                 
                   <p class="text-muted">Crea tu cuenta en EvolGreen</p>
                 </div>
                 <div class="p-2 mt-4">

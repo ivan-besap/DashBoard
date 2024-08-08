@@ -7,6 +7,7 @@ import axios from 'axios';
 import Layout from "@/layouts/main.vue";
 import Swal from "sweetalert2";
 
+
 export default {
   data() {
     return {
@@ -32,7 +33,7 @@ export default {
     },
     async getUser() {
       try {
-        const response = await axios.get('http://localhost:8080/api/companies/current');
+        const response = await axios.get('http://52.14.116.236:8088/api/companies/current');
          this.company = response.data;
          // console.log("Comañia" + JSON.stringify( this.company));
       
@@ -55,7 +56,7 @@ export default {
     },
     async cambiarActivoUsuario(activeStatus) {
       try {
-        const response = await axios.put('http://localhost:8080/api/companies/change-active-status', null, {
+        const response = await axios.put('http://52.14.116.236:8088/api/companies/change-active-status', null, {
           params: {
             activeStatus: activeStatus
           }
@@ -101,6 +102,14 @@ export default {
   }
 };
 </script>
+<style>
+.navbar-menu{
+  display: none !important;
+}
+.main-content {
+    margin: 0;
+}
+</style>
 
 <template>
  

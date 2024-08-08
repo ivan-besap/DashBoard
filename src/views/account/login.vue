@@ -178,8 +178,8 @@ export default {
             <BCard no-body class="mt-4">
               <BCardBody class="p-4">
                 <div class="text-center mt-2">
-                  <h5 class="text-primary">Bienvenido !</h5>
-                  <p class="text-muted">Inicia Sesión en EvolGreen.</p>
+                  <img src="@/assets/images/evol.png" width="270px" alt="">
+              
                 </div>
                 <div class="p-2 mt-4">
                   <b-alert v-model="authError" variant="danger" class="mt-3" dismissible>{{ authError }}</b-alert>

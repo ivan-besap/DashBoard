@@ -294,13 +294,7 @@ export default {
 <!--            <span data-key="t-dashboards"> Planes</span>-->
 <!--          </router-link>-->
 <!--        </li>-->
-        <li class="nav-item">
-          <router-link class="nav-link menu-link"  target="" to="/company/empleados-company">
-            <i class="ri-group-fill"></i>
-            <span data-key="t-dashboards"> Usuarios Empresa</span>
-          </router-link>
-
-        </li>
+       
         <li class="nav-item">
           <router-link class="nav-link menu-link"  target="" to="/company/flotas">
             <i class="mdi mdi-car-connected"></i>
@@ -380,8 +374,23 @@ export default {
           <div class="collapse menu-dropdown" id="sidebarMultilevel">
             <ul class="nav nav-sm flex-column">
               <li class="nav-item">
+          <router-link class="nav-link menu-link"  target="" to="/company/empleados-company">
+           
+            <span data-key="t-dashboards"> Usuarios Empresa</span>
+          </router-link>
+
+        </li>
+              
+              
+              <li class="nav-item">
                 <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
                   Roles
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/company/tarjetas-rfid" data-key="t-level-1.1">
+                  Tarjetas RFID
                 </a>
               </li>
               <li class="nav-item">
@@ -402,10 +411,12 @@ export default {
                   Conectores
                 </a>
               </li>
+             
+
               <li class="nav-item">
-                <a class="nav-link" href="/company/tarjetas-rfid" data-key="t-level-1.1">
-                  Tarjetas RFID
-                </a>
+                <router-link class="nav-link" target="" to="/company/alertas-correos">
+                  <span data-key="t-landing">Configuracion de Correos Alertas</span>
+                </router-link>
               </li>
           </ul>
         </div>

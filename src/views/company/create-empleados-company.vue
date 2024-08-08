@@ -74,22 +74,7 @@
                       />
                     </div>
                   </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="plan" class="form-label">Plan</label>
-                      <BFormSelect 
-                        v-model="employee.plan" 
-                        class="form-control" 
-                        id="plan" 
-                        required
-                      >
-                        <option value="">Seleccionar un plan</option>
-                        <option value="PLAN A BÁSICO">PLAN A BÁSICO</option>
-                        <option value="PLAN B INTERMEDIO">PLAN B INTERMEDIO</option>
-                        <option value="PLAN C AVANZADO">PLAN C AVANZADO</option>
-                      </BFormSelect>
-                    </div>
-                  </BCol>
+                
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="role" class="form-label">Rol</label>
@@ -99,7 +84,7 @@
                         id="role" 
                         required
                       >
-                        <option value="">Seleccionar un rol</option>
+                        <option value="">Por defecto</option>
                         <option value="Administrador">Administrador</option>
                         <option value="Electrobombero">Electrobombero</option>
                         <option value="Gerente de Marketing">Gerente de Marketing</option>

@@ -10,7 +10,20 @@
               <BForm @submit.prevent="createChargingStation">
                 
                 <BRow>
-
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="valorPlan" class="form-label">Nombre Tarifa</label>
+                      <BFormInput 
+                      
+                        type="text" 
+                        
+                        class="form-control" 
+                        placeholder="Valor Plan" 
+                        id="valorPlan" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
                   <BCol md="6">
                   <div class="mb-3">
                     <label for="StartleaveDate" class="form-label">Fecha Inicial</label>
@@ -54,17 +67,7 @@
                     </div>
                   </div>
                   </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="tipoCargador" class="form-label">Tipo Cargador</label>
-                      <BFormSelect 
-                        v-model="chargingStation.chargerType" 
-                        :options="chargerTypes" 
-                        id="tipoCargador" 
-                        required 
-                      />
-                    </div>
-                  </BCol>
+                 
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="valorPlan" class="form-label">Valor Tarifa</label>
@@ -88,7 +91,7 @@
                     </div>
                   </BCol>
                 </BRow>
-                  Cargdor y Conector
+              
                 
 
                
