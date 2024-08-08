@@ -134,7 +134,6 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import * as XLSX from 'xlsx';
-import Swal from "sweetalert2";
 import flatPickr from "vue-flatpickr-component";
 
 export default {
