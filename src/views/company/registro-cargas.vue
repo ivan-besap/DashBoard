@@ -21,6 +21,7 @@
                 class="form-control"
                 style="width: auto;"
                 placeholder="Seleccionar Fecha"
+                @input="updateSearchQuery"
             ></flat-pickr>
             <BButton style="padding: 5px 10px; margin-left: 10px; border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" @click="clearDateRange">
               <i class="mdi mdi-delete"></i>
@@ -178,8 +179,37 @@ export default {
 
       return this.sortData(filtered);
     },
+    displayedPosts() {
+      return this.paginate(this.data);
+    },
     resultQuery() {
-      return this.paginate(this.filteredData);
+      let filteredData = this.displayedPosts;
+
+      if (this.searchQuery) {
+        const search = this.searchQuery.toLowerCase();
+        filteredData = filteredData.filter((data) => {
+          return (
+              data.estacionDeCarga.toLowerCase().includes(search) ||
+              data.cargador.toLowerCase().includes(search) ||
+              data.conector.toLowerCase().includes(search) ||
+              data.idCargador.toLowerCase().includes(search) ||
+              data.modelo.toLowerCase().includes(search) ||
+              data.tipo.toLowerCase().includes(search) ||
+              data.estado.toLowerCase().includes(search)
+          );
+        });
+      }
+
+      if (this.dateRange) {
+        // Convertir la fecha a string en formato YYYY-MM-DD
+        const selectedDate = this.dateRange
+
+        filteredData = filteredData.filter((data) => {
+          return data.fecha.toLowerCase().includes(selectedDate);
+        });
+      }
+
+      return filteredData;
     },
     pages() {
       return Math.ceil(this.filteredData.length / this.itemsPerPage);
@@ -193,6 +223,8 @@ export default {
     },
   },
   methods: {
+    updateSearchQuery() {
+    },
     clearDateRange() {
       this.dateRange = null;
     },

@@ -22,6 +22,7 @@
                 style="width: auto;"
                 placeholder="Seleccionar Periodo"
                 :config="{ mode: 'range', dateFormat: 'Y-m-d' }"
+                @input="updateSearchQuery"
             ></flat-pickr>
             <BButton style="padding: 5px 10px; margin-left: 10px; border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" @click="clearDateRange">
               <i class="mdi mdi-delete"></i>
@@ -155,9 +156,11 @@ export default {
       return this.paginate(this.data);
     },
     resultQuery() {
+      let filteredData = this.displayedPosts;
+
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
               data.estacionDeCarga.toLowerCase().includes(search) ||
               data.cargador.toLowerCase().includes(search) ||
@@ -170,9 +173,18 @@ export default {
               data.tiempo.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
+
+      if (this.dateRange) {
+        // Separar las fechas del rango
+        const [startDate, endDate] = this.dateRange.split(' to ');
+
+        filteredData = filteredData.filter((data) => {
+          return data.inicioCarga >= startDate && data.inicioCarga <= endDate;
+        });
+      }
+
+      return filteredData;
     },
   },
   watch: {
@@ -189,6 +201,8 @@ export default {
     },
   },
   methods: {
+    updateSearchQuery() {
+    },
     clearDateRange() {
       this.dateRange = null;
     },

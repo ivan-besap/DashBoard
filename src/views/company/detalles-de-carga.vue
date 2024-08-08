@@ -21,6 +21,7 @@
                 class="form-control"
                 style="width: auto;"
                 placeholder="Seleccionar Fecha"
+                @input="updateSearchQuery"
             ></flat-pickr>
             <BButton style="padding: 5px 10px; margin-left: 10px; border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" @click="clearDateRange">
               <i class="mdi mdi-delete"></i>
@@ -500,9 +501,11 @@ export default {
       return this.paginate(this.filteredData);
     },
     resultQuery() {
+      let filteredData = this.displayedPosts;
+
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
               data.fecha.toLowerCase().includes(search) ||
               data.estacionDeCarga.toLowerCase().includes(search) ||
@@ -513,9 +516,18 @@ export default {
               data.resultado.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
+
+      if (this.dateRange) {
+        // Convertir la fecha a string en formato YYYY-MM-DD
+        const selectedDate = this.dateRange
+
+        filteredData = filteredData.filter((data) => {
+          return data.fecha.toLowerCase().includes(selectedDate);
+        });
+      }
+
+      return filteredData;
     },
   },
   watch: {
@@ -535,6 +547,8 @@ export default {
     },
   },
   methods: {
+    updateSearchQuery() {
+    },
     clearDateRange() {
       this.dateRange = null;
     },
