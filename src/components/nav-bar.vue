@@ -5,6 +5,8 @@ import img2 from "../assets/images/products/img-2.png"
 import img3 from "../assets/images/products/img-3.png"
 import img4 from "../assets/images/products/img-6.png"
 import img5 from "../assets/images/products/img-5.png"
+import Multiselect from "@vueform/multiselect";
+import "@vueform/multiselect/themes/default.css";
 
 import simplebar from "simplebar-vue";
 
@@ -108,7 +110,8 @@ export default {
     };
   },
   components: {
-    simplebar
+    simplebar,
+    Multiselect
   },
 
   methods: {
@@ -318,7 +321,9 @@ export default {
                 <img src="@/assets/images/logo-sm.png" alt="" height="22" />
               </span>
               <span class="logo-lg">
-                <img src="@/assets/images/logo-evol.png" alt="" height="160" style="margin-top: 6px;" />
+                <img src="@/assets/images/evol.png" width="180px" alt="">
+              
+                
               </span>
             </router-link>
 
@@ -615,6 +620,25 @@ export default {
 <!--            </BButton>-->
 <!--          </div>-->
 
+
+
+
+
+               
+                      <label style="margin-right: 10px !important;"  for="ForminputState" class="form-label">Estación</label>
+                    
+                      <Multiselect style="125px !important" class="w-lg" v-model="value3" :close-on-select="true" :searchable="true"
+                      :create-option="true" :options="[
+                        { value: '1', label: 'Estación Vitacura' },
+                        { value: '2', label: 'Estación Chorrillos' },
+                        { value: '3', label: 'Estación Lima' },
+                        { value: '4', label: 'Estación Santiago' },
+                        { value: '5', label: 'Todas' },
+
+                      ]" />
+              
+               
+
           <BDropdown variant="ghost-dark" dropstart class="ms-1 dropdown"
             :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"
             toggle-class="btn-icon btn-topbar rounded-circle arrow-none" id="page-header-notifications-dropdown"
@@ -869,7 +893,7 @@ export default {
                   </div>
                 </simplebar>
               </BTab>-->
-
+              
               <BTab title="Alertas" class="p-4">
                 <simplebar data-simplebar style="max-height: 300px" class="pe-2">
                   <div class="w-25 w-sm-50 pt-3 mx-auto">
@@ -941,3 +965,8 @@ export default {
     </div>
   </header>
 </template>
+
+<style>
+.multiselect.w-lg {
+    width: 227px;
+}</style>

@@ -4,7 +4,7 @@
       <BRow>
         <BCol xxl="12">
           <BCard no-body>
-            <CardHeader title="Crear Cargador" />
+            <CardHeader title="Crear Conector" />
             <BCardBody>
               <div class="live-preview">
                 <BForm @submit.prevent="createCharger">
@@ -95,7 +95,7 @@
                     
                     <BCol md="6">
                       <div class="mb-3">
-                        <label for="station" class="form-label">Cargadores</label>
+                        <label for="station" class="form-label">Estacion</label>
                         <BFormSelect 
                           v-model="charger.station" 
                           class="form-control" 
@@ -103,9 +103,25 @@
                           required
                         >
                           <option value="">Seleccionar una estación</option>
-                          <option value="Estacion 1">Estacion 1</option>
-                          <option value="Estacion 2">Estacion 2</option>
-                          <option value="Estacion 3">Estacion 3</option>
+                          <option value="Estacion 1">Santiago </option>
+                          <option value="Estacion 2">Lima</option>
+                          <option value="Estacion 3">San Isidro</option>
+                        </BFormSelect>
+                      </div>
+                    </BCol>
+                    <BCol md="6">
+                      <div class="mb-3">
+                        <label for="station" class="form-label">Cargador</label>
+                        <BFormSelect 
+                          v-model="charger.station" 
+                          class="form-control" 
+                          id="station" 
+                          required
+                        >
+                          <option value="">Seleccionar un Cargador</option>
+                          <option value="Estacion 1">Cargador 1 </option>
+                          <option value="Estacion 2">Cargador 2</option>
+                          <option value="Estacion 3">Cargador 3</option>
                         </BFormSelect>
                       </div>
                     </BCol>

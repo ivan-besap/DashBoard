@@ -1,96 +1,143 @@
 <template>
-    <Layout>
-      <PageHeader title="Tarifas" pageTitle="Dashboard" />
-  
-      <BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-        <a href="crear-planes">Crear Tarifa</a>
-      </BButton>
-      <BButton style="margin-bottom: 45px; margin-left: 20px" pill variant="primary" class="waves-effect waves-light">
-        <a href="asignar-plan">Asignar Plan</a>
-      </BButton>
-      <div class="table-responsive table-card">
-        <table class="table table-nowrap table-striped-columns mb-0">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">
-                  <label class="form-check-label" for="cardtableCheck"></label>
-                </div>
-              </th>
-              <th scope="col">Plan</th>
-              <th scope="col">Periodo</th>
-              <th scope="col">Día de la Semana</th>
-              <th scope="col">Horario</th>
-              <th scope="col">Tipo Cargador</th>
-              <th scope="col">Potencia</th>
-              <th scope="col">Ubicación CPO</th>
-              <th scope="col">KWH</th>
-              <th scope="col">Minutos</th>
-              <th scope="col">Descuento</th>
-              <th scope="col">Valor Plan</th>
-             
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="plan in plans" :key="plan.id">
-              <td>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">
-                  <label class="form-check-label" for="cardtableCheck01"></label>
-                </div>
-              </td>
-              <td>{{ plan.name }}</td>
-              <td>{{ plan.period }}</td>
-              <td>{{ plan.weekDays.join(', ') }}</td>
-              <td>{{ plan.schedule }}</td>
-              <td>{{ plan.chargerType }}</td>
-              <td>{{ plan.power }} kW</td>
-              <td>{{ plan.location }}</td>
-              <td>{{ plan.kwh }} kWh</td>
-              <td>{{ plan.minutes }} min</td>
-              <td>{{ plan.discount }}%</td>
-              <td>{{ plan.value }}</td>
-             
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </Layout>
-  </template>
-  
-  <script>
-  import Layout from "@/layouts/main.vue";
-  import PageHeader from "@/components/page-header";
-  
-  export default {
-    components: {
-      Layout,
-      PageHeader,
+  <Layout>
+    <PageHeader title="Crear Flota" pagetitle="Compañía" />
+    <BRow>
+      <BCol xxl="12">
+        <BCard no-body>
+          <CardHeader title="Crear Flota" />
+          <BCardBody>
+            <div class="live-preview">
+              <BForm @submit.prevent="createEmployee">
+                <BRow>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="employeeName" class="form-label">Nombre</label>
+                      <BFormInput 
+                        v-model="employee.name" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Nombre del empleado" 
+                        id="employeeName" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="firstSurname" class="form-label">Modelo</label>
+                      <BFormInput 
+                        v-model="employee.firstSurname" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Apellido Paterno" 
+                        id="firstSurname" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="lastSurname" class="form-label">Patente</label>
+                      <BFormInput 
+                        v-model="employee.lastSurname" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Apellido Materno" 
+                        id="lastSurname" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  
+                  
+                 
+                  <BCol lg="12">
+                    <div class="text-end">
+                      <BButton style="" type="submit" variant="light"  @click="successmsg">
+                        Crear Flota
+                      </BButton>
+                    </div>
+                  </BCol>
+                </BRow>
+              </BForm>
+            </div>
+          </BCardBody>
+        </BCard>
+      </BCol>
+    </BRow>
+  </Layout>
+</template>
+
+<script>
+
+import "flatpickr/dist/flatpickr.css";
+import "@vueform/multiselect/themes/default.css";
+import Swal from "sweetalert2";
+
+import Layout from "@/layouts/main.vue";
+import PageHeader from "@/components/page-header";
+import CardHeader from "@/common/card-header";
+
+export default {
+  data() {
+    return {
+      employee: {
+        name: '',
+        firstSurname: '',
+        lastSurname: '',
+        email: '',
+        password: '',
+        plan: '',
+        role: '' // Añadido campo para el rol
+      },
+      config: {
+        wrap: true, // set wrap to true only when using 'input-group'
+        altFormat: "M j, Y",
+        altInput: true,
+        dateFormat: "d M, Y",
+      },
+      date: null,
+      date1: null,
+      date3: null,
+    };
+  },
+  components: {
+    Layout,
+    PageHeader,
+    CardHeader,
+  },
+  methods: {
+
+    successmsg() {
+      Swal.fire({
+        title: "Flota creada!",
+        text: "Redirigiendo a la página de Empleados...",
+        icon: "success",
+        timer: 2000, // Tiempo en milisegundos antes de redirigir
+        timerProgressBar: true,
+        willClose: () => {
+          this.$router.push('/company/flotas'); // Redirigir a la página de planes
+        }
+      });
     },
-  
-    data() {
-      return {
-        plans: [
-          { id: 1, name: 'Plan 1', period: '01/01 - 01/31', weekDays: ['Lunes', 'Martes'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 22, location: 'Ubicación A', kwh: 100, minutes: 60, discount: 10, value: '$200' },
-          { id: 2, name: 'Plan 2', period: '02/01 - 02/28', weekDays: ['Miércoles', 'Jueves'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 50, location: 'Ubicación B', kwh: 200, minutes: 120, discount: 15, value: '$300' },
-          { id: 3, name: 'Plan 3', period: '03/01 - 03/31', weekDays: ['Viernes', 'Sábado'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 11, location: 'Ubicación C', kwh: 50, minutes: 30, discount: 5, value: '$100' },
-          { id: 4, name: 'Plan 4', period: '04/01 - 04/30', weekDays: ['Domingo'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 100, location: 'Ubicación D', kwh: 400, minutes: 240, discount: 20, value: '$500' },
-          { id: 5, name: 'Plan 5', period: '05/01 - 05/31', weekDays: ['Lunes', 'Martes'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 22, location: 'Ubicación E', kwh: 150, minutes: 90, discount: 10, value: '$250' },
-          { id: 6, name: 'Plan 6', period: '06/01 - 06/30', weekDays: ['Miércoles', 'Jueves'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 75, location: 'Ubicación F', kwh: 250, minutes: 150, discount: 15, value: '$350' },
-          { id: 7, name: 'Plan 7', period: '07/01 - 07/31', weekDays: ['Viernes', 'Sábado'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 11, location: 'Ubicación G', kwh: 75, minutes: 45, discount: 5, value: '$150' },
-          { id: 8, name: 'Plan 8', period: '08/01 - 08/31', weekDays: ['Domingo'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 120, location: 'Ubicación H', kwh: 500, minutes: 300, discount: 20, value: '$600' },
-          { id: 9, name: 'Plan 9', period: '09/01 - 09/30', weekDays: ['Lunes', 'Martes'], schedule: '9:00 AM - 2:00 PM', chargerType: 'AC', power: 22, location: 'Ubicación I', kwh: 180, minutes: 100, discount: 10, value: '$280' },
-          { id: 10, name: 'Plan 10', period: '10/01 - 10/31', weekDays: ['Miércoles', 'Jueves'], schedule: '9:00 AM - 2:00 PM', chargerType: 'DC', power: 85, location: 'Ubicación J', kwh: 300, minutes: 180, discount: 15, value: '$400' }
-        ]
-      };
+    async createEmployee() {
+      try {
+         // Simula una llamada de API exitosa
+         setTimeout(() => {
+            this.successmsg();
+            this.$router.push('/company/empleados-company');
+          }, 1000); // Retraso de 1 segundo para simular la llamada
+      } catch (error) {
+        console.error("Error creando el empleado:", error);
+        alert('Error creando el empleado');
+      }
     }
-  };
-  </script>
-  
-  <style>
-  .flex-shrink-0 {
-    display: none;
   }
-  </style>
-  
+};
+</script>
+
+<style>
+.flex-shrink-0 {
+  display: none;
+}
+</style>
