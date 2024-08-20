@@ -183,7 +183,7 @@ export default {
       return this.paginate(this.data);
     },
     resultQuery() {
-      let filteredData = this.displayedPosts;
+      let filteredData = this.data;
 
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
@@ -209,7 +209,7 @@ export default {
         });
       }
 
-      return filteredData;
+      return this.paginate(filteredData);
     },
     pages() {
       return Math.ceil(this.filteredData.length / this.itemsPerPage);

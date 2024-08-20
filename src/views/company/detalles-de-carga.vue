@@ -501,7 +501,7 @@ export default {
       return this.paginate(this.filteredData);
     },
     resultQuery() {
-      let filteredData = this.displayedPosts;
+      let filteredData = this.data;
 
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
@@ -527,7 +527,7 @@ export default {
         });
       }
 
-      return filteredData;
+      return this.paginate(filteredData);
     },
   },
   watch: {
