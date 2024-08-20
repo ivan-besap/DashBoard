@@ -34,7 +34,7 @@
       <BCard no-body class="card-body">
         <BCardBody>
           <div class="table-responsive table-card">
-            <table class="table align-middle table-nowrap" id="customerTable">
+            <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
               <thead class="table-light text-muted">
                 <tr>
                   <th class="sort" scope="col" @click="onSort('fecha')">Fecha</th>

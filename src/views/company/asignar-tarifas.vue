@@ -17,7 +17,7 @@
         </div>
         <div class="table-responsive" style="background-color: white">
           <div style="max-height: 500px; overflow-y: auto;">
-            <table class="table table-hover align-middle table-nowrap mb-0">
+            <table class="table table-striped table-hover align-middle table-nowrap mb-0">
               <thead class="table-light">
               <tr>
                 <th scope="col">
@@ -62,7 +62,7 @@
         </div>
         <BCardBody class="border-end" style="background-color: white">
           <div style="max-height: 500px; overflow-y: auto;">
-            <table class="table table-hover align-middle table-nowrap mb-0">
+            <table class="table table-striped table-hover align-middle table-nowrap mb-0">
               <thead class="table-light">
               <tr>
                 <th scope="col">Nombre</th>

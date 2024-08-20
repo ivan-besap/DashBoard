@@ -16,68 +16,22 @@
           </div>
           <div class="contenedor-finac" style=" margin-bottom: 10px;    width: 246px;">
             <!-- Input de búsqueda -->
-            <div class="d-flex justify-content-sm-end " style="    height: 48px;" >
+            <div class="d-flex justify-content-sm-end " style=" height: 35px;" >
              <BFormInput
                 v-model="searchQuery"
                 type="text"
                 class="form-control"
-                placeholder="Buscar por nombre de tarifa..."
+                placeholder="Buscar tarifa ..."
               />
             </div>
           </div>
         </div>
     </BRow>
-<!--    <div class="table-responsive table-card">-->
-<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--        <thead class="table-light">-->
-<!--          <tr>-->
-<!--            <th scope="col">-->
-<!--              <div class="form-check">-->
-<!--                <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">-->
-<!--                <label class="form-check-label" for="cardtableCheck"></label>-->
-<!--              </div>-->
-<!--            </th>-->
-<!--            <th scope="col">Tarifa</th>-->
-<!--            <th scope="col">Periodo</th>-->
-<!--            <th scope="col">Día de la Semana</th>-->
-<!--            <th scope="col">Conector</th>-->
-<!--            <th scope="col">Valor</th>-->
-<!--            <th scope="col">Ubicación</th>-->
-<!--            <th scope="col" style="width: 1%;">Acciones</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr v-for="plan in filteredPlans" :key="plan.id">-->
-<!--            <td>-->
-<!--              <div class="form-check">-->
-<!--                <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">-->
-<!--                <label class="form-check-label" for="cardtableCheck01"></label>-->
-<!--              </div>-->
-<!--            </td>-->
-<!--            <td>{{ plan.name }}</td>-->
-<!--            <td>{{ plan.period }}</td>-->
-<!--            <td>{{ plan.weekDays.join(', ') }}</td>-->
-<!--            <td>{{ plan.chargerType }}</td>-->
-<!--            <td>{{ plan.value }}</td>-->
-<!--            <td>{{ plan.location }}</td>-->
-<!--            <td>-->
-<!--              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
-<!--                <router-link class="nav-link menu-link" :to="`/company/editar-tarifa/`">-->
-<!--                  <i class="mdi mdi-pencil"></i>-->
-<!--                </router-link>-->
-<!--              </BButton>-->
-<!--              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
-<!--                  <i class="mdi mdi-delete"></i>-->
-<!--              </BButton>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
+
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" data-sort="current_value" scope="col" @click="onSort('name')">Tarifa</th>
@@ -147,6 +101,15 @@ export default {
   },
 
   methods: {
+    onSort(column) {
+      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
+      const sortedArray = [...this.data];
+      sortedArray.sort((a, b) => {
+        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
+        return this.direction === 'asc' ? res : -res;
+      });
+      this.data = sortedArray;
+    },
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -213,18 +176,6 @@ export default {
       page: 1,
       perPage: 5,
       pages: [],
-      /*plans: [
-        { id: 1, name: 'Tarifa 1', period: '01/01 - 01/31', weekDays: ['Lunes', 'Martes'], chargerType: 'AC', location: 'Ubicación A', value: '$200' },
-        { id: 2, name: 'Tarifa 2', period: '02/01 - 02/28', weekDays: ['Miércoles', 'Jueves'], chargerType: 'DC', location: 'Ubicación B', value: '$300' },
-        { id: 3, name: 'Tarifa 3', period: '03/01 - 03/31', weekDays: ['Viernes', 'Sábado'], chargerType: 'AC', location: 'Ubicación C', value: '$100' },
-        { id: 4, name: 'Tarifa 4', period: '04/01 - 04/30', weekDays: ['Domingo'], chargerType: 'DC', location: 'Ubicación D', value: '$500' },
-        { id: 5, name: 'Tarifa 5', period: '05/01 - 05/31', weekDays: ['Lunes', 'Martes'], chargerType: 'AC', location: 'Ubicación E', value: '$250' },
-        { id: 6, name: 'Tarifa 6', period: '06/01 - 06/30', weekDays: ['Miércoles', 'Jueves'], chargerType: 'DC', location: 'Ubicación F', value: '$350' },
-        { id: 7, name: 'Tarifa 7', period: '07/01 - 07/31', weekDays: ['Viernes', 'Sábado'], chargerType: 'AC', location: 'Ubicación G', value: '$150' },
-        { id: 8, name: 'Tarifa 8', period: '08/01 - 08/31', weekDays: ['Domingo'], chargerType: 'DC', location: 'Ubicación H', value: '$600' },
-        { id: 9, name: 'Tarifa 9', period: '09/01 - 09/30', weekDays: ['Lunes', 'Martes'], chargerType: 'AC', location: 'Ubicación I', value: '$280' },
-        { id: 10, name: 'Tarifa 10', period: '10/01 - 10/31', weekDays: ['Miércoles', 'Jueves'], chargerType: 'DC', location: 'Ubicación J', value: '$400' }
-      ]*/
     };
   },
   computed: {
@@ -250,23 +201,24 @@ export default {
       return this.paginate(this.data);
     },
     resultQuery() {
+      let filteredData = this.data;
+
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
-              data.id.toLowerCase().includes(search) ||
+              data.id.toString().toLowerCase().includes(search) ||
               data.name.toLowerCase().includes(search) ||
               data.period.toLowerCase().includes(search) ||
-              data.weekDays.toLowerCase().includes(search) ||
+              data.weekDays.some(day => day.toLowerCase().includes(search)) ||
               data.chargerType.toLowerCase().includes(search) ||
               data.location.toLowerCase().includes(search) ||
               data.value.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
-    },
+        return this.paginate(filteredData);
+      }
   },
   watch: {
     posts() {

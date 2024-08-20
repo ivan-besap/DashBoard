@@ -17,64 +17,22 @@
         </div>
         <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px;">
           <!-- Input de búsqueda -->
-          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+          <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
                 v-model="searchQuery"
                 type="text"
                 class="form-control"
-                placeholder="Buscar por nombre de Tarjeta..."
+                placeholder="Buscar Tarjeta ..."
             />
           </div>
         </div>
       </div>
     </BRow>
 
-<!--    <div class="table-responsive table-card">-->
-<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--        <thead class="table-light">-->
-<!--        <tr>-->
-<!--&lt;!&ndash;          <th scope="col">&ndash;&gt;-->
-<!--&lt;!&ndash;            <div class="form-check">&ndash;&gt;-->
-<!--&lt;!&ndash;              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">&ndash;&gt;-->
-<!--&lt;!&ndash;              <label class="form-check-label" for="cardtableCheck"></label>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </th>&ndash;&gt;-->
-<!--          <th scope="col">Nombre</th>-->
-<!--          <th scope="col">Código Tarjeta</th>-->
-<!--          <th scope="col">Fecha Expiración</th>-->
-<!--          <th style="width: 1%" scope="col">Acciones</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr v-for="tarjeta in tarjetas" :key="tarjeta.id">-->
-<!--&lt;!&ndash;          <td>&ndash;&gt;-->
-<!--&lt;!&ndash;            <div class="form-check">&ndash;&gt;-->
-<!--&lt;!&ndash;              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">&ndash;&gt;-->
-<!--&lt;!&ndash;              <label class="form-check-label" for="cardtableCheck01"></label>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </td>&ndash;&gt;-->
-<!--          <td>{{ tarjeta.nombre }}</td>-->
-<!--          <td>{{ tarjeta.codigo }}</td>-->
-<!--          <td>{{ tarjeta.fechaExpiracion }}</td>-->
-
-<!--          <td>-->
-<!--            <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
-<!--              <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">-->
-<!--                <i class="mdi mdi-pencil"></i>-->
-<!--              </router-link>-->
-<!--            </BButton>-->
-<!--            <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
-<!--              <i class="mdi mdi-delete"></i>-->
-<!--            </BButton>-->
-<!--          </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" data-sort="current_value" scope="col" @click="onSort('nombre')">Nombre</th>
@@ -137,12 +95,6 @@ export default {
   },
   data() {
     return {
-      // tarjetas: [
-      //   { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
-      //   { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
-      //   { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
-      //   { id: 4, nombre: "Tarjeta Oficina 453", codigo: "88554796002145575", fechaExpiracion: "28-10-2024"},
-      // ],
       searchQuery: '',
       data: [
         { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
@@ -178,18 +130,19 @@ export default {
       return this.paginate(this.data);
     },
     resultQuery() {
+      let filteredData = this.data;
+
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
               data.nombre.toLowerCase().includes(search) ||
               data.codigo.toLowerCase().includes(search) ||
               data.fechaExpiracion.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
+      return this.paginate(filteredData);
     },
   },
   watch: {

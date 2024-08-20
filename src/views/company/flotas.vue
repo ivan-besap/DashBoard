@@ -12,12 +12,12 @@
         </div>
         <div class="contenedor-finac" style="margin-bottom: 10px;  width: 246px;">
           <!-- Input de búsqueda -->
-          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+          <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar por Flota..."
+              placeholder="Buscar Flota ..."
             />
           </div>
         </div>
@@ -27,7 +27,7 @@
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
               <tr>
                 <th class="sort" scope="col" @click="onSort('firstSurname')">Nombre</th>
@@ -170,15 +170,19 @@ export default {
 
   computed: {
     resultQuery() {
-      let result = this.paginate(this.data);
+      let filteredData = this.data;
+
       if (this.searchQuery) {
-        result = result.filter(item => 
-          item.firstSurname.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          item.model.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          item.patent.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+        const search = this.searchQuery.toLowerCase();
+        filteredData = filteredData.filter((data) => {
+          return (
+          data.firstSurname.toLowerCase().includes(search) ||
+          data.model.toLowerCase().includes(search) ||
+          data.patent.toLowerCase().includes(search)
+          );
+        });
       }
-      return result;
+      return this.paginate(filteredData);
     },
     displayedPages() {
       let result = [];

@@ -5,7 +5,7 @@
         <BCol class="my-2" xxl="3" md="6">
                                     <div>
                                         <label for="basiInput" class="form-label">Nombre</label>
-                                        <input type="password" class="form-control" id="basiInput">
+                                        <input type="text" class="form-control" id="basiInput">
                                     </div>
                                 </BCol>
 

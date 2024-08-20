@@ -13,78 +13,21 @@
         </div>
         <div class="contenedor-finac" style="margin-bottom: 10px;  width: 246px;">
           <!-- Input de búsqueda -->
-          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+          <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar por Empleado..."
+              placeholder="Buscar Usuario ..."
             />
           </div>
         </div>
       </div>
     </BRow>
-   
-
-<!--    <div class="table-responsive table-card">-->
-<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--        <thead class="table-light">-->
-<!--          <tr>-->
-<!--            <th scope="col">-->
-<!--              <div class="form-check">-->
-<!--                <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">-->
-<!--                <label class="form-check-label" for="cardtableCheck"></label>-->
-<!--              </div>-->
-<!--            </th>-->
-<!--            <th scope="col">Nombre</th>-->
-<!--            <th scope="col">Email</th>-->
-<!--            <th scope="col">Fecha de Creación</th>-->
-<!--            <th scope="col">Empresa</th>-->
-<!--            <th scope="col">Activo</th>-->
-<!--            <th scope="col">Plan</th>-->
-<!--            <th scope="col">Rol</th>-->
-<!--            <th scope="col">Acciones</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr v-for="employee in employees" :key="employee.id">-->
-<!--            <td>-->
-<!--              <div class="form-check">-->
-<!--                <input class="form-check-input" type="checkbox" value="" id="customSwitchsizemd">-->
-<!--                <label class="form-check-label" for="cardtableCheck01"></label>-->
-<!--              </div>-->
-<!--            </td>-->
-<!--            <td><a style="color: #292dc1" href="#" class="fw-semibold">{{ employee.firstSurname }}</a></td>-->
-<!--            <td>{{ employee.email }}</td>-->
-<!--            <td>{{ employee.createdDay }}</td>-->
-<!--            <td>{{ employee.company }}</td>-->
-<!--            <td>-->
-<!--             &lt;!&ndash; Base Switchs &ndash;&gt;-->
-<!--<div class="form-check form-switch">-->
-<!--<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">-->
-
-<!--</div>-->
-<!--            </td>-->
-<!--            <td>{{ employee.plan }}</td>-->
-<!--            <td>{{ employee.role }}</td>-->
-<!--            <td>-->
-<!--              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
-<!--                <router-link class="nav-link menu-link" :to="`/company/editar-empleados/`">-->
-<!--                  <i class="mdi mdi-pencil"></i>-->
-<!--                </router-link>-->
-<!--              </BButton>-->
-<!--              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
-<!--                <i class="mdi mdi-delete"></i>-->
-<!--              </BButton>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" data-sort="current_value" scope="col" @click="onSort('firstSurname')">Nombre</th>
@@ -264,11 +207,12 @@ export default {
       return this.paginate(this.data);
     },
     resultQuery() {
+      let filteredData = this.data;
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
-              data.id.toLowerCase().includes(search) ||
+              data.id.toString().toLowerCase().includes(search) ||
               data.firstSurname.toLowerCase().includes(search) ||
               data.email.toLowerCase().includes(search) ||
               data.createdDay.toLowerCase().includes(search) ||
@@ -278,9 +222,8 @@ export default {
               data.role.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
+      return this.paginate(filteredData);
     },
   },
   watch: {
