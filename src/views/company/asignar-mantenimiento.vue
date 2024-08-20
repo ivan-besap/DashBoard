@@ -4,20 +4,21 @@
   
       <BRow>
         <BCol xl="6">
+          <div class="search-box mb-2">
+            <input
+                type="text"
+                class="form-control  border-light"
+                autocomplete="off"
+                id="searchStations"
+                placeholder="Buscar estación..."
+                v-model="stationSearchQuery"
+            />
+            <i class="ri-search-line search-icon"></i>
+          </div>
           <div class="table-responsive" style="background-color: white">
-            <div class="search-box">
-              <input
-                  type="text"
-                  class="form-control bg-light border-light"
-                  autocomplete="off"
-                  id="searchStations"
-                  placeholder="Buscar estación..."
-                  v-model="stationSearchQuery"
-              />
-              <i class="ri-search-line search-icon"></i>
-            </div>
-            <table class="table table-hover align-middle table-nowrap mb-0">
-              <thead class="table-light">
+            <div style="max-height: 500px; overflow-y: auto;">
+              <table class="table table-hover align-middle table-nowrap mb-0">
+                <thead class="table-light">
                 <tr>
                   <th scope="col">
                     <div class="form-check">
@@ -29,8 +30,8 @@
                   <th scope="col">Cargador</th>
                   <th scope="col">Conector</th>
                 </tr>
-              </thead>
-              <tbody>
+                </thead>
+                <tbody>
                 <tr v-for="station in filteredStations" :key="station.id">
                   <td>
                     <div class="form-check">
@@ -42,37 +43,40 @@
                   <td>{{ station.charger }}</td>
                   <td>{{ station.connector }}</td>
                 </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </BCol>
         <BCol xl="6">
+          <div class="search-box mb-2">
+            <input
+                type="text"
+                class="form-control border-light"
+                autocomplete="off"
+                id="searchList"
+                placeholder="Buscar mantenimiento..."
+                v-model="searchQuery"
+            />
+            <i class="ri-search-line search-icon"></i>
+          </div>
           <BCardBody class="border-end" style="background-color: white">
-            <div class="search-box">
-              <input
-                  type="text"
-                  class="form-control bg-light border-light"
-                  autocomplete="off"
-                  id="searchList"
-                  placeholder="Buscar mantenimiento..."
-                  v-model="searchQuery"
-              />
-              <i class="ri-search-line search-icon"></i>
+            <div style="max-height: 500px; overflow-y: auto;">
+              <table class="table table-hover align-middle table-nowrap mb-0">
+                <thead class="table-light">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Fecha</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(data, index) in resultQuery" :key="index" @click="selectPlan(data)">
+                  <td>{{ data.description }}</td>
+                  <td>{{ data.date }}</td>
+                </tr>
+                </tbody>
+              </table>
             </div>
-            <simplebar data-simplebar style="max-height: 190px" class="px-3 mx-n3">
-              <ul class="list-unstyled mb-0 pt-2" id="candidate-list">
-                <li v-for="(data, index) in resultQuery" :key="index" @click="selectPlan(data)">
-                  <BLink href="javascript:void(0);" class="d-flex align-items-center py-2">
-                    <div class="flex-grow-1">
-                      <h5 class="fs-13 mb-1 text-truncate">
-                        <span style="margin-left: 10px;" class="candidate-name">{{ data.description }}</span>
-                        <span class="ms-2 text-muted fw-normal">{{ data.date }}</span>
-                      </h5>
-                    </div>
-                  </BLink>
-                </li>
-              </ul>
-            </simplebar>
             <div v-if="selectedPlan" class="mt-3 d-flex justify-content-between align-items-center" style="margin-left: 10px">
               <div>
                 <h5>Mantenimiento Seleccionado</h5>
@@ -92,12 +96,12 @@
   <script>
   import Layout from "@/layouts/main.vue";
   import PageHeader from "@/components/page-header";
-  import simplebar from "simplebar-vue";
+  // import simplebar from "simplebar-vue";
   import Swal from "sweetalert2";
   
   export default {
     components: {
-      simplebar,
+      // simplebar,
       Layout,
       PageHeader,
     },
