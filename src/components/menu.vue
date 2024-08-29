@@ -133,7 +133,6 @@ export default {
     loadUserData() {
       const role = localStorage.getItem('userType');
       this.active = localStorage.getItem('active');
-      // console.log(role); // Para verificar que se está obteniendo el rol correctamente
       this.userRole = role;
     },
     onRoutechange(ele) {
@@ -256,7 +255,7 @@ export default {
 
     <template v-if="layoutType === 'vertical' || layoutType === 'semibox'">
       <!--        MENU COMPAÑIA-->
-      <ul v-if="userRole === 'company' && active ==='true'" class="navbar-nav h-100" id="navbar-nav">
+      <ul v-if="userRole === 'COMPANY' && active ==='true'" class="navbar-nav h-100" id="navbar-nav">
         <li class="menu-title">
           <span data-key="t-menu"> {{ $t("t-menu") }}</span>
         </li>
@@ -315,15 +314,15 @@ export default {
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link menu-link"  target="" to="/company/registro-cargas">
-                  <span data-key="t-landing">Registro de Cargas</span>
-                </router-link>
-              </li>
-              <li class="nav-item">
                 <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga">
                 
                     <span data-key="t-landing">Detalles de Cargas</span>
                 
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link menu-link"  target="" to="/company/cargas-por-cargador">
+                  <span data-key="t-landing">Cargas Por Cargador</span>
                 </router-link>
               </li>
               <li class="nav-item">
@@ -332,15 +331,10 @@ export default {
                 </router-link>
               </li>
 
-              <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-cargador">
-                  <span data-key="t-landing">Cargas por Cargador</span>
-                </router-link>
-              </li>
 
               <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-usuario">
-                  <span data-key="t-landing">Cargas por Usuario</span>
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-flota">
+                  <span data-key="t-landing">Cargas por Flota</span>
                 </router-link>
               </li>
 
@@ -1716,7 +1710,7 @@ export default {
       </ul>
 
 <!--        MENU CLIENTE-->
-      <ul v-else-if="userRole === 'client'" class="navbar-nav h-100" id="navbar-nav">
+      <ul v-else-if="userRole === 'CLIENT'" class="navbar-nav h-100" id="navbar-nav">
         <li class="menu-title">
           <span data-key="t-menu"> {{ $t("t-menu") }}</span>
         </li>

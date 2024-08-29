@@ -33,7 +33,7 @@ export default {
     },
     async getUser() {
       try {
-        const response = await axios.get('http://52.14.116.236:8088/api/companies/current');
+        const response = await axios.get('http://localhost:8080/api/companies/current');
          this.company = response.data;
          // console.log("Comañia" + JSON.stringify( this.company));
       
@@ -56,19 +56,21 @@ export default {
     },
     async cambiarActivoUsuario(activeStatus) {
       try {
-        const response = await axios.put('http://52.14.116.236:8088/api/companies/change-active-status', null, {
+        const response = await axios.put('http://localhost:8080/api/companies/change-active-status', null, {
           params: {
             activeStatus: activeStatus
           }
         });
         if (response.status === 200) {
-          Swal.fire("Estado de usuario Actualizado!", "", "success");
-          if (activeStatus === true) {
-            this.$router.push('/company/dashboard-company');
-          } else {
-            this.$router.push('/company/profile-company');
-            location.reload()
-          }
+          Swal.fire("Estado de usuario Actualizado!", "", "success").then(() => {
+            if (activeStatus === true) {
+              this.$router.push('/company/dashboard-company').then(() => {
+                  window.location.reload();
+              });
+            } else {
+              this.$router.push('/company/profile-company');
+            }
+          });
         }
       } catch (error) {
         console.error("Error Actualizando usuario activo:", error);

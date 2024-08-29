@@ -28,56 +28,6 @@
         </div>
       </div>
     </BRow>
-    
-<!--      <div class="table-responsive table-card">-->
-<!--        <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--          <thead class="table-light">-->
-<!--            <tr>-->
-<!--              <th scope="col">-->
-<!--                <div class="form-check">-->
-<!--                  <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">-->
-<!--                  <label class="form-check-label" for="cardtableCheck"></label>-->
-<!--                </div>-->
-<!--              </th>-->
-<!--              <th scope="col">Alias</th>-->
-<!--              <th scope="col">Tipo conector</th>-->
-<!--              -->
-<!--              <th scope="col">Potencia en curso</th>-->
-<!--             -->
-<!--              -->
-<!--              <th scope="col">Cargadores</th>-->
-<!--              <th scope="col" style="width: 1%;">Acciones</th>-->
-<!--            </tr>-->
-<!--          </thead>-->
-<!--          <tbody>-->
-<!--            <tr v-for="station in stations" :key="station.id">-->
-<!--              <td>-->
-<!--                <div class="form-check">-->
-<!--                  <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">-->
-<!--                  <label class="form-check-label" for="cardtableCheck01"></label>-->
-<!--                </div>-->
-<!--              </td>-->
-<!--              <td>{{ station.alias }}</td>-->
-<!--              <td><img src="https://dhemax-lab-contenido-estatico-cms-evca.s3.amazonaws.com/cms/connectors/EVPhysicalConnectorType_IEC_62196_T1_COMBO.svg">{{ station.connectorType }}</td>-->
-<!--              -->
-<!--              <td>{{ station.currentPower }}</td>-->
-<!--      -->
-<!--              -->
-<!--              <td>{{ station.vehicle }}</td>-->
-<!--              <td>-->
-<!--                <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
-<!--                  <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">-->
-<!--                    <i class="mdi mdi-pencil"></i>-->
-<!--                  </router-link>-->
-<!--                </BButton>-->
-<!--                <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
-<!--                  <i class="mdi mdi-delete"></i>-->
-<!--                </BButton>-->
-<!--            </td>-->
-<!--            </tr>-->
-<!--          </tbody>-->
-<!--        </table>-->
-<!--      </div>-->
       <BCard no-body class="card-body">
         <BCardBody>
           <div class="table-responsive table-card">
@@ -85,25 +35,48 @@
               <thead class="table-light text-muted">
               <tr>
                 <th class="sort" data-sort="current_value" scope="col" @click="onSort('alias')">Alias</th>
-                <th class="sort" data-sort="pairs" scope="col" @click="onSort('connectorType')">Tipo Conector</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('currentPower')">Potencia en curso</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('vehicle')">Cargadores</th>
+                <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('tipoConector')">Tipo Conector</th>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Cargador</th>
+                <th class="sort pe-4" data-sort="" scope="col" @click="onSort('connectorNumber')">Número Conector</th>
+                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('currentMax')">Corriente Máxima</th>
+                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('powerMax')">Potencia Máxima</th>
+                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('voltageMax')">Voltaje Máximo</th>
+                <th class="sort " data-sort="high" scope="col" @click="onSort('connectorStatus')">Estado</th>
                 <th scope="col" style="width: 1%;">Acciones</th>
               </tr>
               </thead>
               <tbody class="list form-check-all">
               <tr v-for="(dat, index) in resultQuery" :key="index">
                 <td>{{ dat.alias }}</td>
-                <td class="pairs">{{ dat.connectorType }}</td>
-                <td class="pairs">{{ dat.currentPower }}</td>
-                <td class="pairs">{{ dat.vehicle }}</td>
+<!--                <td class="pairs">{{ dat.connectorType }}</td>-->
+                <td>{{ dat.tipoConector }}</td>
+                <td>{{ dat.idCargador }}</td>
+                <td>{{ dat.nconector }}</td>
+                <td>{{ dat.corrienteMaxima }}</td>
+                <td>{{ dat.potenciaMaxima }}</td>
+                <td>{{ dat.voltajeMaximo }}</td>
+                <td class="d-flex align-items-center">
+                  <span :class="dat.estadoConector === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
+                    {{ dat.estadoConector === 'CONNECTED' ? 'Conectado' : 'Desconectado' }}
+                  </span>
+                  <BFormCheckbox
+                      v-model="dat.estadoConector"
+                      switch
+                      :value="'CONNECTED'"
+                      :unchecked-value="'DISCONNECTED'"
+                      @change="cambiarEstadoConector(dat.id, dat.estadoConector)"
+                      class="mt-1 mb-2"
+                      style="height: 19px; width: 35px"
+                  >
+                  </BFormCheckbox>
+                </td>
                 <td>
-                  <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
-                    <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-conector/${dat.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                  <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>
@@ -139,6 +112,7 @@
   import Layout from "@/layouts/main.vue";
   import PageHeader from "@/components/page-header";
   import Swal from "sweetalert2";
+  import axios from "axios";
   export default {
     components: {
       Layout,
@@ -146,21 +120,8 @@
     },
     data() {
       return {
-        // stations: [
-        //   { id: 1, alias: "Uno", connectorType: "IEC Tipo 2", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargadores 1" },
-        //   { id: 2, alias: "Dos", connectorType: "Tipo 1 - J1772", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 2" },
-        //   { id: 3, alias: "Tres", connectorType: "Tipo 1 - J1772", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 3" },
-        //   { id: 4, alias: "Cuatro", connectorType: "IEC Tipo 2", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 4" },
-        //   // Puedes agregar más estaciones aquí si lo necesitas
-        // ],
         searchQuery: '',
-        data: [
-          { id: 1, alias: "Uno", connectorType: "IEC Tipo 2", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 1" },
-          { id: 2, alias: "Dos", connectorType: "Tipo 1 - J1772", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 2" },
-          { id: 3, alias: "Tres", connectorType: "Tipo 1 - J1772", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 3" },
-          { id: 4, alias: "Cuatro", connectorType: "IEC Tipo 2", status: "Activo", currentPower: "8.19 kW", currentSoC: "0 %", errors: "0 Errores", vehicle: "Cargador 4" },
-          // Puedes agregar más estaciones aquí si lo necesitas
-        ],
+        data: [],
         page: 1,
         perPage: 5,
         pages: [],
@@ -194,9 +155,8 @@
           return this.displayedPosts.filter((data) => {
             return (
                 data.alias.toLowerCase().includes(search) ||
-                data.connectorType.toLowerCase().includes(search) ||
-                data.currentPower.toLowerCase().includes(search) ||
-                data.vehicle.toLowerCase().includes(search)
+                data.tipoConector.toLowerCase().includes(search) ||
+                data.idCargador.toLowerCase().includes(search)
             );
           });
         } else {
@@ -211,6 +171,7 @@
     },
     created() {
       this.setPages();
+      this.connectors();
     },
     filters: {
       trimWords(value) {
@@ -219,6 +180,30 @@
     },
 
     methods: {
+      async connectors() {
+        try {
+          const response = await axios.get('http://localhost:8080/api/connectors');
+          this.data = response.data
+        } catch (error) {
+          console.error("Error obteniendo las estaciones de carga:", error);
+        }
+      },
+      async cambiarEstadoConector(id, estadoConector) {
+        try {
+          const response = await axios.patch('http://localhost:8080/api/connectorStatus/change-active-status', null, {
+            params: {
+              id: id,
+              activeStatus: estadoConector
+            }
+          });
+          if (response.status === 200) {
+            Swal.fire("Estado del Conector Actualizado!", "", "success");
+          }
+        } catch (error) {
+          console.error("Error actualizando el estado del conector", error);
+          Swal.fire("Error al actualizar el estado del conector", "", "error");
+        }
+      },
       setPages() {
         let numberOfPages = Math.ceil(this.data.length / this.perPage);
         this.pages = [];
@@ -257,18 +242,33 @@
         });
         this.data = sortedArray;
       },
-      confirm() {
+      confirm(connectorId) {
         Swal.fire({
-          title: "Estas seguro de eliminar?",
-          text: "No podras revertir la accion!",
+          title: "¿Estás seguro de eliminar?",
+          text: "¡No podrás revertir la acción!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#34c38f",
           cancelButtonColor: "#f46a6a",
-          confirmButtonText: "Si, eliminar!",
-        }).then((result) => {
-          if (result.value) {
-            Swal.fire("Conector Eliminado", "", "success");
+          confirmButtonText: "Sí, eliminar!",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              // Hacer la solicitud PUT al endpoint para "eliminar" el conector
+              const response = await axios.patch(`http://localhost:8080/api/companies/current/connectors/${connectorId}/delete`);
+              if (response.status === 200) {
+                Swal.fire(
+                    "¡Eliminado!",
+                    "Tu conector ha sido eliminado.",
+                    "success"
+                ).then(() => {
+                  this.$router.go(0); // Recargar la página actual
+                });
+              }
+            } catch (error) {
+              console.error("Error eliminando el conector:", error);
+              Swal.fire("Error", "No se pudo eliminar el conector.", "error");
+            }
           }
         });
       }
@@ -276,9 +276,7 @@
   };
   </script>
   
-  <style>
-  .flex-shrink-0 {
-    display: none;
-  }
-  </style>
+<style scoped>
+
+</style>
   

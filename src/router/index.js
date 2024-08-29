@@ -31,42 +31,48 @@ const router = createRouter({
     console.log('No se encontró un token de autenticación. Redirigiendo al login');
      return next({ name: 'login', query: { redirectFrom: routeTo.fullPath } });
    }
- 
-   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
- 
-   try {
-     const response = await axios.get('http://localhost:8080/user/current');
-     const { userType, userData } = response.data;
- 
-     localStorage.setItem('userType', userType);
-     localStorage.setItem('userData', JSON.stringify(userData));
-     localStorage.setItem('active', userData.active);
 
-     /*store.commit('auth/setUser', userData);
-     store.commit('auth/setUserType', userType);*/
- 
-    console.log(`Usuario autenticado con tipo de usuario ${userType}`);
+     if (!window.location.pathname.includes('/login')) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-     switch (userType) {
-       case 'client':
+        try {
+            const response = await axios.get('http://localhost:8080/api/companies/logins');
 
-         break;
-       case 'company':
-              
-         break;
-       case 'employee':
-         // Lógica específica para empleados
-         break;
-       default:
-         // Manejo de caso por defecto
-         break;
-     }
- 
+            const userType = localStorage.setItem('userType', response.data[0].role);
+            localStorage.setItem('userData', JSON.stringify(response.data[0]));
+            localStorage.setItem('active',  response.data[0].active);
+
+            /*store.commit('auth/setUser', userData);
+            store.commit('auth/setUserType', userType);*/
+
+            console.log(`Usuario autenticado con tipo de usuario ${userType}`);
+
+            switch (userType) {
+                case 'CLIENT':
+
+                    break;
+                case 'COMPANY':
+
+                    break;
+                case 'EMPLOYEE':
+                    // Lógica específica para empleados
+                    break;
+                default:
+                    // Manejo de caso por defecto
+                    break;
+            }
+        } catch (error) {
+            console.error('Error durante la autenticación:', error);
+
+            next({name: 'login', query: {redirectFrom: routeTo.fullPath}});
+
+            setTimeout(() => {
+                location.reload();
+            }, 0);
+        }
+    }
      next();
-   } catch (error) {
-     console.error('Error durante la autenticación:', error);
-     next({ name: 'login', query: { redirectFrom: routeTo.fullPath } });
-   }
+
  });
  
  router.beforeResolve(async (routeTo, routeFrom, next) => {

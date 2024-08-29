@@ -40,30 +40,44 @@
           <table class="table align-middle table-nowrap" id="customerTable">
             <thead class="table-light text-muted">
             <tr>
-              <th class="sort" data-sort="current_value" scope="col" @click="onSort('id')">ID</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('name')">Nombre</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('connectorStatus')">Estado</th>
+              <th class="sort" data-sort="high" scope="col" @click="onSort('chargingStationName')">Estación De Carga</th>
+              <th class="sort" data-sort="current_value" scope="col" @click="onSort('ocppId')">ID Cargador</th>
+              <th class="sort" data-sort="pairs" scope="col" @click="onSort('alias')">Alias</th>
+              <th class="sort" data-sort="pairs" scope="col" @click="onSort('modelName')">Modelo</th>
+              <th class="sort" data-sort="high" scope="col" @click="onSort('enabled')">Estado</th>
               <th class="sort" data-sort="maintenanceDate" scope="col" @click="onSort('maintenanceDate')">Fecha de Mantenimiento</th>
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
             <tbody class="list form-check-all">
             <tr v-for="(dat, index) in resultQuery" :key="index">
-              <td>{{ dat.id }}</td>
-              <td class="pairs">{{ dat.name }}</td>
-              <td>
-                <span :class="dat.connectorStatus === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'">
-                  {{ dat.connectorStatus }}
+              <td>{{ dat.terminalName }}</td>
+              <td>{{ dat.ocppid }}</td>
+              <td class="pairs">{{ dat.alias }}</td>
+              <td class="pairs">{{ dat.modelName }}</td>
+              <td class="d-flex align-items-center">
+                 <span :class="dat.estadoCargador === 'ACTIVE' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
+                  {{ dat.estadoCargador === 'ACTIVE' ? 'Disponible' : 'No Disponible' }}
                 </span>
+                <BFormCheckbox
+                    v-model="dat.estadoCargador"
+                    switch
+                    :value="'ACTIVE'"
+                    :unchecked-value="'INACTIVE'"
+                    @change="cambiarActivoCargador(dat.id, dat.estadoCargador)"
+                    class="mt-1 mb-2"
+                    style="height: 19px; width: 35px"
+                >
+                </BFormCheckbox>
               </td>
-              <td>{{ dat.maintenanceDate }}</td>
+              <td>POR HACER</td>
               <td>
                 <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
-                  <router-link class="nav-link menu-link" :to="`/company/editar-cargador/`">
+                  <router-link class="nav-link menu-link" :to="`/company/editar-cargador/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -99,6 +113,7 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export default {
   components: {
@@ -109,18 +124,7 @@ export default {
   data() {
     return {
       searchQuery: '',
-      data: [
-        { id: 1, name: 'Cargador 1', connectorStatus: 'CONNECTED', maintenanceDate: '2024-08-01' },
-        { id: 2, name: 'Cargador 2', connectorStatus: 'DISCONNECTED', maintenanceDate: '2024-08-08' },
-        { id: 3, name: 'Cargador 3', connectorStatus: 'CONNECTED', maintenanceDate: '2024-08-03' },
-        { id: 4, name: 'Cargador 4', connectorStatus: 'DISCONNECTED', maintenanceDate: '2024-08-08' },
-        { id: 5, name: 'Cargador 5', connectorStatus: 'CONNECTED', maintenanceDate: '2024-08-05' },
-        { id: 6, name: 'Cargador 6', connectorStatus: 'DISCONNECTED', maintenanceDate: '2024-08-08' },
-        { id: 7, name: 'Cargador 7', connectorStatus: 'CONNECTED', maintenanceDate: '2024-08-07' },
-        { id: 8, name: 'Cargador 8', connectorStatus: 'DISCONNECTED', maintenanceDate: '2024-08-08' },
-        { id: 9, name: 'Cargador 9', connectorStatus: 'CONNECTED', maintenanceDate: '2024-08-09' },
-        { id: 10, name: 'Cargador 10', connectorStatus: 'DISCONNECTED', maintenanceDate: '2024-08-08' }
-      ],
+      data: [],
       page: 1,
       perPage: 5,
       pages: [],
@@ -154,8 +158,12 @@ export default {
         const search = this.searchQuery.toLowerCase();
         return this.displayedPosts.filter((data) => {
           return (
-              data.name.toLowerCase().includes(search) ||
-              data.connectorStatus.toLowerCase().includes(search)
+              data.chargingStationName.toLowerCase().includes(search) ||
+              data.ocppId.toLowerCase().includes(search) ||
+              data.alias.toLowerCase().includes(search) ||
+              data.modelName.toLowerCase().includes(search)
+              // data.enabled.toLowerCase().includes(search)
+              // data.maintenanceDate.toLowerCase().includes(search)
           );
         });
       } else {
@@ -170,9 +178,34 @@ export default {
   },
   created() {
     this.setPages();
+    this.chargesStation();
   },
 
   methods: {
+    async cambiarActivoCargador(id, estadoCargador) {
+      try {
+        const response = await axios.patch('http://localhost:8080/api/chargerStatus/change-active-status', null, {
+          params: {
+            id: id,
+            activeStatus: estadoCargador
+          }
+        });
+        if (response.status === 200) {
+          Swal.fire("Cargador Actualizado!", "", "success");
+        }
+      } catch (error) {
+        console.error("Error Actualizando Cargador", error);
+        Swal.fire("Error al actualizar el cargador", "", "error");
+      }
+    },
+    async chargesStation() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/chargers');
+        this.data = response.data
+      } catch (error) {
+        console.error("Error obteniendo las estaciones de carga:", error);
+      }
+    },
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -202,25 +235,45 @@ export default {
         this.page++;
       }
     },
-    confirm() {
+    onSort(column) {
+      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
+      const sortedArray = [...this.data];
+      sortedArray.sort((a, b) => {
+        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
+        return this.direction === 'asc' ? res : -res;
+      });
+      this.data = sortedArray;
+    },
+    confirm(chargerId) {
       Swal.fire({
-        title: "¿Estás seguro?",
-        text: "No podrás revertir esto.",
+        title: "¿Estás seguro de eliminar?",
+        text: "¡No podrás revertir la acción!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Sí, bórralo",
-        cancelButtonText: "No, cancelar",
-        reverseButtons: true
-      }).then((result) => {
+        confirmButtonColor: "#34c38f",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Sí, eliminar!",
+      }).then(async (result) => {
         if (result.isConfirmed) {
-          Swal.fire(
-              "¡Eliminado!",
-              "Tu archivo ha sido eliminado.",
-              "success"
-          );
+          try {
+            // Hacer la solicitud PUT al endpoint para "eliminar" el cargador
+            const response = await axios.patch(`http://localhost:8080/api/companies/current/chargers/${chargerId}/delete`);
+            if (response.status === 200) {
+              Swal.fire(
+                  "¡Eliminado!",
+                  "Tu cargador ha sido eliminado.",
+                  "success"
+              ).then(() => {
+                this.$router.go(0); // Recargar la página actual
+              });
+            }
+          } catch (error) {
+            console.error("Error eliminando el cargador:", error);
+            Swal.fire("Error", "No se pudo eliminar el cargador.", "error");
+          }
         }
       });
-    },
+    }
   },
 };
 </script>

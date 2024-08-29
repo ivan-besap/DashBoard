@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Reportes de Carga" pageTitle="Compañía" />
+    <PageHeader title="Carga Por Cargador" pageTitle="Compañía" />
 
     <div style="margin-top:10px;" class="table-responsive table-card">
       <div class="d-flex justify-content-between mb-3 align-items-center">

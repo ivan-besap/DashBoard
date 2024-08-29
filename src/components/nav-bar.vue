@@ -120,9 +120,9 @@ export default {
       const userType = localStorage.getItem('userType');
 
       this.userData = userData || {};
-      if (userType === 'client') {
+      if (userType === 'CLIENT') {
         this.userRole = 'Cliente';
-      } else if (userType === 'company') {
+      } else if (userType === 'COMPANY') {
         this.userRole = 'Compañia';
       } else {
         this.userRole = userType; // En caso de que haya otro tipo de usuario
@@ -912,16 +912,16 @@ export default {
           <BDropdown variant="link" class="ms-sm-3 header-item topbar-user" toggle-class="rounded-circle arrow-none"
             menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -14, crossAxis: 0, mainAxis: 0 }">
             <template #button-content>
-              <span class="d-flex align-items-center">
+              <div class="d-flex flex-column align-items-center">
                 <img class="rounded-circle header-profile-user" src="https://cdn-icons-png.flaticon.com/512/3607/3607444.png"
                      alt="Header Avatar">
-                <span class="text-start ms-xl-2" v-if="userData">
-                  <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ userData.firstName }} {{ userData.lastName }}</span>
-                  <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ userRole }}</span>
-                </span>
-              </span>
+                <div v-if="userData" class="text-center">
+                  <span style="font-size: 12px" class="fw-medium user-name-text d-block">{{ userData.nombreCompañia }}</span>
+                  <span style="font-size: 11px" class="user-name-sub-text d-block">{{ userRole }}</span>
+                </div>
+              </div>
             </template>
-            <h6 v-if="userData" class="dropdown-header">Bienvenido {{ userData.firstName }} {{ userData.lastName }}</h6>
+            <h6 v-if="userData" class="dropdown-header">Bienvenido {{ userData.nombreCompañia }}</h6>
             <router-link class="dropdown-item" to="/company/profile-company"><i
                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Perfil</span>

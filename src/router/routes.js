@@ -59,10 +59,9 @@ export default [
     path: "/",
     name: "default",
     meta: {
-      title: "Dashboard",
-      authRequired: true,
+      title: "Login",
     },
-    component: () => import("../views/dashboard/ecommerce/index.vue"),
+    component: () => import("../views/account/login.vue"),
   },
   {
     path: "/dashboard/crypto",
@@ -1420,10 +1419,10 @@ export default [
   },
 
   {
-    path: "/company/registro-cargas",
+    path: "/company/cargas-por-cargador",
     name: "Registro de Cargas",
     meta: { title: "Registro de Cargas", authRequired: true },
-    component: () => import("../views/company/registro-cargas.vue"),
+    component: () => import("../views/company/registro-cargas-cargador.vue"),
   },
 
   {
@@ -1441,18 +1440,11 @@ export default [
   }
 
   ,
-
   {
-    path: "/company/cargas-por-cargador",
-    name: "Cargas por Cargador",
-    meta: { title: "Cargas por Terminal", authRequired: true },
-    component: () => import("../views/company/cargas-por-cargador"),
-  },
-  {
-    path: "/company/cargas-por-usuario",
+    path: "/company/cargas-por-flota",
     name: "Cargas por Usuario",
     meta: { title: "Cargas por Terminal", authRequired: true },
-    component: () => import("../views/company/cargas-por-usuario"),
+    component: () => import("../views/company/cargas-por-flota.vue"),
   },
   {
     path: "/company/errores-por-conector",
@@ -1541,14 +1533,14 @@ export default [
   ,
 
   {
-    path: "/company/editar-estacion",
+    path: "/company/editar-estacion/:id",
     name: "Editar Estacion",
     meta: { title: "Editar Estacion", authRequired: true },
     component: () => import("../views/company/editar-estacion"),
   },
 
   {
-    path: "/company/editar-cargador",
+    path: "/company/editar-cargador/:id",
     name: "Editar Cargador",
     meta: { title: "Editar Cargador", authRequired: true },
     component: () => import("../views/company/editar-cargador"),
@@ -1557,7 +1549,7 @@ export default [
   ,
 
   {
-    path: "/company/editar-conector",
+    path: "/company/editar-conector/:id",
     name: "Editar Conector",
     meta: { title: "Editar Conector", authRequired: true },
     component: () => import("../views/company/editar-conector"),

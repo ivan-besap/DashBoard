@@ -39,6 +39,9 @@ export default {
   computed: {
 
   },
+  created() {
+    this.deleteToken()
+  },
   methods: {
     ...authMethods,
     ...authFackMethods,
@@ -68,9 +71,19 @@ export default {
   //   this.$router.push({ path: '/client/dashboard-client' });
   // }
       if (role === 'COMPANY' && isActive) {
-        this.$router.push({ path: '/company/dashboard-company' });
+        this.$router.push({ path: '/company/dashboard-company' }).then(() => {
+          if (!localStorage.getItem('reloadedDashboard')) {
+            localStorage.setItem('reloadedDashboard', 'true');
+            location.reload();
+          }
+        });
       } else if (role === 'COMPANY' && !isActive) {
-        this.$router.push({ path: '/company/profile-company' });
+        this.$router.push({ path: '/company/profile-company' }).then(() => {
+          if (!localStorage.getItem('reloadedProfile')) {
+            localStorage.setItem('reloadedProfile', 'true');
+            location.reload();
+          }
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -80,63 +93,69 @@ export default {
     }
   },
 
+    deleteToken(){
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userData');
+      localStorage.clear()
+    },
 
     // Try to log the user in with the username
     // and password they provided.
-    tryToLogIn() {
-      this.processing = true;
-      this.submitted = true;
-      // stop here if form is invalid
-      this.$touch;
-
-      if (this.$invalid) {
-        return;
-      } else {
-        if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-          this.tryingToLogIn = true;
-          // Reset the authError if it existed.
-          this.authError = null;
-          return (
-            this.logIn({
-              email: this.email,
-              password: this.password,
-            })
-              // eslint-disable-next-line no-unused-vars
-              .then((token) => {
-                this.tryingToLogIn = false;
-                this.isAuthError = false;
-                // Redirect to the originally requested page, or to the home page
-                this.$router.push({
-                  path: '/'
-                });
-              })
-              .catch((error) => {
-                this.tryingToLogIn = false;
-                this.authError = error ? error : "";
-                this.isAuthError = true;
-                this.processing = false;
-              })
-          );
-        } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-          const { email, password } = this;
-          if (email && password) {
-            this.login({
-              email,
-              password,
-            });
-          }
-        } else if (process.env.VUE_APP_DEFAULT_AUTH === "authapi") {
-          axios
-            .post("http://127.0.0.1:8000/api/login", {
-              email: this.email,
-              password: this.password,
-            })
-            .then((res) => {
-              return res;
-            });
-        }
-      }
-    },
+    // tryToLogIn() {
+    //   this.processing = true;
+    //   this.submitted = true;
+    //   // stop here if form is invalid
+    //   this.$touch;
+    //
+    //   if (this.$invalid) {
+    //     return;
+    //   } else {
+    //     if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
+    //       this.tryingToLogIn = true;
+    //       // Reset the authError if it existed.
+    //       this.authError = null;
+    //       return (
+    //         this.logIn({
+    //           email: this.email,
+    //           password: this.password,
+    //         })
+    //           // eslint-disable-next-line no-unused-vars
+    //           .then((token) => {
+    //             this.tryingToLogIn = false;
+    //             this.isAuthError = false;
+    //             // Redirect to the originally requested page, or to the home page
+    //             this.$router.push({
+    //               path: '/'
+    //             });
+    //           })
+    //           .catch((error) => {
+    //             this.tryingToLogIn = false;
+    //             this.authError = error ? error : "";
+    //             this.isAuthError = true;
+    //             this.processing = false;
+    //           })
+    //       );
+    //     } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
+    //       const { email, password } = this;
+    //       if (email && password) {
+    //         this.login({
+    //           email,
+    //           password,
+    //         });
+    //       }
+    //     } else if (process.env.VUE_APP_DEFAULT_AUTH === "authapi") {
+    //       axios
+    //         .post("http://127.0.0.1:8000/api/login", {
+    //           email: this.email,
+    //           password: this.password,
+    //         })
+    //         .then((res) => {
+    //           return res;
+    //         });
+    //     }
+    //   }
+    // },
 
   },
 };
@@ -188,7 +207,7 @@ export default {
 
                   </div>
 
-                  <form @submit.prevent="tryToLogIn">
+<!--                  <form @submit.prevent="tryToLogIn">-->
                     <div class="mb-3">
                       <label for="email" class="form-label">Correo</label>
                       <input type="email" class="form-control" id="email" placeholder="Ingrese correo" v-model="email" />
@@ -247,7 +266,7 @@ export default {
 <!--                        </BButton>-->
 <!--                      </div>-->
 <!--                    </div>-->
-                  </form>
+<!--                  </form>-->
                 </div>
               </BCardBody>
             </BCard>
