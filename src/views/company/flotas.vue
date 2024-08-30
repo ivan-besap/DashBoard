@@ -4,14 +4,13 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
+          <BButton style=" border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-flota">
               Crear Flotas
             </router-link>
           </BButton>
         </div>
-        <div class="contenedor-finac" style="margin-bottom: 10px;  width: 246px;">
-          <!-- Input de búsqueda -->
+        <div class="contenedor-finac" style="margin-bottom: 10px; width: 246px;">
           <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
               v-model="searchQuery"
@@ -30,24 +29,24 @@
           <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
               <tr>
-                <th class="sort" scope="col" @click="onSort('firstSurname')">Nombre</th>
-                <th class="sort" scope="col" @click="onSort('model')">Modelo</th>
-                <th class="sort" scope="col" @click="onSort('patent')">Patente</th>
+                <th class="sort" scope="col" @click="onSort('patente')">Patente</th>
+                <th class="sort" scope="col" @click="onSort('modelo')">Modelo</th>
+                <th class="sort" scope="col" @click="onSort('vin')">VIN</th>
                 <th scope="col" style="width: 1%;">Acciones</th>
               </tr>
             </thead>
             <tbody class="list form-check-all">
-              <tr v-for="(dat, index) in resultQuery" :key="index">
-                <td>{{ dat.firstSurname }}</td>
-                <td>{{ dat.model }}</td>
-                <td>{{ dat.patent }}</td>
+              <tr v-for="(car, index) in resultQuery" :key="index">
+                <td>{{ car.patente }}</td>
+                <td>{{ car.modelo }}</td>
+                <td>{{ car.vin }}</td>
                 <td>
-                  <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
-                    <router-link class="nav-link menu-link" :to="`/company/editar-flota/`">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-flota/${car.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(car.id)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>
@@ -83,6 +82,7 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import Swal from "sweetalert2";
+import axios from 'axios'; 
 
 export default {
   components: {
@@ -91,27 +91,72 @@ export default {
   },
   data() {
     return {
-      searchQuery: '',
-      data: [
-        { id: 1, firstSurname: 'Flota 1', model: 'Modelo X', patent: 'AB123CD', createdDay: '2023-01-01', company: 'Empresa A', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-        { id: 2, firstSurname: 'Flota 2', model: 'Modelo Y', patent: 'EF456GH', createdDay: '2023-02-01', company: 'Empresa B', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-        { id: 3, firstSurname: 'Flota 3', model: 'Modelo Z', patent: 'IJ789KL', createdDay: '2023-03-01', company: 'Empresa C', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-        { id: 4, firstSurname: 'Flota 4', model: 'Modelo X', patent: 'MN012OP', createdDay: '2023-04-01', company: 'Empresa D', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-        { id: 5, firstSurname: 'Flota 5', model: 'Modelo Y', patent: 'QR345ST', createdDay: '2023-05-01', company: 'Empresa E', active: true, plan: 'PLAN B INTERMEDIO', role: 'Administrador' },
-        { id: 6, firstSurname: 'Flota 6', model: 'Modelo Z', patent: 'UV678WX', createdDay: '2023-06-01', company: 'Empresa F', active: false, plan: 'PLAN C AVANZADO', role: 'Usuario' },
-        { id: 7, firstSurname: 'Flota 7', model: 'Modelo X', patent: 'YZ901AB', createdDay: '2023-07-01', company: 'Empresa G', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-        { id: 8, firstSurname: 'Flota 8', model: 'Modelo Y', patent: 'CD234EF', createdDay: '2023-08-01', company: 'Empresa H', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-        { id: 9, firstSurname: 'Flota 9', model: 'Modelo Z', patent: 'GH567IJ', createdDay: '2023-09-01', company: 'Empresa I', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-        { id: 10, firstSurname: 'Flota 10', model: 'Modelo X', patent: 'KL890MN', createdDay: '2023-10-01', company: 'Empresa J', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-      ],
+      searchQuery: '',  // Un hilo que guía tu búsqueda a través de flotas.
+      data: [],  // Un Array en blanco, esperando ser llenado con las flotas que nos cuenten su historia.
       page: 1,
       perPage: 5,
       pages: [],
-      direction: 'asc'
+      direction: 'asc',
     };
   },
 
   methods: {
+    // Este método es la chispa que enciende la conexión con el backend, trayendo a la vida las flotas activas para que puedan ser vistas y gestionadas.
+    async fetchCars() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/companies/current/cars');
+        this.data = response.data;  // Cada respuesta es una nueva página en el libro de tu compañía.
+        this.setPages();  // Organizamos las páginas para que cada historia tenga su espacio.
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      }
+    },
+    
+    // Este método se encarga de despedirse de una flota, desactivándola.
+    async deleteCar(carId) {
+      try {
+        const response = await axios.patch(`http://localhost:8080/api/companies/current/cars/${carId}/delete`);
+        console.log(response.data);
+        this.successmsg("El auto ha sido desactivado correctamente.");
+        this.fetchCars();  // Volvemos a cargar la lista.
+      } catch (error) {
+        console.error("Error al desactivar el auto:", error);
+        alert('Error al desactivar el auto');
+      }
+    },
+
+    // Una confirmación para asegurarnos de que es lo que realmente queremos hacer.
+    confirm(carId) {
+      Swal.fire({
+        title: "¿Estás seguro de eliminar?",
+        text: "¡No podrás revertir la acción!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#34c38f",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Sí, eliminar!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.deleteCar(carId);
+        }
+      });
+    },
+
+    // Diciendo que todo salió bien, y que es hora de seguir adelante.
+    successmsg(message) {
+      Swal.fire({
+        title: "Operación exitosa",
+        text: message,
+        icon: "success",
+        timer: 2000,
+        timerProgressBar: true,
+        willClose: () => {
+          this.fetchCars();  // Volvemos a cargar la lista.
+        }
+      });
+    },
+
+    // Aquí es donde organizamos todas las flotas, dividiéndolas en páginas.
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -119,6 +164,8 @@ export default {
         this.pages.push(index);
       }
     },
+    
+    // Un método que asegura que solo veas lo que está destinado para ti en ese momento, página por página.
     paginate(data) {
       let page = this.page;
       let perPage = this.perPage;
@@ -126,6 +173,8 @@ export default {
       let to = page * perPage;
       return data.slice(from, to);
     },
+    
+    // Métodos que te ayudan a navegar a través de las páginas de la historia, adelante y atrás.
     goToPage(pageNumber) {
       if (pageNumber !== '...') {
         this.page = pageNumber;
@@ -141,6 +190,8 @@ export default {
         this.page++;
       }
     },
+    
+    // Un método para ordenar las flotas, para que siempre encuentres lo que buscas en el orden que prefieras.
     onSort(column) {
       this.direction = this.direction === 'asc' ? 'desc' : 'asc';
       const sortedArray = [...this.data];
@@ -149,45 +200,33 @@ export default {
         return this.direction === 'asc' ? res : -res;
       });
       this.data = sortedArray;
-    },
-    confirm() {
-      Swal.fire({
-        title: "¿Estás seguro de eliminar?",
-        text: "¡No podrás revertir la acción!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#34c38f",
-        cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Sí, eliminar!",
-      }).then((result) => {
-        if (result.value) {
-          // Aquí va la lógica para eliminar el item
-          Swal.fire("¡Eliminado!", "El item ha sido eliminado.", "success");
-        }
-      });
-    },
+    }
   },
 
   computed: {
-    resultQuery() {
-      let filteredData = this.data;
+  // Filtrando las flotas según lo que estés buscando.
+  resultQuery() {
+    let filteredData = this.data;
 
-      if (this.searchQuery) {
-        const search = this.searchQuery.toLowerCase();
-        filteredData = filteredData.filter((data) => {
-          return (
-          data.firstSurname.toLowerCase().includes(search) ||
-          data.model.toLowerCase().includes(search) ||
-          data.patent.toLowerCase().includes(search)
-          );
-        });
-      }
-      return this.paginate(filteredData);
-    },
-    displayedPages() {
-      let result = [];
-      let page = this.page;
-      let numberOfPages = this.pages.length;
+    if (this.searchQuery) {
+      const search = this.searchQuery.toLowerCase();
+      filteredData = filteredData.filter((car) => {
+        return (
+          car.patente.toLowerCase().includes(search) ||  // Búsqueda por patente
+          car.modelo.toLowerCase().includes(search) ||   // Búsqueda por modelo
+          car.vin.toLowerCase().includes(search)         // Búsqueda por VIN
+        );
+      });
+    }
+
+    return this.paginate(filteredData);
+  },
+
+  // Este método calcula cuántas páginas se necesitan para mostrar todas las flotas disponibles.
+  displayedPages() {
+    let result = [];
+    let page = this.page;
+    let numberOfPages = this.pages.length;
       if (numberOfPages <= 5) {
         result = this.pages;
       } else {
@@ -203,12 +242,9 @@ export default {
     },
   },
 
+  // Cuando todo comienza, este método se asegura de que las flotas estén listas para ser vistas.
   mounted() {
-    this.setPages();
+    this.fetchCars();
   },
 };
 </script>
-
-<style scoped>
-/* Añade estilos personalizados si es necesario */
-</style>
