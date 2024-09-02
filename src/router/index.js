@@ -36,11 +36,16 @@ const router = createRouter({
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         try {
-            const response = await axios.get('http://localhost:8080/api/companies/logins');
+            const response = await axios.get('http://localhost:8080/api/user/current');
 
-            const userType = localStorage.setItem('userType', response.data[0].role);
-            localStorage.setItem('userData', JSON.stringify(response.data[0]));
-            localStorage.setItem('active',  response.data[0].active);
+            // Acceder directamente a response.data.userType y response.data.userData
+            const userType = response.data.userType;
+            const userData = response.data.userData;
+
+            localStorage.setItem('userType', userType);
+            localStorage.setItem('userData', JSON.stringify(userData));
+            localStorage.setItem('active', userData.activo);
+
 
             /*store.commit('auth/setUser', userData);
             store.commit('auth/setUserType', userType);*/

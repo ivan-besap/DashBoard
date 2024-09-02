@@ -13,10 +13,10 @@ export default {
   data() {
     return {
       user: {
-        businessName: "",
-        emailCompany: "",
-        phoneCompany: "",
+        nombreEmpresa: "",
         rut: "",
+        telefono: "",
+        email: "",
         password: "",
         confirm_password: "",
       },
@@ -24,17 +24,17 @@ export default {
   },
   validations: {
     user: {
-      businessName: {
+      nombreEmpresa: {
         required: helpers.withMessage("Ingrese un nombre de la compañía", required),
       },
-      emailCompany: {
+      email: {
         required: helpers.withMessage("Ingrese un email de la compañía", required),
         email: helpers.withMessage("Ingrese un email válido", email),
       },
       rut: {
         required: helpers.withMessage("Ingrese un rut de la compañía", required),
       },
-      phoneCompany: {
+      telefono: {
         required: helpers.withMessage("Ingrese un teléfono de la compañía", required),
       },
       password: {
@@ -59,7 +59,7 @@ export default {
       }
 
       try {
-        const response = await axios.post('http://52.14.116.236:8088/auth/registerCompany', this.user);
+        const response = await axios.post('http://localhost:8080/auth/register', this.user);
         if (response.data.status === 'errors') {
           this.authError = response.data.data;
           return;
@@ -67,8 +67,6 @@ export default {
           Swal.fire("Cuenta compañía creada!", "", "success");
           this.$router.push({ path: '/login' });
         }
-        console.log(response.data.status)
-        console.log(response.data)
       } catch (error) {
         console.error('Error during registration:', error);
         this.authError = 'Registro fallido. Por favor revise sus datos e intente de nuevo.';
@@ -141,25 +139,25 @@ export default {
                   <p class="text-muted">Crea tu cuenta en EvolGreen</p>
                 </div>
                 <div class="p-2 mt-4">
-                  <div class="mb-3" :class="{ 'has-error': v$.user.businessName.$invalid && v$.user.businessName.$dirty }">
+                  <div class="mb-3" :class="{ 'has-error': v$.user.nombreEmpresa.$invalid && v$.user.nombreEmpresa.$dirty }">
                     <label for="businessName" class="form-label">Nombre Compañía <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" v-model="user.businessName" id="businessName" placeholder="Ingrese nombre" @blur="v$.user.businessName.$touch()">
-                    <span v-if="v$.user.businessName.$invalid && v$.user.businessName.$dirty" class="text-danger">{{ v$.user.businessName.$errors[0].$message }}</span>
+                    <input type="text" class="form-control" v-model="user.nombreEmpresa" id="businessName" placeholder="Ingrese nombre" @blur="v$.user.nombreEmpresa.$touch()">
+                    <span v-if="v$.user.nombreEmpresa.$invalid && v$.user.nombreEmpresa.$dirty" class="text-danger">{{ v$.user.nombreEmpresa.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-3" :class="{ 'has-error': v$.user.rut.$invalid && v$.user.rut.$dirty }">
                     <label for="rut" class="form-label">Número de registro único <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Rut" @blur="v$.user.rut.$touch()">
                     <span v-if="v$.user.rut.$invalid && v$.user.rut.$dirty" class="text-danger">{{ v$.user.rut.$errors[0].$message }}</span>
                   </div>
-                  <div class="mb-3" :class="{ 'has-error': v$.user.phoneCompany.$invalid && v$.user.phoneCompany.$dirty }">
+                  <div class="mb-3" :class="{ 'has-error': v$.user.telefono.$invalid && v$.user.telefono.$dirty }">
                     <label for="phoneCompany" class="form-label">Número Teléfono <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" v-model="user.phoneCompany" id="phoneCompany" placeholder="Ingrese Teléfono" @blur="v$.user.phoneCompany.$touch()">
-                    <span v-if="v$.user.phoneCompany.$invalid && v$.user.phoneCompany.$dirty" class="text-danger">{{ v$.user.phoneCompany.$errors[0].$message }}</span>
+                    <input type="number" class="form-control" v-model="user.telefono" id="phoneCompany" placeholder="Ingrese Teléfono" @blur="v$.user.telefono.$touch()">
+                    <span v-if="v$.user.telefono.$invalid && v$.user.telefono.$dirty" class="text-danger">{{ v$.user.telefono.$errors[0].$message }}</span>
                   </div>
-                  <div class="mb-3" :class="{ 'has-error': v$.user.emailCompany.$invalid && v$.user.emailCompany.$dirty }">
+                  <div class="mb-3" :class="{ 'has-error': v$.user.email.$invalid && v$.user.email.$dirty }">
                     <label for="emailCompany" class="form-label">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" v-model="user.emailCompany" id="emailCompany" placeholder="Ingrese email" @blur="v$.user.emailCompany.$touch()">
-                    <span v-if="v$.user.emailCompany.$invalid && v$.user.emailCompany.$dirty" class="text-danger">{{ v$.user.emailCompany.$errors[0].$message }}</span>
+                    <input type="email" class="form-control" v-model="user.email" id="emailCompany" placeholder="Ingrese email" @blur="v$.user.email.$touch()">
+                    <span v-if="v$.user.email.$invalid && v$.user.email.$dirty" class="text-danger">{{ v$.user.email.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-2" :class="{ 'has-error': v$.user.password.$invalid && v$.user.password.$dirty }">
                     <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>

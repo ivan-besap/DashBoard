@@ -62,22 +62,22 @@ export default {
 
       // Suponiendo que el token se encuentra en result.data.token
       localStorage.setItem('jwt', result.data.token);
-      localStorage.setItem('role', result.data.role);
+      localStorage.setItem('accountType', result.data.accountType);
       localStorage.setItem('isActive', result.data.isActive);
       let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
 
-      let role = result.data.role;
+      let tipoCuenta = result.data.accountType;
   // if (role === 'CLIENT') {
   //   this.$router.push({ path: '/client/dashboard-client' });
   // }
-      if (role === 'COMPANY' && isActive) {
+      if (tipoCuenta === 'COMPANY' && isActive) {
         this.$router.push({ path: '/company/dashboard-company' }).then(() => {
           if (!localStorage.getItem('reloadedDashboard')) {
             localStorage.setItem('reloadedDashboard', 'true');
             location.reload();
           }
         });
-      } else if (role === 'COMPANY' && !isActive) {
+      } else if (tipoCuenta === 'COMPANY' && !isActive) {
         this.$router.push({ path: '/company/profile-company' }).then(() => {
           if (!localStorage.getItem('reloadedProfile')) {
             localStorage.setItem('reloadedProfile', 'true');
