@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import appConfig from "../../app.config";
 import axios from 'axios';
 import routes from './routes';
+
 /*import store from '@/state/store';*/
 
 const router = createRouter({

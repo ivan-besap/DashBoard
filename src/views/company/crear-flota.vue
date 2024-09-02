@@ -7,50 +7,100 @@
           <CardHeader title="Crear Flota" />
           <BCardBody>
             <div class="live-preview">
-              <BForm @submit.prevent="createEmployee">
+              <BForm @submit.prevent="createCar">
                 <BRow>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="employeeName" class="form-label">Nombre</label>
+                      <label for="patente" class="form-label">Patente</label>
                       <BFormInput 
-                        v-model="employee.name" 
+                        v-model="car.patente" 
                         type="text" 
                         class="form-control" 
-                        placeholder="Nombre del empleado" 
-                        id="employeeName" 
+                        placeholder="Patente del auto" 
+                        id="patente" 
                         required 
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="firstSurname" class="form-label">Modelo</label>
+                      <label for="modelo" class="form-label">Modelo</label>
                       <BFormInput 
-                        v-model="employee.firstSurname" 
+                        v-model="car.modelo" 
                         type="text" 
                         class="form-control" 
-                        placeholder="Apellido Paterno" 
-                        id="firstSurname" 
+                        placeholder="Modelo del auto" 
+                        id="modelo" 
                         required 
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="lastSurname" class="form-label">Patente</label>
+                      <label for="vin" class="form-label">VIN</label>
                       <BFormInput 
-                        v-model="employee.lastSurname" 
+                        v-model="car.vin" 
                         type="text" 
                         class="form-control" 
-                        placeholder="Apellido Materno" 
-                        id="lastSurname" 
+                        placeholder="VIN del auto" 
+                        id="vin" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="color" class="form-label">Color</label>
+                      <BFormInput 
+                        v-model="car.color" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Color del auto" 
+                        id="color" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="marca" class="form-label">Marca</label>
+                      <BFormInput 
+                        v-model="car.marca" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Marca del auto" 
+                        id="marca" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="añoFabricacion" class="form-label">Año de Fabricación</label>
+                      <BFormInput 
+                        v-model="car.añoFabricacion" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Año de Fabricación" 
+                        id="añoFabricacion" 
+                        required 
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="capacidadPotencia" class="form-label">Capacidad de Potencia</label>
+                      <BFormInput 
+                        v-model="car.capacidadPotencia" 
+                        type="number" 
+                        class="form-control" 
+                        placeholder="Capacidad de Potencia del auto" 
+                        id="capacidadPotencia" 
                         required 
                       />
                     </div>
                   </BCol>
                   
-                  
-                 
                   <BCol lg="12">
                     <div class="text-end">
                       <BButton style="" type="submit" variant="light"  @click="successmsg">
@@ -69,72 +119,51 @@
 </template>
 
 <script>
-
 import "flatpickr/dist/flatpickr.css";
 import "@vueform/multiselect/themes/default.css";
 import Swal from "sweetalert2";
-
-import Layout from "@/layouts/main.vue";
-import PageHeader from "@/components/page-header";
-import CardHeader from "@/common/card-header";
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      employee: {
-        name: '',
-        firstSurname: '',
-        lastSurname: '',
-        email: '',
-        password: '',
-        plan: '',
-        role: '' // Añadido campo para el rol
-      },
-      config: {
-        wrap: true, // set wrap to true only when using 'input-group'
-        altFormat: "M j, Y",
-        altInput: true,
-        dateFormat: "d M, Y",
-      },
-      date: null,
-      date1: null,
-      date3: null,
+      car: {
+        patente: '',
+        modelo: '',
+        vin: '',
+        color: '',
+        marca: '',
+        añoFabricacion: '',
+        capacidadPotencia: ''
+      }
     };
   },
-  components: {
-    Layout,
-    PageHeader,
-    CardHeader,
-  },
   methods: {
-
     successmsg() {
       Swal.fire({
         title: "Flota creada!",
-        text: "Redirigiendo a la página de Empleados...",
+        text: "Redirigiendo a la página de Flotas...",
         icon: "success",
-        timer: 2000, // Tiempo en milisegundos antes de redirigir
+        timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('/company/flotas'); // Redirigir a la página de planes
+          this.$router.push('/company/flotas');
         }
       });
     },
-    async createEmployee() {
+    async createCar() {
       try {
-         // Simula una llamada de API exitosa
-         setTimeout(() => {
-            this.successmsg();
-            this.$router.push('/company/empleados-company');
-          }, 1000); // Retraso de 1 segundo para simular la llamada
+        await axios.post('http://localhost:8080/api/companies/current/cars', this.car);
+        this.successmsg();
       } catch (error) {
-        console.error("Error creando el empleado:", error);
-        alert('Error creando el empleado');
+        console.error("Error creando el auto:", error);
+        alert('Error creando el auto');
       }
     }
   }
 };
 </script>
+
 
 <style>
 .flex-shrink-0 {

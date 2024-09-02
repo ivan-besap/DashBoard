@@ -1593,6 +1593,15 @@ export default [
   ,
 
   {
+    path: '/company/editar-flota/:id',
+    name: 'EditarFlota',
+    meta: { title: " Editar Flota", authRequired: true },
+    component: () => import('../views/company/editar-flota')
+  }
+
+  ,
+
+  {
     path: "/company/mantenimiento-cargador",
     name: "Mantenimiento Cargador",
     meta: { title: "Mantenimiento Cargador", authRequired: true },
@@ -1608,7 +1617,7 @@ export default [
     component: () => import("../views/company/asignar-mantenimiento"),
   }
 
-
+  
 
 
   
