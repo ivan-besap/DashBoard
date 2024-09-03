@@ -161,7 +161,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/companies/current/cars/${carId}`);
+      const response = await axios.get(`http://localhost:8080/api/accounts/current/cars/${carId}`);
       console.log("API Response:", response.data); // Verifica los datos obtenidos
       if (response.data) {
         this.car = response.data;  // Carga los datos si el ID es válido y el auto existe
@@ -176,7 +176,7 @@ export default {
     async updateCar() {
       try {
         const carId = this.$route.params.id; // Asume que el ID del auto se pasa como parámetro en la URL
-        await axios.put(`http://localhost:8080/api/companies/current/cars/${carId}`, this.car);
+        await axios.put(`http://localhost:8080/api/accounts/current/cars/${carId}`, this.car);
         this.successmsg();
       } catch (error) {
         console.error("Error al actualizar el auto:", error);

@@ -84,16 +84,17 @@
                         id="role" 
                         required
                       >
-                        <option value="">Por defecto</option>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Electrobombero">Electrobombero</option>
-                        <option value="Gerente de Marketing">Gerente de Marketing</option>
+                        <option value="">Seleccione un rol</option>
+                        <option v-for="role in roles" :key="role.id" :value="role.id">
+                          {{ role.nombre }} 
+                        </option>
                       </BFormSelect>
                     </div>
                   </BCol>
+
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton style="" type="submit" variant="light"  @click="successmsg">
+                      <BButton type="submit" variant="light" @click="successmsg">
                         Crear Usuario
                       </BButton>
                     </div>
@@ -117,6 +118,7 @@ import Swal from "sweetalert2";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import axios from "axios";
 
 export default {
   data() {
@@ -130,6 +132,7 @@ export default {
         plan: '',
         role: '' // Añadido campo para el rol
       },
+      roles: [],
       config: {
         wrap: true, // set wrap to true only when using 'input-group'
         altFormat: "M j, Y",
@@ -146,6 +149,9 @@ export default {
     PageHeader,
     CardHeader,
   },
+  created() {
+    this.fetchRoles(); 
+  },
   methods: {
 
     successmsg() {
@@ -160,13 +166,29 @@ export default {
         }
       });
     },
+    async fetchRoles() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/roles'); 
+        this.roles = response.data; 
+      } catch (error) {
+        console.log(this.roles);
+        console.error("Error obteniendo los roles:", error);
+      }
+    },
     async createEmployee() {
       try {
-         // Simula una llamada de API exitosa
-         setTimeout(() => {
-            this.successmsg();
-            this.$router.push('/company/empleados-company');
-          }, 1000); // Retraso de 1 segundo para simular la llamada
+        const newEmployee = {
+          nombre: this.employee.name,
+          apellidoPaterno: this.employee.firstSurname,
+          apellidoMaterno: this.employee.lastSurname,
+          email: this.employee.email,
+          password: this.employee.password,
+          role: this.employee.role // Envía el ID del rol seleccionado
+        };
+
+        const response = await axios.post('http://localhost:8080/api/companies/current/employee', newEmployee);
+        this.successmsg();
+        console.log("Empleado creado exitosamente:", response.data);
       } catch (error) {
         console.error("Error creando el empleado:", error);
         alert('Error creando el empleado');

@@ -101,10 +101,33 @@ export default {
   },
 
   methods: {
+    async loadCarData() {
+    const carId = this.$route.params.id; // Obtiene el ID del coche de la URL
+
+    console.log("Car ID:", carId); // Verifica el ID en la URL
+
+    if (!carId || isNaN(carId)) {
+      this.redirectToFlotas();  // Redirige si el ID no es válido
+      return;
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/accounts/current/cars/${carId}`);
+      console.log("API Response:", response.data); // Verifica los datos obtenidos
+      if (response.data) {
+        this.car = response.data;  // Carga los datos si el ID es válido y el auto existe
+      } else {
+        this.redirectToFlotas();  // Redirige si el auto no se encuentra
+      }
+    } catch (error) {
+      console.error("Error al cargar los datos del auto:", error);
+      this.redirectToFlotas();
+    }
+  },
     // Este método es la chispa que enciende la conexión con el backend, trayendo a la vida las flotas activas para que puedan ser vistas y gestionadas.
     async fetchCars() {
       try {
-        const response = await axios.get('http://localhost:8080/api/companies/current/cars');
+        const response = await axios.get('http://localhost:8080/api/accounts/current/cars');
         this.data = response.data;  // Cada respuesta es una nueva página en el libro de tu compañía.
         this.setPages();  // Organizamos las páginas para que cada historia tenga su espacio.
       } catch (error) {
@@ -115,7 +138,7 @@ export default {
     // Este método se encarga de despedirse de una flota, desactivándola.
     async deleteCar(carId) {
       try {
-        const response = await axios.patch(`http://localhost:8080/api/companies/current/cars/${carId}/delete`);
+        const response = await axios.patch(`http://localhost:8080/api/accounts/current/cars/${carId}/delete`);
         console.log(response.data);
         this.successmsg("El auto ha sido desactivado correctamente.");
         this.fetchCars();  // Volvemos a cargar la lista.

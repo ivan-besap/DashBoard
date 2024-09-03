@@ -1515,12 +1515,12 @@ export default [
   ,
 
   {
-    path: "/company/editar-empleados",
-    name: "Editar Empleados",
+    path: "/company/editar-empleados/:id", 
+    name: "EditarEmpleados", 
     meta: { title: "Editar Empleados", authRequired: true },
     component: () => import("../views/company/editar-empleados"),
   }
-
+  
   ,
 
   {
