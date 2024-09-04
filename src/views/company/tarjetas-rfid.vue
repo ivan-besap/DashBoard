@@ -2,27 +2,26 @@
   <Layout>
     <PageHeader title="Tarjetas RFID" pageTitle="Compañía" />
 
-    <!--<BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-      <a href="/company/create-empleados-company">Detalle de Terminal</a>
-    </BButton>-->
-
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-tarjeta-rfid">
               Crear Tarjeta RFID
             </router-link>
+          </BButton>
+          <BButton style=" margin-left: 20px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
+            <router-link class="nav-link menu-link" target="" to="/company/asignar-RFID">Asignar RFID</router-link>
           </BButton>
         </div>
         <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px;">
           <!-- Input de búsqueda -->
           <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
-                v-model="searchQuery"
-                type="text"
-                class="form-control"
-                placeholder="Buscar Tarjeta ..."
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar Tarjeta ..."
             />
           </div>
         </div>
@@ -34,29 +33,31 @@
         <div class="table-responsive table-card">
           <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
-            <tr>
-              <th class="sort" data-sort="current_value" scope="col" @click="onSort('nombre')">Nombre</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('codigo')">Código</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('fechaExpiracion')">Fecha de expiración</th>
-              <th scope="col" style="width: 1%;">Acciones</th>
-            </tr>
+              <tr>
+                <th class="sort" @click="onSort('nombreDeIdentificador')">Nombre</th>
+                <th class="sort" @click="onSort('rfid')">Código</th>
+                <th class="sort" @click="onSort('fechaExpiracion')">Fecha de expiración</th>
+                <th class="sort" @click="onSort('patente')">Patente asociada</th>
+                <th scope="col" style="width: 1%;">Acciones</th>
+              </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="(dat, index) in resultQuery" :key="index">
-              <td>{{ dat.nombre }}</td>
-              <td class="pairs">{{ dat.codigo }}</td>
-              <td class="pairs">{{ dat.fechaExpiracion }}</td>
-              <td>
-                <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
-                  <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/`">
-                    <i class="mdi mdi-pencil"></i>
-                  </router-link>
-                </BButton>
-                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
-                  <i class="mdi mdi-delete"></i>
-                </BButton>
-              </td>
-            </tr>
+              <tr v-for="(dat, index) in resultQuery" :key="index">
+                <td>{{ dat.nombreDeIdentificador }}</td>
+                <td>{{ dat.rfid }}</td>
+                <td>{{ dat.fechaExpiracion }}</td>
+                <td>{{ dat.patente || 'No asignada' }}</td>
+                <td>
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/${dat.id}`">
+                      <i class="mdi mdi-pencil"></i>
+                    </router-link>
+                  </BButton>
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)">
+                    <i class="mdi mdi-delete"></i>
+                  </BButton>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -67,9 +68,9 @@
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
+                active: pageNumber == page,
+                disabled: pageNumber == '...',
+              }" v-for="pageNumber in displayedPages" :key="pageNumber"
                   @click="goToPage(pageNumber)">
                 <BLink class="page" href="#">{{ pageNumber }}</BLink>
               </li>
@@ -88,6 +89,8 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import Swal from "sweetalert2";
+import axios from 'axios';
+
 export default {
   components: {
     Layout,
@@ -96,15 +99,11 @@ export default {
   data() {
     return {
       searchQuery: '',
-      data: [
-        { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
-        { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
-        { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
-        { id: 4, nombre: "Tarjeta Oficina 453", codigo: "88554796002145575", fechaExpiracion: "28-10-2024"},
-      ],
+      data: [],  // Aquí se almacenan los datos desde el backend
       page: 1,
       perPage: 5,
       pages: [],
+      direction: 'asc',
     };
   },
   computed: {
@@ -122,13 +121,6 @@ export default {
       }
       return pages;
     },
-    filteredPlans() {
-      const query = this.searchQuery.toLowerCase();
-      return this.data.filter(dat => dat.nombre.toLowerCase().includes(query));
-    },
-    displayedPosts() {
-      return this.paginate(this.data);
-    },
     resultQuery() {
       let filteredData = this.data;
 
@@ -136,8 +128,8 @@ export default {
         const search = this.searchQuery.toLowerCase();
         filteredData = filteredData.filter((data) => {
           return (
-              data.nombre.toLowerCase().includes(search) ||
-              data.codigo.toLowerCase().includes(search) ||
+              data.nombreDeIdentificador.toLowerCase().includes(search) ||
+              data.rfid.toLowerCase().includes(search) ||
               data.fechaExpiracion.toLowerCase().includes(search)
           );
         });
@@ -145,21 +137,35 @@ export default {
       return this.paginate(filteredData);
     },
   },
-  watch: {
-    posts() {
-      this.setPages();
-    },
-  },
   created() {
-    this.setPages();
+    this.fetchDeviceIdentifiers(); // Cargar dispositivos al crear el componente
   },
-  filters: {
-    trimWords(value) {
-      return value.split(" ").splice(0, 20).join(" ") + "...";
-    },
-  },
-
   methods: {
+    async fetchDeviceIdentifiers() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/accounts/current/deviceIdentifiers');
+        const devices = response.data;
+        
+        // Obtener los detalles del auto asociado (patente)
+        const deviceWithCarDetails = await Promise.all(
+          devices.map(async (device) => {
+            if (device.auto) {
+              const carResponse = await axios.get(`http://localhost:8080/api/accounts/current/cars/${device.auto}`);
+              device.patente = carResponse.data.patente;
+            } else {
+              device.patente = 'No asignada'; 
+            }
+            return device;
+          })
+        );
+
+        this.data = deviceWithCarDetails;
+        this.setPages(); // Establecer paginación
+      } catch (error) {
+        console.error("Error al obtener los dispositivos RFID:", error);
+      }
+    },
+
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -167,28 +173,31 @@ export default {
         this.pages.push(index);
       }
     },
+
     paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
+      let from = this.page * this.perPage - this.perPage;
+      let to = this.page * this.perPage;
       return data.slice(from, to);
     },
+
     goToPage(pageNumber) {
       if (pageNumber !== '...') {
         this.page = pageNumber;
       }
     },
+
     previousPage() {
       if (this.page > 1) {
         this.page--;
       }
     },
+
     nextPage() {
       if (this.page < this.pages.length) {
         this.page++;
       }
     },
+
     onSort(column) {
       this.direction = this.direction === 'asc' ? 'desc' : 'asc';
       const sortedArray = [...this.data];
@@ -198,22 +207,38 @@ export default {
       });
       this.data = sortedArray;
     },
-    confirm() {
+
+    // Confirmar y desactivar la tarjeta RFID
+    confirm(rfidId) {
+      if (!rfidId) {
+          console.error("El ID de la tarjeta RFID es nulo o no está definido.");
+          return;
+      }
+
       Swal.fire({
-        title: "Estas seguro de eliminar?",
-        text: "No podras revertir la accion!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#34c38f",
-        cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Si, eliminar!",
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire("Tarjeta RFID Eliminada", "", "success");
-        }
+          title: "¿Estás seguro de desactivar esta tarjeta RFID?",
+          text: "No podrás revertir esta acción",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#34c38f",
+          cancelButtonColor: "#f46a6a",
+          confirmButtonText: "Sí, desactivar!",
+      }).then(async (result) => {
+          if (result.isConfirmed) {
+              try {
+                  await axios.patch(
+                      `http://localhost:8080/api/accounts/current/device-identifiers/${rfidId}/delete`
+                  );
+
+                  Swal.fire("Tarjeta RFID desactivada", "", "success");
+                  this.fetchDeviceIdentifiers(); // Refrescar la lista de tarjetas RFID
+              } catch (error) {
+                  console.error("Error al desactivar la tarjeta RFID:", error);
+                  Swal.fire("Error", "No se pudo desactivar la tarjeta RFID", "error");
+              }
+          }
       });
-    }
+    },
   },
 };
 </script>
-

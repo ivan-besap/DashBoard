@@ -7,49 +7,56 @@
           <CardHeader title="Crear Tarjeta RFID" />
           <BCardBody>
             <div class="live-preview">
-<!--              <BForm @submit.prevent="createCharger">-->
+              <BForm @submit.prevent="createDeviceIdentifier">
                 <BRow>
-
-
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="alias" class="form-label">Nombre</label>
+                      <label for="nombre" class="form-label">Nombre</label>
                       <BFormInput
+                          v-model="deviceIdentifier.nombreDeIdentificador"
                           type="text"
                           class="form-control"
                           placeholder="Nombre"
-                          id="alias"
+                          id="nombre"
+                          required
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="alias" class="form-label">Código tarjeta</label>
+                      <label for="rfid" class="form-label">Código tarjeta</label>
                       <BFormInput
+                          v-model="deviceIdentifier.rfid"
                           type="text"
                           class="form-control"
                           placeholder="Código Tarjeta"
-                          id="alias"
+                          id="rfid"
+                          required
                       />
                     </div>
                   </BCol>
-
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="StartleaveDate" class="form-label">Fecha Expiración</label>
-                      <flat-pickr  class="form-control"></flat-pickr>
+                      <label for="fechaExpiracion" class="form-label">Fecha Expiración</label>
+                      <flat-pickr
+                          v-model="deviceIdentifier.fechaExpiracion"
+                          class="form-control"
+                          :config="{ dateFormat: 'Y-m-d' }"
+                          placeholder="Selecciona la fecha de expiración"
+                          id="fechaExpiracion"
+                          required
+                      ></flat-pickr>
                     </div>
                   </BCol>
-
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton style="" type="submit" variant="light" @click="successmsg">
+                      <BButton style="" type="submit" variant="light">
                         Crear Tarjeta RFID
                       </BButton>
                     </div>
                   </BCol>
                 </BRow>
-<!--              </BForm>-->
+              </BForm>
             </div>
           </BCardBody>
         </BCard>
@@ -66,10 +73,17 @@ import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
 import Swal from "sweetalert2";
 import flatPickr from "vue-flatpickr-component";
+import axios from "axios";
 
 export default {
   data() {
     return {
+      deviceIdentifier: {
+        nombreDeIdentificador: '',
+        rfid: '',
+        fechaExpiracion: '',
+        auto: null
+      }
     };
   },
   components: {
@@ -79,18 +93,26 @@ export default {
     CardHeader,
   },
   methods: {
-    successmsg() {
-      Swal.fire({
-        title: "Tarjeta RFID Creada!",
-        text: "Redirigiendo a la página de Tarjetas RFID...",
-        icon: "success",
-        timer: 2000, // Tiempo en milisegundos antes de redirigir
-        timerProgressBar: true,
-        willClose: () => {
-          this.$router.push('/company/tarjetas-rfid'); // Redirigir a la página de cargadores
+    async createDeviceIdentifier() {
+      try {
+        const response = await axios.post('http://localhost:8080/api/accounts/current/device-identifiers', this.deviceIdentifier);
+        if (response.status === 201) {
+          Swal.fire({
+            title: "Tarjeta RFID Creada!",
+            text: "Redirigiendo a la página de Tarjetas RFID...",
+            icon: "success",
+            timer: 2000,
+            timerProgressBar: true,
+            willClose: () => {
+              this.$router.push('/company/tarjetas-rfid');
+            }
+          });
         }
-      });
-    },
+      } catch (error) {
+        console.error("Error al crear la tarjeta RFID:", error);
+        Swal.fire("Error", "No se pudo crear la tarjeta RFID", "error");
+      }
+    }
   }
 };
 </script>
@@ -99,4 +121,4 @@ export default {
 .flex-shrink-0 {
   display: none;
 }
-</style>o
+</style>

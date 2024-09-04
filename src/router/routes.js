@@ -1339,13 +1339,20 @@ export default [
   },
 
   {
+    path: "/company/asignar-RFID",
+    name: "Asignar RFID",
+    meta: { title: "Asignar RFID", authRequired: true },
+    component: () => import("../views/company/asignar-RFID"),
+  },
+
+  {
     path: "/company/tarjetas-rfid",
     name: "Tarjetas RFID",
     meta: { title: "Tarjetas RFID", authRequired: true },
     component: () => import("../views/company/tarjetas-rfid.vue"),
   },
   {
-    path: "/company/editar-tarjeta-rfid",
+    path: "/company/editar-tarjeta-rfid/:id",
     name: "Editar Tarjeta RFID",
     meta: { title: "Editar Tarjeta RFID", authRequired: true },
     component: () => import("../views/company/editar-tarjeta-rfid.vue"),
