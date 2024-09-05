@@ -5,12 +5,12 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light">
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(34)">
             <router-link class="nav-link menu-link" target="" to="/company/crear-tarjeta-rfid">
               Crear Tarjeta RFID
             </router-link>
           </BButton>
-          <BButton style=" margin-left: 20px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
+          <BButton style=" margin-left: 20px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(54)">
             <router-link class="nav-link menu-link" target="" to="/company/asignar-RFID">Asignar RFID</router-link>
           </BButton>
         </div>
@@ -48,12 +48,12 @@
                 <td>{{ dat.fechaExpiracion }}</td>
                 <td>{{ dat.patente || 'No asignada' }}</td>
                 <td>
-                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(35)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/${dat.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(36)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>
@@ -104,6 +104,7 @@ export default {
       perPage: 5,
       pages: [],
       direction: 'asc',
+      permisos:[]
     };
   },
   computed: {
@@ -138,12 +139,18 @@ export default {
     },
   },
   created() {
-    this.fetchDeviceIdentifiers(); // Cargar dispositivos al crear el componente
+    this.fetchDeviceIdentifiers();
+    this.loadUserData();
   },
   methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
     async fetchDeviceIdentifiers() {
       try {
-        const response = await axios.get('http://localhost:8080/api/accounts/current/deviceIdentifiers');
+        const response = await axios.get('http://localhost:8080/api/empresa/current/deviceIdentifiers');
         const devices = response.data;
         
         // Obtener los detalles del auto asociado (patente)

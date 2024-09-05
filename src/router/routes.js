@@ -1477,16 +1477,16 @@ export default [
   }
   ,
   {
-    path: "/company/flotas",
-    name: "Flotas",
-    meta: { title: "Flotas", authRequired: true },
-    component: () => import("../views/company/flotas"),
+    path: "/company/vehiculos",
+    name: "Vehiculos",
+    meta: { title: "Vehiculos", authRequired: true },
+    component: () => import("../views/company/vehiculos.vue"),
   },
   {
-    path: "/company/crear-flota",
-    name: "Crear Flota",
-    meta: { title: "Crear Flota", authRequired: true },
-    component: () => import("../views/company/crear-flota"),
+    path: "/company/crear-vehiculo",
+    name: "Crear Vehiculo",
+    meta: { title: "Crear Vehiculo", authRequired: true },
+    component: () => import("../views/company/crear-vehiculo.vue"),
   }
   ,
   {
@@ -1503,7 +1503,7 @@ export default [
   },
 
   {
-    path: "/company/editar-tarifa",
+    path: "/company/editar-tarifa/:id",
     name: "Editar Tarifa",
     meta: { title: "Editar Tarifa", authRequired: true },
     component: () => import("../views/company/editar-tarifa"),
@@ -1531,7 +1531,7 @@ export default [
   ,
 
   {
-    path: "/company/editar-roles",
+    path: "/company/editar-roles/:id",
     name: "Editar Roles",
     meta: { title: "Editar Roles", authRequired: true },
     component: () => import("../views/company/editar-roles"),
@@ -1590,20 +1590,12 @@ export default [
 
   ,
 
-  {
-    path: "/company/editar-flota",
-    name: "Editar Flota",
-    meta: { title: " Editar Flota", authRequired: true },
-    component: () => import("../views/company/editar-flota"),
-  }
-
-  ,
 
   {
-    path: '/company/editar-flota/:id',
-    name: 'EditarFlota',
-    meta: { title: " Editar Flota", authRequired: true },
-    component: () => import('../views/company/editar-flota')
+    path: '/company/editar-vehiculo/:id',
+    name: 'Editar Vehiculo',
+    meta: { title: " Editar Vehiculo", authRequired: true },
+    component: () => import('../views/company/editar-vehiculo.vue')
   }
 
   ,

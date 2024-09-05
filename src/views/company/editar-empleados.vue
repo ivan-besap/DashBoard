@@ -61,31 +61,31 @@
                       />
                     </div>
                   </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="password" class="form-label">Contraseña</label>
-                      <BFormInput 
-                        v-model="employee.password" 
-                        type="password" 
-                        class="form-control" 
-                        placeholder="Contraseña" 
-                        id="password" 
-                        required 
-                      />
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="password" class="form-label">Contraseña</label>-->
+<!--                      <BFormInput -->
+<!--                        v-model="employee.password" -->
+<!--                        type="password" -->
+<!--                        class="form-control" -->
+<!--                        placeholder="Contraseña" -->
+<!--                        id="password" -->
+<!--                        required -->
+<!--                      />-->
+<!--                    </div>-->
+<!--                  </BCol>-->
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="role" class="form-label">Rol</label>
                       <BFormSelect 
-                        v-model="employee.role.id" 
+                        v-model="employee.role.id"
                         class="form-control" 
                         id="role" 
                         required
                       >
                         <option value="">Seleccione un rol</option>
-                        <option v-for="role in roles" :key="role.id" :value="role.id">
-                          {{ role.nombre }} 
+                        <option v-for="rol in roles" :key="rol.id" :value="rol.id">
+                          {{ rol.nombre }}
                         </option>
                       </BFormSelect>
                     </div>
@@ -122,7 +122,7 @@ export default {
         apellidoPaterno: '',
         apellidoMaterno: '',
         email: '',
-        password: '',
+        /*password: '',*/
         role: " ",
       },
       roles: []
@@ -149,8 +149,15 @@ export default {
     async fetchEmployeeData() {
       const employeeId = this.$route.params.id;
       try {
-        const response = await axios.get(`http://localhost:8080/api/companies/current/employee/${employeeId}`);
-        this.employee = response.data;  
+        const response = await axios.get(`http://localhost:8080/api/accounts/${employeeId}`);
+        this.employee = {
+          nombre: response.data.nombre || '',
+          apellidoPaterno: response.data.apellidoPaterno || '',
+          apellidoMaterno: response.data.apellidoMaterno || '',
+          email: response.data.email || '',
+         /* password: response.data.password || '',  */
+          role: response.data.rol || { id: null },
+        };
       } catch (error) {
         console.error("Error obteniendo los datos del empleado:", error);
       }
@@ -163,9 +170,10 @@ export default {
           apellidoPaterno: this.employee.apellidoPaterno,
           apellidoMaterno: this.employee.apellidoMaterno,
           email: this.employee.email,
-          password: this.employee.password,
-          role: this.employee.rol.id  
+          /*password: this.employee.password ,*/
+          role: this.employee.role.id
         };
+        console.log(employeeData)
 
         await axios.put(
           `http://localhost:8080/api/companies/current/employee/${employeeId}`,
@@ -191,8 +199,5 @@ export default {
 
 
   },
-  mounted() {
-    this.fetchEmployeeData();
-  }
 };
 </script>

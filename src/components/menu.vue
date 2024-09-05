@@ -7,7 +7,9 @@ export default {
   data() {
     return {
       active : null,
+      permisos : [],
       userRole: null,
+      userData: null,
       settings: {
         minScrollbarLength: 60,
       },
@@ -134,6 +136,18 @@ export default {
       const role = localStorage.getItem('userType');
       this.active = localStorage.getItem('active');
       this.userRole = role;
+      const userDataString = localStorage.getItem('userData');
+      if (!userDataString) {
+        console.error('No se encontraron datos de usuario en localStorage');
+        return;
+      }
+      this.userData = JSON.parse(userDataString);
+      if (this.userData && this.userData.rol) {
+        this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+      } else {
+        console.error('Los datos de usuario no contienen un rol válido');
+      }
+
     },
     onRoutechange(ele) {
       this.initActiveMenu(ele.path);
@@ -255,17 +269,17 @@ export default {
 
     <template v-if="layoutType === 'vertical' || layoutType === 'semibox'">
       <!--        MENU COMPAÑIA-->
-      <ul v-if="userRole === 'COMPANY' && active ==='true'" class="navbar-nav h-100" id="navbar-nav">
+      <ul class="navbar-nav h-100" id="navbar-nav" v-if="active ==='true'">
         <li class="menu-title">
           <span data-key="t-menu"> {{ $t("t-menu") }}</span>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permisos.includes(1)" >
           <a class="nav-link menu-link" href="/company/dashboard-company" >
             <i class="ri-dashboard-2-line"></i>
             <span> Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="permisos.includes(3)">
 
           <router-link class="nav-link menu-link" target="" to="/company/comandos-ocpp">
             <i class="mdi mdi-keyboard"></i>
@@ -281,7 +295,7 @@ export default {
         </li>-->
         
         
-        <li class="nav-item">
+        <li class="nav-item" v-if="permisos.includes(10)">
           <router-link class="nav-link menu-link"  target="" to="/company/tarifas">
             <i class="ri-survey-line"></i>
             <span data-key="t-dashboards"> Tarifas</span>
@@ -294,10 +308,10 @@ export default {
 <!--          </router-link>-->
 <!--        </li>-->
        
-        <li class="nav-item">
-          <router-link class="nav-link menu-link"  target="" to="/company/flotas">
+        <li class="nav-item" v-if="permisos.includes(15)">
+          <router-link class="nav-link menu-link"  target="" to="/company/vehiculos">
             <i class="mdi mdi-car-connected"></i>
-            <span data-key="t-dashboards"> Flota</span>
+            <span data-key="t-dashboards"> Vehículos</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -308,49 +322,49 @@ export default {
           </a>
           <div class="collapse menu-dropdown" id="sidebarlanding">
             <ul class="nav nav-sm flex-column">
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(19)">
                 <router-link class="nav-link menu-link"  target="" to="/company/cargas">
                   <span data-key="t-landing">Cargas</span>
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(20)">
                 <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga">
                 
                     <span data-key="t-landing">Detalles de Cargas</span>
                 
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(21)">
                 <router-link class="nav-link menu-link"  target="" to="/company/cargas-por-cargador">
                   <span data-key="t-landing">Cargas Por Cargador</span>
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(22)">
                 <router-link class="nav-link menu-link" target="" to="/company/cargas-por-terminal">
                   <span data-key="t-landing">Cargas por Terminal</span>
                 </router-link>
               </li>
 
 
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(23)">
                 <router-link class="nav-link menu-link" target="" to="/company/cargas-por-flota">
                   <span data-key="t-landing">Cargas por Flota</span>
                 </router-link>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(24)">
                 <router-link class="nav-link menu-link" target="" to="/company/errores-por-conector">
                   <span data-key="t-landing">Errores por Conector</span>
                 </router-link>
               </li>
 
-              <li class="nav-item">
-                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias">
+              <li class="nav-item" >
+                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias" v-if="permisos.includes(52)">
                   <span data-key="t-landing">Alarmas Diarias</span>
                 </router-link>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(25)">
                 <router-link class="nav-link menu-link" target="" to="/company/errores">
                   <span data-key="t-landing">Errores</span>
                 </router-link>
@@ -367,7 +381,7 @@ export default {
           </a>
           <div class="collapse menu-dropdown" id="sidebarMultilevel">
             <ul class="nav nav-sm flex-column">
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(26)">
           <router-link class="nav-link menu-link"  target="" to="/company/empleados-company">
            
             <span data-key="t-dashboards"> Usuarios Empresa</span>
@@ -376,18 +390,18 @@ export default {
         </li>
               
               
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(30)">
                 <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
                   Roles
                 </a>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(33)">
                 <a class="nav-link" href="/company/tarjetas-rfid" data-key="t-level-1.1">
                   Tarjetas RFID
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(37)">
                 
                 <router-link class="nav-link menu-link" target="" to="/company/stations-company">
                   Estaciones de Carga
@@ -395,19 +409,19 @@ export default {
               </li>
             
              
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(41)">
                 <router-link class="nav-link menu-link" target="" to="/company/cargadores-company">
                  Cargadores
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(47)">
                 <a class="nav-link" href="/company/conector" data-key="t-level-1.1">
                   Conectores
                 </a>
               </li>
              
 
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(51)">
                 <router-link class="nav-link" target="" to="/company/alertas-correos">
                   <span data-key="t-landing">Configuracion de Correos Alertas</span>
                 </router-link>
@@ -1710,29 +1724,29 @@ export default {
       </ul>
 
 <!--        MENU CLIENTE-->
-      <ul v-else-if="userRole === 'CLIENT'" class="navbar-nav h-100" id="navbar-nav">
-        <li class="menu-title">
-          <span data-key="t-menu"> {{ $t("t-menu") }}</span>
-        </li>
-        <li class="nav-item">
-          <router-link to="/client/dashboard-client" class="nav-link custom-abc" data-key="t-analytics">
-            <i class="mdi mdi-view-dashboard text-muted fs-16 align-middle me-1"></i>
-            {{ $t("Dashboard") }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/client/profile-client" class="nav-link custom-abc" data-key="t-analytics">
-            <i class="mdi mdi-account text-muted fs-16 align-middle me-1"></i>
-            {{ $t("Perfil") }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/client/subscription-plan" class="nav-link custom-abc" data-key="t-analytics">
-            <i class="mdi mdi-nature text-muted fs-16 align-middle me-1"></i>
-            {{ $t("Planes") }}
-          </router-link>
-        </li>
-      </ul>
+<!--      <ul class="navbar-nav h-100" id="navbar-nav">-->
+<!--        <li class="menu-title">-->
+<!--          <span data-key="t-menu"> {{ $t("t-menu") }}</span>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <router-link to="/client/dashboard-client" class="nav-link custom-abc" data-key="t-analytics">-->
+<!--            <i class="mdi mdi-view-dashboard text-muted fs-16 align-middle me-1"></i>-->
+<!--            {{ $t("Dashboard") }}-->
+<!--          </router-link>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <router-link to="/client/profile-client" class="nav-link custom-abc" data-key="t-analytics">-->
+<!--            <i class="mdi mdi-account text-muted fs-16 align-middle me-1"></i>-->
+<!--            {{ $t("Perfil") }}-->
+<!--          </router-link>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <router-link to="/client/subscription-plan" class="nav-link custom-abc" data-key="t-analytics">-->
+<!--            <i class="mdi mdi-nature text-muted fs-16 align-middle me-1"></i>-->
+<!--            {{ $t("Planes") }}-->
+<!--          </router-link>-->
+<!--        </li>-->
+<!--      </ul>-->
 
 <!--        COSAS TEMPLATE-->
 

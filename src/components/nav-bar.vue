@@ -11,6 +11,7 @@ import "@vueform/multiselect/themes/default.css";
 import simplebar from "simplebar-vue";
 
 import i18n from "../i18n";
+import axios from "axios";
 
 /**
  * Nav-bar Component
@@ -107,6 +108,8 @@ export default {
       flag: null,
       value: null,
       myVar: 1,
+      permisos:[],
+      estacionesOptions :[]
     };
   },
   components: {
@@ -115,18 +118,48 @@ export default {
   },
 
   methods: {
+    async loadChargingStation() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/chargingStations');
+        this.estacionesOptions = response.data.map(estacion => ({
+          value: estacion.id,
+          label: estacion.nombreTerminal
+        }));
+      } catch (error) {
+        console.error("Error obteniendo las estaciones de carga:", error);
+      }
+    },
+    handleClick() {
+      if (this.permisos.includes(1)) {
+        // Realiza la redirección y luego recarga la página
+        this.$router.push({ path: '/company/dashboard-company' }).then(() => {
+          setTimeout(() => {
+            location.reload();
+          }, 100);
+        });
+      } else {
+        // Si no tiene el permiso, no hacer nada o mostrar una alerta si lo prefieres
+        console.log('No tiene permisos para acceder a esta ruta');
+      }
+    },
     loadUserData() {
       const userData = JSON.parse(localStorage.getItem('userData'));
-      const userType = localStorage.getItem('userType');
+      if (!userData) {
+        console.error('No se encontraron datos de usuario en localStorage');
+        return;
+      }
+      localStorage.getItem('userType');
+      const role = localStorage.getItem('role');
+      if (userData && userData.rol) {
+        this.permisos = userData.rol.permisos.map(permiso => permiso.id);
+      } else {
+        console.error('Los datos de usuario no contienen un rol válido');
+      }
+
 
       this.userData = userData || {};
-      if (userType === 'CLIENT') {
-        this.userRole = 'Cliente';
-      } else if (userType === 'COMPANY') {
-        this.userRole = 'Compañia';
-      } else {
-        this.userRole = userType; // En caso de que haya otro tipo de usuario
-      }
+      this.userRole = role
+
 
     },
     ...layoutMethods,
@@ -282,6 +315,7 @@ export default {
     },
   },
   mounted() {
+    this.loadChargingStation()
     this.loadUserData();
     if (process.env.VUE_APP_I18N_LOCALE) {
       this.flag = process.env.VUE_APP_I18N_LOCALE;
@@ -316,25 +350,22 @@ export default {
         <div class="d-flex align-items-center">
           <!-- LOGO -->
           <div class="navbar-brand-box horizontal-logo">
-            <router-link to="/company/dashboard-company" class="logo logo-dark">
+            <div class="logo logo-dark" @click="handleClick" :style="{ cursor: permisos.includes(1) ? 'pointer' : 'default' }">
               <span class="logo-sm">
                 <img src="@/assets/images/logo-sm.png" alt="" height="22" />
               </span>
-              <span class="logo-lg">
-                <img src="@/assets/images/evol.png" width="180px" alt="">
-              
-                
+                          <span class="logo-lg">
+                <img src="@/assets/images/evol.png" width="180px" alt="" />
               </span>
-            </router-link>
-
-            <router-link to="/company/dashboard-company" class="logo logo-light">
-              <span class="logo-sm">
-                <img src="@/assets/images/logo-sm.png" alt="" height="22" />
-              </span>
-              <span class="logo-lg">
-                <img src="@/assets/images/logo-evol.png" alt="" height="160" style="margin-top: 6px;" />
-              </span>
-            </router-link>
+            </div>
+<!--            <router-link to="/company/dashboard-company" class="logo logo-light">-->
+<!--              <span class="logo-sm">-->
+<!--                <img src="@/assets/images/logo-sm.png" alt="" height="22" />-->
+<!--              </span>-->
+<!--              <span class="logo-lg">-->
+<!--                <img src="@/assets/images/logo-evol.png" alt="" height="160" style="margin-top: 6px;" />-->
+<!--              </span>-->
+<!--            </router-link>-->
           </div>
 
           <BButton variant="white" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
@@ -624,18 +655,22 @@ export default {
 
 
 
-               
-                      <label style="margin-right: 10px !important;"  for="ForminputState" class="form-label">Estación</label>
-                    
-                      <Multiselect style="125px !important" class="w-lg" v-model="value3" :close-on-select="true" :searchable="true"
-                      :create-option="true" :options="[
-                        { value: '1', label: 'Estación Vitacura' },
-                        { value: '2', label: 'Estación Chorrillos' },
-                        { value: '3', label: 'Estación Lima' },
-                        { value: '4', label: 'Estación Santiago' },
-                        { value: '5', label: 'Todas' },
 
-                      ]" />
+                    <div v-if="permisos.includes(2)" class="d-flex align-items-center">
+                      <label style="margin-right: 10px !important; margin-bottom: -1px" for="ForminputState" class="form-label">Estación</label>
+
+                      <Multiselect
+                          :options="estacionesOptions"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="false"
+                          label="label"
+                          track-by="value"
+                          class="w-lg"
+                          placeholder="Seleccione una estación"
+                          style="width: 250px !important"
+                      />
+                  </div>
               
                
 

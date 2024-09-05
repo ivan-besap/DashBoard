@@ -185,7 +185,7 @@ export default {
     
 <template>
   <Layout>
-    <PageHeader title="Dashboard Compañia" pageTitle="Compañía" />
+    <PageHeader title="Dashboard" pageTitle="Compañía" />
     <BRow>
       <BCol class="col-xl-4">
         <BCard no-body>

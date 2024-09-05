@@ -7,6 +7,7 @@ import {
   helpers
 } from "@vuelidate/validators";
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 import {
   authMethods,
@@ -64,25 +65,42 @@ export default {
       localStorage.setItem('jwt', result.data.token);
       localStorage.setItem('accountType', result.data.accountType);
       localStorage.setItem('isActive', result.data.isActive);
+
+      const accountType = localStorage.getItem('accountType');
       let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
 
-      let tipoCuenta = result.data.accountType;
+      // let tipoCuenta = result.data.accountType;
   // if (role === 'CLIENT') {
   //   this.$router.push({ path: '/client/dashboard-client' });
   // }
-      if (tipoCuenta === 'COMPANY' && isActive) {
+      if (isActive && accountType === 'COMPANY') {
         this.$router.push({ path: '/company/dashboard-company' }).then(() => {
           if (!localStorage.getItem('reloadedDashboard')) {
             localStorage.setItem('reloadedDashboard', 'true');
             location.reload();
           }
         });
-      } else if (tipoCuenta === 'COMPANY' && !isActive) {
+      } else if (!isActive && accountType === 'COMPANY') {
         this.$router.push({ path: '/company/profile-company' }).then(() => {
           if (!localStorage.getItem('reloadedProfile')) {
             localStorage.setItem('reloadedProfile', 'true');
             location.reload();
           }
+        });
+      } else if (isActive && accountType === 'EMPLOYEE') {
+        this.$router.push({ path: '/company/profile-company' }).then(() => {
+          if (!localStorage.getItem('reloadedProfile')) {
+            localStorage.setItem('reloadedProfile', 'true');
+            location.reload();
+          }
+        });
+      } else if (!isActive && accountType === 'EMPLOYEE') {
+        // Mostrar alerta si el usuario no está activado
+        Swal.fire({
+          title: 'Cuenta Inactiva',
+          text: 'El usuario no está activado. Por favor, contacta al administrador.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
         });
       }
     } catch (error) {

@@ -1,10 +1,9 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Flota" pagetitle="Compañía" />
+    <PageHeader title="Crear Vehiculo" pageTitle="items" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
-          <CardHeader title="Crear Flota" />
           <BCardBody>
             <div class="live-preview">
               <BForm @submit.prevent="createCar">
@@ -78,7 +77,7 @@
                     <div class="mb-3">
                       <label for="añoFabricacion" class="form-label">Año de Fabricación</label>
                       <BFormInput 
-                        v-model="car.añoFabricacion" 
+                        v-model="car.anoFabricacion"
                         type="text" 
                         class="form-control" 
                         placeholder="Año de Fabricación" 
@@ -104,7 +103,7 @@
                   <BCol lg="12">
                     <div class="text-end">
                       <BButton style="" type="submit" variant="light"  @click="successmsg">
-                        Crear Flota
+                        Crear
                       </BButton>
                     </div>
                   </BCol>
@@ -123,8 +122,14 @@ import "flatpickr/dist/flatpickr.css";
 import "@vueform/multiselect/themes/default.css";
 import Swal from "sweetalert2";
 import axios from 'axios';
+import Layout from "@/layouts/main.vue";
+import PageHeader from "@/components/page-header.vue";
 
 export default {
+  components: {
+    Layout,
+    PageHeader,
+  },
   data() {
     return {
       car: {
@@ -133,7 +138,7 @@ export default {
         vin: '',
         color: '',
         marca: '',
-        añoFabricacion: '',
+        anoFabricacion: '',
         capacidadPotencia: ''
       }
     };
@@ -141,13 +146,13 @@ export default {
   methods: {
     successmsg() {
       Swal.fire({
-        title: "Flota creada!",
-        text: "Redirigiendo a la página de Flotas...",
+        title: "Vehículo creado!",
+        text: "Redirigiendo a la página de Vehículos...",
         icon: "success",
         timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('/company/flotas');
+          this.$router.push('/company/vehiculos');
         }
       });
     },
@@ -157,7 +162,11 @@ export default {
         this.successmsg();
       } catch (error) {
         console.error("Error creando el auto:", error);
-        alert('Error creando el auto');
+        Swal.fire(
+            "Error",
+            "No se pudo crear el rol.",
+            "error"
+        );
       }
     }
   }

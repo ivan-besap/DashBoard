@@ -17,6 +17,8 @@ export default {
     // Añadir un campo para almacenar los datos del cliente
       company:null,
       datosCuenta:null,
+      rol:null,
+      activo:null,
     };
   },
   components: {
@@ -35,6 +37,8 @@ export default {
     async getUser() {
       try {
         const userData = localStorage.getItem('userData');
+        this.rol = localStorage.getItem('role');
+        this.activo = localStorage.getItem('active');
         if (userData) {
            this.datosCuenta = JSON.parse(userData);
         } else {
@@ -109,10 +113,7 @@ export default {
 </script>
 <style>
 .navbar-menu{
-  display: none !important;
-}
-.main-content {
-    margin: 0;
+  margin-top: -25px;
 }
 </style>
 
@@ -164,7 +165,7 @@ export default {
                 </div>
               </div>
              
-              <h5 class="fs-16 mb-1">{{ datosCuenta ? datosCuenta.empresa.nombre : 'Nombre de la Empresa' }}</h5>
+              <h5 class="fs-16 mb-1">{{ rol ? rol : 'Usuario' }}</h5>
               <p class="text-muted mb-0">{{ datosCuenta ? datosCuenta.email : 'Correo del Usuario' }}</p>
             </div>
           </BCardBody>
@@ -227,7 +228,7 @@ export default {
                     <BCol lg="6">
                       <div class="mb-3">
                         <label for="firstnameInput" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value="datosCuenta ? datosCuenta.nombreCuenta : ''" />
+                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value="datosCuenta ? datosCuenta.nombre : ''" />
                       </div>
                     </BCol>
                     <BCol lg="6">
@@ -248,16 +249,10 @@ export default {
                         <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="datosCuenta ? datosCuenta.email : ''" />
                       </div>
                     </BCol>
-                    <BCol lg="12">
+                    <BCol lg="12" v-if="activo === 'false'">
                       <div class="hstack gap-2 justify-content-end">
                         <BButton type="submit" variant="secondary" @click="cambiarActivoUsuario(true)">
-                         Guardar Datos
-                        </BButton>
-<!--                        <BButton type="submit" variant="secondary" @click="cambiarActivoUsuario(false)">-->
-<!--                          Actualizar a Inactivo-->
-<!--                        </BButton>-->
-                        <BButton type="button" variant="soft-danger">
-                          Cancelar
+                          Confirmar
                         </BButton>
                       </div>
                     </BCol>

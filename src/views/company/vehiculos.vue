@@ -4,9 +4,9 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light">
-            <router-link class="nav-link menu-link" target="" to="/company/crear-flota">
-              Crear Flotas
+          <BButton style=" border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(16)">
+            <router-link class="nav-link menu-link" target="" to="/company/crear-vehiculo">
+              Crear
             </router-link>
           </BButton>
         </div>
@@ -42,11 +42,11 @@
                 <td>{{ car.vin }}</td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
-                    <router-link class="nav-link menu-link" :to="`/company/editar-flota/${car.id}`">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-vehiculo/${car.id}`" v-if="permisos.includes(17)">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(car.id)">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(car.id)" v-if="permisos.includes(18)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>
@@ -97,10 +97,16 @@ export default {
       perPage: 5,
       pages: [],
       direction: 'asc',
+      permisos:[]
     };
   },
 
   methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
     async loadCarData() {
     const carId = this.$route.params.id; // Obtiene el ID del coche de la URL
 
@@ -140,10 +146,10 @@ export default {
       try {
         const response = await axios.patch(`http://localhost:8080/api/accounts/current/cars/${carId}/delete`);
         console.log(response.data);
-        this.successmsg("El auto ha sido desactivado correctamente.");
+        this.successmsg("El auto ha sido eliminado correctamente.");
         this.fetchCars();  // Volvemos a cargar la lista.
       } catch (error) {
-        console.error("Error al desactivar el auto:", error);
+        console.error("Error al eliminar el auto:", error);
         alert('Error al desactivar el auto');
       }
     },
@@ -165,7 +171,6 @@ export default {
       });
     },
 
-    // Diciendo que todo salió bien, y que es hora de seguir adelante.
     successmsg(message) {
       Swal.fire({
         title: "Operación exitosa",
@@ -174,7 +179,7 @@ export default {
         timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.fetchCars();  // Volvemos a cargar la lista.
+          this.fetchCars();
         }
       });
     },
@@ -268,6 +273,7 @@ export default {
   // Cuando todo comienza, este método se asegura de que las flotas estén listas para ser vistas.
   mounted() {
     this.fetchCars();
+    this.loadUserData();
   },
 };
 </script>

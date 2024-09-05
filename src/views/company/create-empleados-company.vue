@@ -24,6 +24,19 @@
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
+                      <label for="firstSurname" class="form-label">Rut</label>
+                      <BFormInput
+                          v-model="employee.rut"
+                          type="text"
+                          class="form-control"
+                          placeholder="Rut"
+                          id="rut"
+                          required
+                      />
+                    </div>
+                  </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
                       <label for="firstSurname" class="form-label">Apellido Paterno</label>
                       <BFormInput 
                         v-model="employee.firstSurname" 
@@ -74,7 +87,19 @@
                       />
                     </div>
                   </BCol>
-                
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="password" class="form-label">Teléfono</label>
+                      <BFormInput
+                          v-model="employee.telefono"
+                          type="number"
+                          class="form-control"
+                          placeholder="Telefono"
+                          id="telefono"
+                          required
+                      />
+                    </div>
+                  </BCol>
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="role" class="form-label">Rol</label>
@@ -94,7 +119,7 @@
 
                   <BCol lg="12">
                     <div class="text-end">
-                      <BButton type="submit" variant="light" @click="successmsg">
+                      <BButton type="submit" variant="light">
                         Crear Usuario
                       </BButton>
                     </div>
@@ -130,7 +155,9 @@ export default {
         email: '',
         password: '',
         plan: '',
-        role: '' // Añadido campo para el rol
+        role: '',
+        telefono:'',
+        rut:''
       },
       roles: [],
       config: {
@@ -183,7 +210,9 @@ export default {
           apellidoMaterno: this.employee.lastSurname,
           email: this.employee.email,
           password: this.employee.password,
-          role: this.employee.role // Envía el ID del rol seleccionado
+          role: this.employee.role,
+          telefono: this.employee.telefono,
+          rut: this.employee.rut
         };
 
         const response = await axios.post('http://localhost:8080/api/companies/current/employee', newEmployee);
@@ -191,7 +220,11 @@ export default {
         console.log("Empleado creado exitosamente:", response.data);
       } catch (error) {
         console.error("Error creando el empleado:", error);
-        alert('Error creando el empleado');
+        Swal.fire(
+            "Error",
+            "No se pudo crear el rol.",
+            "error"
+        );
       }
     }
   }

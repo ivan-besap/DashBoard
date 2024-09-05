@@ -4,7 +4,7 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light">
+          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(38)">
             <router-link class="nav-link menu-link" target="" to="create-stations-company">
               Crear Estación
             </router-link>
@@ -63,12 +63,12 @@
                 </BFormCheckbox>
               </td>
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(39)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(40)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -119,6 +119,7 @@ export default {
       page: 1,
       perPage: 5,
       pages: [],
+      permisos:[]
     };
   },
 
@@ -174,6 +175,7 @@ export default {
   created() {
     this.setPages();
     this.ChargingStation();
+    this.loadUserData();
   },
   filters: {
     trimWords(value) {
@@ -182,6 +184,11 @@ export default {
   },
 
   methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
     async ChargingStation() {
       try {
        const response = await axios.get('http://localhost:8080/api/chargingStations');

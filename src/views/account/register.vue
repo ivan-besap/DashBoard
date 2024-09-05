@@ -19,6 +19,9 @@ export default {
         email: "",
         password: "",
         confirm_password: "",
+        nombre: "",
+        apellidoMaterno: "",
+        apellidoPaterno: ""
       },
     };
   },
@@ -26,6 +29,15 @@ export default {
     user: {
       nombreEmpresa: {
         required: helpers.withMessage("Ingrese un nombre de la compañía", required),
+      },
+      nombre: {
+        required: helpers.withMessage("Ingrese un Nombre", required),
+      },
+      apellidoMaterno: {
+        required: helpers.withMessage("Ingrese un Apellido Materno", required),
+      },
+      apellidoPaterno: {
+        required: helpers.withMessage("Ingrese un Apellido Paterno", required),
       },
       email: {
         required: helpers.withMessage("Ingrese un email de la compañía", required),
@@ -141,9 +153,26 @@ export default {
                 <div class="p-2 mt-4">
                   <div class="mb-3" :class="{ 'has-error': v$.user.nombreEmpresa.$invalid && v$.user.nombreEmpresa.$dirty }">
                     <label for="businessName" class="form-label">Nombre Compañía <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" v-model="user.nombreEmpresa" id="businessName" placeholder="Ingrese nombre" @blur="v$.user.nombreEmpresa.$touch()">
+                    <input type="text" class="form-control" v-model="user.nombreEmpresa" id="businessName" placeholder="Ingrese Nombre de la Compañía" @blur="v$.user.nombreEmpresa.$touch()">
                     <span v-if="v$.user.nombreEmpresa.$invalid && v$.user.nombreEmpresa.$dirty" class="text-danger">{{ v$.user.nombreEmpresa.$errors[0].$message }}</span>
                   </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.nombre.$invalid && v$.user.nombre.$dirty }">
+                    <label for="nombre" class="form-label">Nombre<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.nombre" id="nombre" placeholder="Ingrese Nombre" @blur="v$.user.nombre.$touch()">
+                    <span v-if="v$.user.nombre.$invalid && v$.user.nombre.$dirty" class="text-danger">{{ v$.user.nombre.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.apellidoPaterno.$invalid && v$.user.apellidoPaterno.$dirty }">
+                    <label for="apellidoPaterno" class="form-label">Apellido Paterno<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.apellidoPaterno" id="apellidoPaterno" placeholder="Ingrese Apellido Paterno" @blur="v$.user.apellidoPaterno.$touch()">
+                    <span v-if="v$.user.apellidoPaterno.$invalid && v$.user.apellidoPaterno.$dirty" class="text-danger">{{ v$.user.apellidoPaterno.$errors[0].$message }}</span>
+                  </div>
+
+                  <div class="mb-3" :class="{ 'has-error': v$.user.apellidoMaterno.$invalid && v$.user.apellidoMaterno.$dirty }">
+                    <label for="apellidoMaterno" class="form-label">Apellido Materno <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.apellidoMaterno" id="apellidoMaterno" placeholder="Ingrese Apellido Materno" @blur="v$.user.apellidoMaterno.$touch()">
+                    <span v-if="v$.user.apellidoMaterno.$invalid && v$.user.apellidoMaterno.$dirty" class="text-danger">{{ v$.user.apellidoMaterno.$errors[0].$message }}</span>
+                  </div>
+
                   <div class="mb-3" :class="{ 'has-error': v$.user.rut.$invalid && v$.user.rut.$dirty }">
                     <label for="rut" class="form-label">Número de registro único <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Rut" @blur="v$.user.rut.$touch()">

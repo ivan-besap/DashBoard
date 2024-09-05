@@ -1,10 +1,10 @@
 <template>
   <Layout>
-    <PageHeader title="Editar Flota" pagetitle="Compañía" />
+    <PageHeader title="Editar Vehiculo" pagetitle="Compañía" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
-          <CardHeader title="Editar Flota" />
+          <CardHeader title="Editar Vehiculo" />
           <BCardBody>
             <div class="live-preview">
               <BForm @submit.prevent="updateCar">
@@ -78,7 +78,7 @@
                     <div class="mb-3">
                       <label for="añoFabricacion" class="form-label">Año de Fabricación</label>
                       <BFormInput 
-                        v-model="car.añoFabricacion" 
+                        v-model="car.anoFabricacion"
                         type="text" 
                         class="form-control" 
                         placeholder="Año de Fabricación" 
@@ -103,7 +103,7 @@
                   <BCol lg="12">
                     <div class="text-end">
                       <BButton style="" type="submit" variant="light">
-                        Editar Flota
+                        Editar
                       </BButton>
                     </div>
                   </BCol>
@@ -136,7 +136,7 @@ export default {
         vin: '',
         color: '',
         marca: '',
-        añoFabricacion: '',
+        anoFabricacion: '',
         capacidadPotencia: ''
       }
     };
@@ -153,10 +153,10 @@ export default {
   async loadCarData() {
     const carId = this.$route.params.id;
 
-    console.log("Car ID:", carId); // Verifica el ID en la URL
+    console.log("Car ID:", carId);
 
     if (!carId || isNaN(carId)) {
-      this.redirectToFlotas();  // Redirige si el ID no es válido
+      this.redirectToFlotas();
       return;
     }
 
@@ -185,13 +185,13 @@ export default {
     },
     successmsg() {
       Swal.fire({
-        title: "Flota Actualizada!",
-        text: "Redirigiendo a la página de Flotas...",
+        title: "Vehículo Actualizado!",
+        text: "Redirigiendo a la página de Vehiculos...",
         icon: "success",
         timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('/company/flotas');
+          this.$router.push('/company/vehiculos');
         }
       });
     },

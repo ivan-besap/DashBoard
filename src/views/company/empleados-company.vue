@@ -4,7 +4,7 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light">
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(27)">
             <router-link class="nav-link menu-link" target="" to="/company/create-empleados-company">
               Crear Usuario
             </router-link>
@@ -29,26 +29,47 @@
           <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
               <tr>
-                <th class="sort" data-sort="nombre" scope="col" @click="onSort('apellidoPaterno')">Nombre</th>
+                <th class="sort" data-sort="nombre" scope="col" @click="onSort('nombre')">Nombre</th>
+                <th class="sort" data-sort="apellidoPaterno" scope="col" @click="onSort('apellidoPaterno')">Apellido Paterno</th>
+                <th class="sort" data-sort="apellidoMaterno" scope="col" @click="onSort('apellidoMaterno')">Apellido Materno</th>
                 <th class="sort" data-sort="email" scope="col" @click="onSort('email')">Email</th>
                 <th class="sort" data-sort="createdDay" scope="col" @click="onSort('fechaDeCreacion')">Fecha de Creación</th>
                 <th class="sort" data-sort="role" scope="col" @click="onSort('role.nombre')">Rol</th>
+<!--                <th class="sort" data-sort="role" scope="col" @click="onSort('activo')">Estado Cuenta</th>-->
                 <th scope="col" style="width: 1%;">Acciones</th>
               </tr>
             </thead>
             <tbody class="list form-check-all">
               <tr v-for="(employee, index) in resultQuery" :key="index">
-                <td>{{ employee.nombre }} {{ employee.apellidoPaterno }} {{ employee.apellidoMaterno }}</td>
+                <td>{{ employee.nombre }}</td>
+                <td>{{ employee.apellidoPaterno }}</td>
+                <td> {{ employee.apellidoMaterno }}</td>
                 <td class="email">{{ employee.email }}</td>
                 <td class="createdDay">{{ employee.fechaDeCreacion }}</td>
-                <td class="role">{{ employee.role.nombre }}</td>
+                <td class="role">{{ employee.rol.nombre }}</td>
+<!--                <td class="d-flex align-items-center">-->
+<!--                  <span :class="employee.activo ? 'badge bg-success' : 'badge bg-danger'"-->
+<!--                        class="me-2 mt-2 mb-2" style="font-size: 14px">-->
+<!--                    {{ employee.activo ? 'Activo' : 'Inactivo' }}-->
+<!--                  </span>-->
+<!--                  <BFormCheckbox-->
+<!--                      v-model="employee.activo"-->
+<!--                      switch-->
+<!--                      :true-value="true"-->
+<!--                      :false-value="false"-->
+<!--                      @change="cambiarActivoUsuario(employee.id, employee.activo)"-->
+<!--                      class="mt-1 mb-2"-->
+<!--                      style="height: 20px; width: 36px"-->
+<!--                  >-->
+<!--                  </BFormCheckbox>-->
+<!--                </td>-->
                 <td>
-                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
-                    <router-link :to="`/company/editar-empleados/${employee.id}`">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(28)">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-empleados/${employee.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(employee.id)">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(employee.id)" v-if="permisos.includes(29)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>
@@ -98,9 +119,31 @@ export default {
       page: 1,
       perPage: 5,
       pages: [],
+      permisos:[]
     };
   },
   methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
+    async cambiarActivoUsuario(id, activeStatus) {
+      try {
+        const response = await axios.patch(`http://localhost:8080/api/update-active-status`, null, {
+          params: {
+            accountId: id,
+            activeStatus: activeStatus
+          }
+        });
+        if (response.status === 200) {
+          Swal.fire("Estado Actualizado!", "", "success");
+        }
+      } catch (error) {
+        console.error("Error Actualizando el Estado", error);
+        Swal.fire("Error", "No se pudo actualizar el estado del usuario.", "error");
+      }
+    },
     fetchEmployees() {
       axios
         .get("http://localhost:8080/api/companies/current/employee")
@@ -177,7 +220,7 @@ export default {
     filteredEmployees() {
       const search = this.searchQuery.toLowerCase();
       return this.employees.filter((employee) =>
-        `${employee.nombre} ${employee.apellidoPaterno} ${employee.apellidoMaterno} ${employee.email} ${employee.empresa ? employee.empresa.nombre : ''} ${employee.role.nombre}`
+        `${employee.nombre} ${employee.apellidoPaterno} ${employee.apellidoMaterno} ${employee.email} ${employee.empresa ? employee.empresa.nombre : ''} ${employee.rol.nombre}`
           .toLowerCase()
           .includes(search)
       );
@@ -206,6 +249,7 @@ export default {
   },
   created() {
     this.fetchEmployees();
+    this.loadUserData();
   },
 };
 </script>
