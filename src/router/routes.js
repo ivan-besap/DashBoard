@@ -119,7 +119,15 @@ export default [
       title: "Logout",
       authRequired: true,
       beforeResolve(routeTo, routeFrom, next) {
+        const savedEmail = localStorage.getItem("email");
+        // const savedPassword = localStorage.getItem("password");
         localStorage.clear();
+        if (savedEmail) {
+          localStorage.setItem("email", savedEmail);
+        }
+        // if(savedPassword){
+        //   localStorage.setItem("password", savedPassword);
+        // }
         sessionStorage.clear();
         next();
       },

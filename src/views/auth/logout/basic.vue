@@ -54,7 +54,7 @@ export default {
                 <div class="mt-4 pt-2">
                   <h5>Haz Cerrado Sesión</h5>
                   <div class="mt-4">
-                    <router-link to="/auth/signin-basic" class="btn btn-secondary w-100">Iniciar Sesión
+                    <router-link to="/" class="btn btn-secondary w-100">Iniciar Sesión
                     </router-link>
                   </div>
                 </div>

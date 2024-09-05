@@ -215,7 +215,6 @@ export default {
       this.data = sortedArray;
     },
 
-    // Confirmar y desactivar la tarjeta RFID
     confirm(rfidId) {
       if (!rfidId) {
           console.error("El ID de la tarjeta RFID es nulo o no está definido.");
@@ -223,13 +222,13 @@ export default {
       }
 
       Swal.fire({
-          title: "¿Estás seguro de desactivar esta tarjeta RFID?",
+          title: "¿Estás seguro de eliminar esta tarjeta RFID?",
           text: "No podrás revertir esta acción",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#34c38f",
           cancelButtonColor: "#f46a6a",
-          confirmButtonText: "Sí, desactivar!",
+          confirmButtonText: "Sí, eliminar!",
       }).then(async (result) => {
           if (result.isConfirmed) {
               try {
@@ -237,11 +236,11 @@ export default {
                       `http://localhost:8080/api/accounts/current/device-identifiers/${rfidId}/delete`
                   );
 
-                  Swal.fire("Tarjeta RFID desactivada", "", "success");
+                  Swal.fire("Tarjeta RFID eliminada", "", "success");
                   this.fetchDeviceIdentifiers(); // Refrescar la lista de tarjetas RFID
               } catch (error) {
-                  console.error("Error al desactivar la tarjeta RFID:", error);
-                  Swal.fire("Error", "No se pudo desactivar la tarjeta RFID", "error");
+                  console.error("Error al eliminar la tarjeta RFID:", error);
+                  Swal.fire("Error", "No se pudo eliminar la tarjeta RFID", "error");
               }
           }
       });

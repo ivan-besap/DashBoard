@@ -53,7 +53,7 @@
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm" v-if="permisos.includes(32)">
+                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(role.id)" v-if="permisos.includes(32)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -124,21 +124,35 @@ export default {
             );
           });
     },
-    confirm() {
+    confirm(roleId) {
       Swal.fire({
-        title: "Desea eliminar el Rol?",
-        text: "No podrás revertirlo!",
+        title: "¿Estás seguro de eliminar?",
+        text: "¡No podrás revertir la acción!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#34c38f",
         cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Si, eliminar!",
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire("Eliminado!", "El Rol ha sido eliminado.", "success");
+        confirmButtonText: "Sí, eliminar!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await axios.patch(`http://localhost:8080/api/roles/${roleId}/delete`);
+            if (response.status === 200) {
+              Swal.fire(
+                  "¡Eliminado!",
+                  "Tu Rol ha sido eliminada.",
+                  "success"
+              ).then(() => {
+                this.$router.go(0);
+              });
+            }
+          } catch (error) {
+            console.error("Error eliminando el rol:", error);
+            Swal.fire("Error", "No se pudo eliminar el conector.", "error");
+          }
         }
       });
-    },
+    }
   },
   created() {
     this.fetchRoles();

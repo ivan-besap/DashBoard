@@ -140,8 +140,7 @@ export default {
         console.error("Error fetching cars:", error);
       }
     },
-    
-    // Este método se encarga de despedirse de una flota, desactivándola.
+
     async deleteCar(carId) {
       try {
         const response = await axios.patch(`http://localhost:8080/api/accounts/current/cars/${carId}/delete`);
@@ -150,7 +149,7 @@ export default {
         this.fetchCars();  // Volvemos a cargar la lista.
       } catch (error) {
         console.error("Error al eliminar el auto:", error);
-        alert('Error al desactivar el auto');
+        alert('Error al eliminar el auto');
       }
     },
 

@@ -26,6 +26,8 @@ export default {
       tryingToLogIn: false,
       isAuthError: false,
       processing: false,
+      showPassword: false,
+      rememberMe: false,
     };
   },
   validations: {
@@ -42,12 +44,16 @@ export default {
   },
   created() {
     this.deleteToken()
+    this.loadRememberedData();
   },
   methods: {
     ...authMethods,
     ...authFackMethods,
     ...notificationMethods,
 
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
   async signinapi() {
     this.processing = true;
     try {
@@ -65,6 +71,14 @@ export default {
       localStorage.setItem('jwt', result.data.token);
       localStorage.setItem('accountType', result.data.accountType);
       localStorage.setItem('isActive', result.data.isActive);
+
+      if (this.rememberMe) {
+        localStorage.setItem('email', this.email);
+        localStorage.setItem('password', this.password);
+      } else {
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
+      }
 
       const accountType = localStorage.getItem('accountType');
       let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
@@ -110,12 +124,23 @@ export default {
       this.processing = false;
     }
   },
+    loadRememberedData() {
+      const savedEmail = localStorage.getItem("email");
+      // const savedPassword = localStorage.getItem("password");
+
+      if (savedEmail) {
+        this.email = savedEmail;
+        this.rememberMe = true;
+        // if(savedPassword){
+        //   this.password = savedPassword
+        // }
+      }
+    },
 
     deleteToken(){
       localStorage.removeItem('jwt');
       localStorage.removeItem('userType');
       localStorage.removeItem('userData');
-      localStorage.clear()
     },
 
     // Try to log the user in with the username
@@ -234,30 +259,37 @@ export default {
                       </div>
                     </div>
 
-                    <div class="mb-3">
-                      <div class="float-end">
-                        <router-link to="/forgot-password" class="text-muted">Olvidaste
-                          tu contraseña?</router-link>
-                      </div>
-                      <label class="form-label" for="password-input">Contraseña</label>
-                      <div class="position-relative auth-pass-inputgroup mb-3">
-                        <input type="password" v-model="password" class="form-control pe-5" placeholder="Ingrese contraseña"
-                          id="password-input" />
-                        <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted"
-                          type="button" id="password-addon">
-                          <i class="ri-eye-fill align-middle"></i>
-                        </BButton>
-                        <div class="invalid-feedback">
-                          <span></span>
-                        </div>
+                  <div class="mb-3">
+                    <div class="float-end">
+                      <router-link to="/forgot-password" class="text-muted">Olvidaste tu contraseña?</router-link>
+                    </div>
+                    <label class="form-label" for="password-input">Contraseña</label>
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <!-- Cambia el tipo de input según si la contraseña es visible -->
+                      <input :type="showPassword ? 'text' : 'password'" v-model="password" class="form-control pe-5"
+                             placeholder="Ingrese contraseña" id="password-input" />
+                      <!-- Botón para mostrar/ocultar la contraseña -->
+                      <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                               id="password-addon" @click="togglePasswordVisibility">
+                        <!-- Cambia el icono según si la contraseña es visible -->
+                        <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                      </BButton>
+                      <div class="invalid-feedback">
+                        <span></span>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="auth-remember-check" />
-                      <label class="form-check-label" for="auth-remember-check">Recuerdame
-                        </label>
-                    </div>
+                  <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="auth-remember-check"
+                        v-model="rememberMe"
+                    />
+                    <label class="form-check-label" for="auth-remember-check">Recuerdame</label>
+                  </div>
 
                     <div class="mt-4">
                       <BButton variant="success" class="w-100" type="submit" @click="signinapi" :disabled="processing">

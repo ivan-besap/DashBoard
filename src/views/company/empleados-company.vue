@@ -192,13 +192,13 @@ export default {
     },
     confirm(employeeId) {
       Swal.fire({
-        title: "¿Estás seguro de desactivar este empleado?",
+        title: "¿Estás seguro de eliminar a este empleado?",
         text: "No podrás revertir esta acción",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#34c38f",
         cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Sí, desactivar!",
+        confirmButtonText: "Sí, eliminar!",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
@@ -206,11 +206,11 @@ export default {
               `http://localhost:8080/api/companies/current/employees/${employeeId}/delete`
             );
 
-            Swal.fire("Empleado desactivado", "", "success");
+            Swal.fire("Empleado eliminado", "", "success");
             this.fetchEmployees(); 
           } catch (error) {
-            console.error("Error al desactivar el empleado:", error);
-            Swal.fire("Error", "No se pudo desactivar el empleado", "error");
+            console.error("Error al eliminar el empleado:", error);
+            Swal.fire("Error", "No se pudo eliminar el empleado", "error");
           }
         }
       });
