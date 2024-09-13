@@ -154,7 +154,7 @@ export default {
     },
     async fetchRoles() {
       try {
-        const response = await axios.get('http://localhost:8080/api/roles');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/roles');
         this.roles = response.data.map(role => ({
           label: role.nombre,
           value: role.id
@@ -166,7 +166,7 @@ export default {
     async fetchEmployeeData() {
       const employeeId = this.$route.params.id;
       try {
-        const response = await axios.get(`http://localhost:8080/api/accounts/${employeeId}`);
+        const response = await axios.get(`https://app.evolgreen.com:8080/api/accounts/${employeeId}`);
         this.employee = {
           nombre: response.data.nombre || '',
           apellidoPaterno: response.data.apellidoPaterno || '',
@@ -196,7 +196,7 @@ export default {
         console.log(employeeData)
 
         await axios.put(
-          `http://localhost:8080/api/companies/current/employee/${employeeId}`,
+          `https://app.evolgreen.com:8080/api/companies/current/employee/${employeeId}`,
           employeeData
         );
 

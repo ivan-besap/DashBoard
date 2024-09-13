@@ -181,7 +181,7 @@ export default {
     async loadConnector() {
       const connectorId = this.$route.params.id;  // Obtén el ID del conector desde la URL
       try {
-        const response = await axios.get(`http://localhost:8080/api/connectors/${connectorId}`);
+        const response = await axios.get(`https://app.evolgreen.com:8080/api/connectors/${connectorId}`);
         this.connector = response.data;
       } catch (error) {
         console.error("Error cargando el conector:", error);
@@ -201,7 +201,7 @@ export default {
           terminal: this.connector.terminal
         };
         console.log(dataParaEnviar)
-        const response = await axios.put(`http://localhost:8080/api/companies/current/connectors/${this.connector.id}`, dataParaEnviar);
+        const response = await axios.put(`https://app.evolgreen.com:8080/api/companies/current/connectors/${this.connector.id}`, dataParaEnviar);
         if (response.status === 200 || response.status === 201) {
           Swal.fire("Conector Actualizado Exitosamente", "", "success").then(() => {
             this.$router.push('/company/conector');
@@ -214,7 +214,7 @@ export default {
     },
     async charges() {
       try {
-        const response = await axios.get('http://localhost:8080/api/chargers');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/chargers');
         this.chargers = response.data.map(data => ({
           label: data.nombre,
           value: data.id
@@ -225,7 +225,7 @@ export default {
     },
     async loadConnectorTypes() {
       try {
-        const response = await axios.get('http://localhost:8080/api/connector-types');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/connector-types');
         this.connectorTypes = response.data.map(data => ({
           label: data.nombre,
           value: data.id
@@ -236,7 +236,7 @@ export default {
     },
     async chargingStation() {
       try {
-        const response = await axios.get('http://localhost:8080/api/chargingStations');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/chargingStations');
         this.chargingStations = response.data.map(data => ({
           label: data.nombreTerminal,
           value: data.id

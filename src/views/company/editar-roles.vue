@@ -84,7 +84,7 @@ export default {
     async fetchRole() {
       const roleId = this.$route.params.id; // Obtener el id del rol desde la URL
       try {
-        const response = await axios.get(`http://localhost:8080/api/roles/${roleId}`);
+        const response = await axios.get(`https://app.evolgreen.com:8080/api/roles/${roleId}`);
         const role = response.data;
         this.role.id = role.id;
         this.role.name = role.nombre;
@@ -96,7 +96,7 @@ export default {
     },
     async fetchPermisos() {
       try {
-        const response = await axios.get("http://localhost:8080/api/permissions");
+        const response = await axios.get("https://app.evolgreen.com:8080/api/permissions");
         this.permisos = response.data;
       } catch (error) {
         console.error("Error fetching permisos:", error);
@@ -110,7 +110,7 @@ export default {
           permisosIds: this.role.permissions
         };
 
-        await axios.put(`http://localhost:8080/api/roles/${this.role.id}`, roleData);
+        await axios.put(`https://app.evolgreen.com:8080/api/roles/${this.role.id}`, roleData);
         this.successmsg();
       } catch (error) {
         console.error("Error updating role:", error);

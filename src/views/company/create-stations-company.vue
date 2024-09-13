@@ -95,7 +95,7 @@ export default {
   methods: {
     async createChargingStation() {
       try {
-        const response = await axios.post('http://localhost:8080/api/companies/current/chargingStations', this.chargingStation);
+        const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/chargingStations', this.chargingStation);
         if (response.status === 200 || response.status === 201) {
           this.chargingStation.nombreTerminal = '';
           this.chargingStation.ubicacionTerminal.direccion = ''; // Resetea el campo correctamente

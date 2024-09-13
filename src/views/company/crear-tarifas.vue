@@ -178,7 +178,7 @@ export default {
         this.tarifa.consumoDeEnergiaAlarma = null;
       }
       try {
-        await axios.post('http://localhost:8080/api/fees', this.tarifa);
+        await axios.post('https://app.evolgreen.com:8080/api/fees', this.tarifa);
         this.successmsg();
       } catch (error) {
         console.error("Error creando la tarifa:", error);

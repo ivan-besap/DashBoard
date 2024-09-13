@@ -192,7 +192,7 @@
             ...this.connector,
             tipoConector: { id: this.connector.tipoConector }, // Enviar el objeto con el id
           };
-          const response = await axios.post('http://localhost:8080/api/companies/current/connectors', conector);
+          const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/connectors', conector);
           if (response.status === 200 || response.status === 201) {
             Swal.fire("Conector Creado Exitosamente", "", "success").then(() => {
               this.$router.push('/company/conector');
@@ -205,7 +205,7 @@
       },
       async charges() {
         try {
-          const response = await axios.get('http://localhost:8080/api/chargers');
+          const response = await axios.get('https://app.evolgreen.com:8080/api/chargers');
           this.chargers = response.data.map(data => ({
             label: data.nombre,
             value: data.id
@@ -216,7 +216,7 @@
       },
       async loadConnectorTypes() {
         try {
-          const response = await axios.get('http://localhost:8080/api/connector-types');
+          const response = await axios.get('https://app.evolgreen.com:8080/api/connector-types');
           this.connectorTypes = response.data.map(data => ({
             label: data.nombre,
             value: data.id
@@ -227,7 +227,7 @@
       },
       async chargingStation() {
         try {
-          const response = await axios.get('http://localhost:8080/api/chargingStations');
+          const response = await axios.get('https://app.evolgreen.com:8080/api/chargingStations');
           this.chargingStations = response.data.map(data => ({
             label: data.nombreTerminal,
             value: data.id

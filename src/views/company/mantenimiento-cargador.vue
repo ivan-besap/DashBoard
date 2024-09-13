@@ -151,7 +151,7 @@
       },
       async createChargingStation() {
         try {
-          await axios.post('http://localhost:8080/api/company/current/chargingStations', this.chargingStation);
+          await axios.post('https://app.evolgreen.com:8080/api/company/current/chargingStations', this.chargingStation);
           // alert('Estación de carga creada exitosamente');
           this.resetForm();
         } catch (error) {

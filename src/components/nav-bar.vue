@@ -120,7 +120,7 @@ export default {
   methods: {
     async loadChargingStation() {
       try {
-        const response = await axios.get('http://localhost:8080/api/chargingStations');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/chargingStations');
         this.estacionesOptions = response.data.map(estacion => ({
           value: estacion.id,
           label: estacion.nombreTerminal
