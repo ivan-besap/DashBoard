@@ -44,21 +44,24 @@
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="autoSelect" class="form-label">Patente del Auto</label>
-                      <BFormSelect 
-                        v-model="deviceIdentifier.auto" 
-                        class="form-control" 
-                        id="autoSelect" 
-                        required
-                      >
-                        <option value="">Seleccione un auto</option>
-                        <option v-for="car in cars" :key="car.id" :value="car.id">
-                          {{ car.patente }}
-                        </option>
-                      </BFormSelect>
+                      <Multiselect
+                          style="border: 1px solid black;"
+                          v-model="deviceIdentifier.auto"
+                          :options="cars"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese una patente"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
                   <BCol lg="12">
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/tarjetas-rfid')">
+                        Volver
+                      </BButton>
                       <BButton style="background-color: #dfe4ea;" type="submit" variant="light">
                         Actualizar Tarjeta
                       </BButton>
@@ -82,6 +85,7 @@ import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   data() {
@@ -99,7 +103,8 @@ export default {
     Layout,
     PageHeader,
     CardHeader,
-    flatPickr
+    flatPickr,
+    Multiselect
   },
   created() {
     this.fetchDeviceIdentifierData();  
@@ -112,6 +117,9 @@ export default {
       try {
         const response = await axios.get(`http://localhost:8080/api/accounts/current/deviceIdentifiers/${deviceId}`);
         this.deviceIdentifier = response.data;
+        if(response.data.auto === null){
+          this.deviceIdentifier.auto = ''
+        }
       } catch (error) {
         console.error("Error obteniendo los datos del dispositivo:", error);
       }
@@ -120,7 +128,10 @@ export default {
     async fetchCars() {
       try {
         const response = await axios.get('http://localhost:8080/api/accounts/current/cars');
-        this.cars = response.data;  // Llenar la lista de autos para el select
+        this.cars = response.data.map(car => ({
+          label: car.patente,
+          value: car.id
+        }));
       } catch (error) {
         console.error("Error obteniendo los autos:", error);
       }

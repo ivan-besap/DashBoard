@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Flotas" pageTitle="Compañía" />
+    <PageHeader title="Vehiculos" pageTitle="Compañía" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
@@ -9,6 +9,19 @@
               Crear
             </router-link>
           </BButton>
+          <BButton v-if="permisos.includes(58)" style="border: 1px solid #d8d8d8" variant="light" class="ms-3 waves-effect waves-light" @click="downloadTemplate">
+            Descargar Plantilla Autos
+          </BButton>
+          <BButton v-if="permisos.includes(59)"
+              style="border: 1px solid #d8d8d8"
+              variant="light"
+              class="ms-3 waves-effect waves-light"
+              @click="triggerFileInput"
+          >
+            Subir Excel de Autos
+          </BButton>
+          <!-- Input para seleccionar el archivo -->
+          <input type="file" @change="handleFileUpload" ref="fileInput" style="display: none;" />
         </div>
         <div class="contenedor-finac" style="margin-bottom: 10px; width: 246px;">
           <div class="d-flex justify-content-sm-end" style="height: 35px;">
@@ -16,7 +29,7 @@
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar Flota ..."
+              placeholder="Buscar Vehículo ..."
             />
           </div>
         </div>
@@ -29,17 +42,24 @@
           <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
               <tr>
+                <th class="sort" scope="col" @click="onSort('patente')">Alias</th>
                 <th class="sort" scope="col" @click="onSort('patente')">Patente</th>
                 <th class="sort" scope="col" @click="onSort('modelo')">Modelo</th>
                 <th class="sort" scope="col" @click="onSort('vin')">VIN</th>
+                <th class="sort" scope="col" @click="onSort('vin')">RFID Asociada</th>
                 <th scope="col" style="width: 1%;">Acciones</th>
               </tr>
             </thead>
             <tbody class="list form-check-all">
               <tr v-for="(car, index) in resultQuery" :key="index">
+                <td>{{ car.alias }}</td>
                 <td>{{ car.patente }}</td>
                 <td>{{ car.modelo }}</td>
                 <td>{{ car.vin }}</td>
+                <td>
+                  <span v-if="car.rfid.length > 0">{{ car.rfid[0].nombreDeIdentificador }}</span>
+                  <span v-else>No tiene RFID asignada</span>
+                </td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
                     <router-link class="nav-link menu-link" :to="`/company/editar-vehiculo/${car.id}`" v-if="permisos.includes(17)">
@@ -56,21 +76,23 @@
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
-            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+            <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-                active: pageNumber == page,
-                disabled: pageNumber == '...',
-              }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                  @click="goToPage(pageNumber)">
-                <BLink class="page" href="#">{{ pageNumber }}</BLink>
+          active: pageNumber == page,
+          disabled: pageNumber == '...',
+        }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                  {{ pageNumber }}
+                </BLink>
               </li>
             </ul>
-            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+            <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
+
           </div>
         </div>
       </BCardBody>
@@ -97,11 +119,80 @@ export default {
       perPage: 5,
       pages: [],
       direction: 'asc',
-      permisos:[]
+      permisos:[],
+      selectedFile: null,
     };
   },
 
   methods: {
+    triggerFileInput() {
+      this.$refs.fileInput.click();  // Esto abre el selector de archivos
+    },
+    handleFileUpload(event) {
+      this.selectedFile = event.target.files[0];  // Captura el archivo seleccionado
+
+      // Aquí puedes llamar a uploadFile si el archivo ha sido seleccionado
+      if (this.selectedFile) {
+        this.uploadFile();
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "Error",
+          text: "Por favor, selecciona un archivo antes de subir.",
+        });
+      }
+    },
+    async uploadFile() {
+      if (!this.selectedFile) {
+        Swal.fire({
+          icon: "warning",
+          title: "Error",
+          text: "Por favor, selecciona un archivo antes de subir.",
+        });
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", this.selectedFile); // Añadir el archivo al FormData
+
+      try {
+        const response = await axios.post('http://localhost:8080/api/cars/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire({
+            icon: "success",
+            title: "Éxito",
+            text: "El archivo se subió correctamente.",
+          }).then(() => {
+            this.selectedFile = null;
+            this.$router.go(0);// Resetea el archivo seleccionado
+          });
+        }
+      } catch (error) {
+        console.error("Error subiendo el archivo:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al subir el archivo. Por favor, inténtalo nuevamente.",
+        });
+      }
+    },
+    async downloadTemplate() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/cars/template', { responseType: 'blob' });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'plantilla_autos.xlsx');
+        document.body.appendChild(link);
+        link.click();
+      } catch (error) {
+        console.error('Error al descargar la plantilla:', error);
+      }
+    },
     loadUserData() {
       const userDataString = localStorage.getItem('userData');
       this.userData = JSON.parse(userDataString);
@@ -239,6 +330,7 @@ export default {
       const search = this.searchQuery.toLowerCase();
       filteredData = filteredData.filter((car) => {
         return (
+          car.alias.toLowerCase().includes(search) ||  // Búsqueda por patente
           car.patente.toLowerCase().includes(search) ||  // Búsqueda por patente
           car.modelo.toLowerCase().includes(search) ||   // Búsqueda por modelo
           car.vin.toLowerCase().includes(search)         // Búsqueda por VIN
@@ -276,3 +368,23 @@ export default {
   },
 };
 </script>
+<style scoped>
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
+
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
+}
+</style>

@@ -79,9 +79,12 @@
                     </div>
                   </BCol>
                   <BCol lg="12">
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/tarifas')">
+                        Volver
+                      </BButton>
                       <BButton type="submit" variant="light">
-                        Actualizar Tarifa
+                        Actualizar
                       </BButton>
                     </div>
                   </BCol>

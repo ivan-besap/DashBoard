@@ -1,7 +1,7 @@
 <template>
   <Layout>
-    <PageHeader title="Reportes de Carga" pageTitle="Compañía" />
-    
+    <PageHeader title="Reportes de Ventas Por Estación" pageTitle="Compañía" />
+
     <div style="margin-top:10px;" class="table-responsive table-card">
       <div class="d-flex justify-content-between mb-3 align-items-center">
         <div class="d-flex align-items-center">
@@ -34,36 +34,32 @@
       </div>
       <BCard no-body class="card-body">
         <BCardBody>
-        <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
-            <thead class="table-light text-muted">
-            <tr>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('estacionDeCarga')">Estación De Carga</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('cargador')">Cargador</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('conector')">Conector</th>
-              <th class="sort" data-sort="current_value" scope="col" @click="onSort('inicioCarga')">Inicio de Carga</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('finCarga')">Fin Carga</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('usuario')">Usuario</th>
-              <th class="sort" data-sort="low" scope="col" @click="onSort('idCargador')">ID Cargador</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('energia')">Energía</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('tiempo')">Tiempo</th>
-            </tr>
-            </thead>
-            <tbody class="list form-check-all">
-            <tr v-for="(dat, index) of resultQuery" :key="index">
-              <td>{{ dat.estacionDeCarga }}</td>
-              <td class="high">{{ dat.cargador }}</td>
-              <td class="market_cap">{{ dat.conector }}</td>
-              <td>{{ dat.inicioCarga }}</td>
-              <td class="market_cap">{{ dat.finCarga }}</td>
-              <td class="pairs">{{ dat.usuario }}</td>
-              <td class="low">{{ dat.idCargador }}</td>
-              <td class="market_cap">{{ dat.energia }}</td>
-              <td class="market_cap">{{ dat.tiempo }}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+          <div class="table-responsive table-card">
+            <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
+              <thead class="table-light text-muted">
+              <tr>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('fecha')">Fecha</th>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('estacionDeCarga')">Estación De Carga</th>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('ventas')">Ventas</th>
+              </tr>
+              </thead>
+              <tbody class="list form-check-all">
+              <tr v-for="(dat, index) of resultQuery" :key="index">
+                <td>{{ dat.fecha }}</td>
+                <td class="high">{{ dat.estacionDeCarga }}</td>
+                <td class="high">{{ dat.ventas }}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-right"><strong>Total Ventas:</strong></td>
+                <td><strong>{{ totalVentas }}</strong></td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-right"><strong>Total Ventas de todas las estaciones:</strong></td>
+                <td><strong>{{ totalVentasGlobal }}</strong></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
             <div class="pagination-wrap hstack gap-2">
               <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
@@ -71,11 +67,11 @@
               </BLink>
               <ul class="pagination listjs-pagination mb-0">
                 <li :class="{
-                  active: pageNumber == page,
-                  disabled: pageNumber == '...',
-                          }" v-for="pageNumber in displayedPages" :key="pageNumber">
-                          <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
-                            {{ pageNumber }}
+          active: pageNumber == page,
+          disabled: pageNumber == '...',
+        }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                  <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                    {{ pageNumber }}
                   </BLink>
                 </li>
               </ul>
@@ -85,7 +81,7 @@
 
             </div>
           </div>
-      </BCardBody>
+        </BCardBody>
       </BCard>
     </div>
   </Layout>
@@ -110,18 +106,18 @@ export default {
       searchQuery: '',
       filterDate: null,
       data: [
-        { estacionDeCarga : "Estación Vitacura" , cargador: "Cargador1", conector: "Uno", inicioCarga: "2024-07-24 08:30:00", usuario: "Usuario1",  idCargador: "STG-EMU-00002",  finCarga: "2024-07-24 09:35:00", energia: "15.98 kWh", tiempo: "01:05:46" },
-        { estacionDeCarga : "Estación Las Condes" , cargador: "Cargador2", conector: "Dos", inicioCarga: "2024-07-23 10:20:00", usuario: "Usuario2", idCargador: "STG-EMU-00003", finCarga: "2024-07-23 11:15:00", energia: "13.47 kWh", tiempo: "00:55:00" },
-        { estacionDeCarga : "Estación Chorrillos" , cargador: "Cargador3", conector: "Tres", inicioCarga: "2024-07-22 12:00:00", usuario: "Usuario3",  idCargador: "STG-EMU-00004",  finCarga: "2024-07-22 13:05:00", energia: "18.76 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Viña del Mar" , cargador: "Cargador4", conector: "Cuatro", inicioCarga: "2024-07-21 14:15:00", usuario: "Usuario4",  idCargador: "STG-EMU-00005", finCarga: "2024-07-21 15:20:00", energia: "14.56 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Lima" , cargador: "Cargador5", conector: "Cinco", inicioCarga: "2024-07-20 16:30:00", usuario: "Usuario5",  idCargador: "STG-EMU-00006", finCarga: "2024-07-20 17:45:00", energia: "16.23 kWh", tiempo: "01:15:00" },
-        { estacionDeCarga : "Estación Trujillo" , cargador: "Cargador6", conector: "Seis", inicioCarga: "2024-07-19 18:45:00", usuario: "Usuario6",  idCargador: "STG-EMU-00007", finCarga: "2024-07-19 19:50:00", energia: "17.89 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Puente Alto" , cargador: "Cargador7", conector: "Siete", inicioCarga: "2024-07-18 20:00:00", usuario: "Usuario7",  idCargador: "STG-EMU-00008", finCarga: "2024-07-18 21:05:00", energia: "19.45 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Concepción" , cargador: "Cargador8", conector: "Ocho", inicioCarga: "2024-07-17 22:15:00", usuario: "Usuario8",  idCargador: "STG-EMU-00009", finCarga: "2024-07-17 23:20:00", energia: "20.12 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Providencia" , cargador: "Cargador9", conector: "Nueve", inicioCarga: "2024-07-16 23:30:00", usuario: "Usuario9", idCargador: "STG-EMU-00010", finCarga: "2024-07-17 00:35:00", energia: "21.56 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Miami" , cargador: "Cargador10",conector: "Diez", inicioCarga: "2024-07-15 01:00:00", usuario: "Usuario10",  idCargador: "STG-EMU-00011", finCarga: "2024-07-15 02:05:00", energia: "22.34 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Central" , cargador: "Cargador11",conector: "Once", inicioCarga: "2024-07-14 03:15:00", usuario: "Usuario11",  idCargador: "STG-EMU-00012", finCarga: "2024-07-14 04:20:00", energia: "23.78 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Miramar" , cargador: "Cargador12",conector: "Doce", inicioCarga: "2024-07-13 05:30:00", usuario: "Usuario12", idCargador: "STG-EMU-00013", finCarga: "2024-07-13 06:35:00", energia: "24.56 kWh", tiempo: "01:05:00" },
+        { fecha: "2024-07-24 08:30:00", estacionDeCarga : "Estación Vitacura" , ventas: "$540.000"},
+        { fecha: "2024-07-23 10:20:00", estacionDeCarga : "Estación Las Condes", ventas: "$125.000"  },
+        { fecha: "2024-07-22 12:00:00", estacionDeCarga : "Estación Chorrillos", ventas: "$212.000" },
+        { fecha: "2024-07-21 14:15:00", estacionDeCarga : "Estación Viña del Mar", ventas: "$43.000" },
+        { fecha: "2024-07-20 16:30:00", estacionDeCarga : "Estación Lima", ventas: "$1.210.000"  },
+        { fecha: "2024-07-19 18:45:00", estacionDeCarga : "Estación Trujillo", ventas: "$3.534.000" },
+        { fecha: "2024-07-18 20:00:00", estacionDeCarga : "Estación Puente Alto", ventas: "$432.000" },
+        { fecha: "2024-07-17 22:15:00", estacionDeCarga : "Estación Concepción", ventas: "$231.000"  },
+        { fecha: "2024-07-16 23:30:00", estacionDeCarga : "Estación Providencia", ventas: "$167.000" },
+        { fecha: "2024-07-15 01:00:00", estacionDeCarga : "Estación Miami", ventas: "$769.000" },
+        { fecha: "2024-07-14 03:15:00", estacionDeCarga : "Estación Central", ventas: "$843.000" },
+        { fecha: "2024-07-13 05:30:00", estacionDeCarga : "Estación Miramar", ventas: "$443.000" },
       ],
       page: 1,
       perPage: 5,
@@ -129,6 +125,18 @@ export default {
     };
   },
   computed: {
+    totalVentas() {
+      return this.resultQuery.reduce((total, item) => {
+        const ventasNumber = parseFloat(item.ventas.replace(/[^0-9,-]+/g, '').replace('.', '').replace(',', '.'));
+        return total + ventasNumber;
+      }, 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    },
+    totalVentasGlobal() {
+      return this.data.reduce((total, item) => {
+        const ventasNumber = parseFloat(item.ventas.replace(/[^0-9,-]+/g, '').replace('.', '').replace(',', '.'));
+        return total + ventasNumber;
+      }, 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    },
     displayedPages() {
       let startPage = Math.max(this.page - 1, 1);
       let endPage = Math.min(startPage + 2, this.pages.length);
@@ -161,14 +169,7 @@ export default {
         filteredData = filteredData.filter((data) => {
           return (
               data.estacionDeCarga.toLowerCase().includes(search) ||
-              data.cargador.toLowerCase().includes(search) ||
-              data.conector.toLowerCase().includes(search) ||
-              data.inicioCarga.toLowerCase().includes(search) ||
-              data.finCarga.toLowerCase().includes(search) ||
-              data.usuario.toLowerCase().includes(search) ||
-              data.idCargador.toLowerCase().includes(search) ||
-              data.energia.toLowerCase().includes(search) ||
-              data.tiempo.toLowerCase().includes(search)
+              data.ventas.toLowerCase().includes(search)
           );
         });
       }
@@ -178,7 +179,7 @@ export default {
         const [startDate, endDate] = this.dateRange.split(' to ');
 
         filteredData = filteredData.filter((data) => {
-          return data.inicioCarga >= startDate && data.inicioCarga <= endDate;
+          return data.fecha >= startDate && data.fecha <= endDate;
         });
       }
 
@@ -212,8 +213,8 @@ export default {
         item.estacionDeCarga, item.cargador, item.conector, item.inicioCarga, item.finCarga, item.usuario,  item.idCargador,  item.energia, item.tiempo
       ]);
       const csvContent = "data:text/csv;charset=utf-8," +
-        headers.join(",") + "\n" +
-        rows.map(e => e.join(",")).join("\n");
+          headers.join(",") + "\n" +
+          rows.map(e => e.join(",")).join("\n");
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -295,7 +296,6 @@ export default {
 .tama-dark {
   font-size: 15px;
 }
-
 .pagination .active .page {
   background-color: #20dcb5; /* Elige el color que prefieras */
   border-color: #20dcb5; /* Elige el color del borde */

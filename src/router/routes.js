@@ -62,6 +62,7 @@ export default [
       title: "Login",
     },
     component: () => import("../views/account/login.vue"),
+    // component: () => import("../views/auth/signin/basic.vue"),
   },
   {
     path: "/dashboard/crypto",
@@ -1395,10 +1396,34 @@ export default [
     component: () => import("../views/company/detalles-terminal"),
   },
   {
+    path: "/company/reporte-ventas",
+    name: "Reporte Ventas",
+    meta: { title: "Reporte Ventas", authRequired: true },
+    component: () => import("../views/company/reporte-ventas-estacion.vue"),
+  },
+  {
     path: "/company/crear-cargador",
     name: "Crear Cargador",
     meta: { title: " Crear Cargador", authRequired: true },
     component: () => import("../views/company/crear-cargador"),
+  },
+  {
+    path: "/company/carga-inteligente",
+    name: "Carga Inteligente",
+    meta: { title: "Carga Inteligente", authRequired: true },
+    component: () => import("../views/company/carga-inteligente.vue"),
+  },
+  {
+    path: "/company/crear-fabricante-cargador",
+    name: "Crear Fabricante Cargador",
+    meta: { title: " Crear Cargador", authRequired: true },
+    component: () => import("../views/company/crear-fabricante-cargador.vue"),
+  },
+  {
+    path: "/company/crear-modelo-cargador",
+    name: "Crear Modelo Cargador",
+    meta: { title: " Crear Cargador", authRequired: true },
+    component: () => import("../views/company/crear-modelo-cargador.vue"),
   },
   {
     path: "/company/detalles-de-carga",
@@ -1456,7 +1481,7 @@ export default [
 
   ,
   {
-    path: "/company/cargas-por-flota",
+    path: "/company/cargas-por-vehiculo",
     name: "Cargas por Usuario",
     meta: { title: "Cargas por Terminal", authRequired: true },
     component: () => import("../views/company/cargas-por-flota.vue"),
@@ -1477,13 +1502,13 @@ export default [
   }
 
   ,
-  {
-    path: "/company/errores",
-    name: "Errores",
-    meta: { title: "Errores", authRequired: true },
-    component: () => import("../views/company/errores"),
-  }
-  ,
+  // {
+  //   path: "/company/errores",
+  //   name: "Errores",
+  //   meta: { title: "Errores", authRequired: true },
+  //   component: () => import("../views/company/errores"),
+  // }
+
   {
     path: "/company/vehiculos",
     name: "Vehiculos",
@@ -1585,6 +1610,13 @@ export default [
     name: "Crear Conector",
     meta: { title: " Crear Conector", authRequired: true },
     component: () => import("../views/company/crear-conector"),
+  },
+
+  {
+    path: "/company/crear-tipo-conector",
+    name: "Crear Tipo Conector",
+    meta: { title: " Crear Tipo Conector", authRequired: true },
+    component: () => import("../views/company/crear-tipo-conector.vue"),
   }
 
   ,

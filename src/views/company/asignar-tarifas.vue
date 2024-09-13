@@ -27,6 +27,7 @@
                         type="checkbox"
                         @click="toggleSelectAllConnectors"
                         :checked="allConnectorsSelected"
+                        style="border-radius: 10px"
                     >
                     <label class="form-check-label"></label>
                   </div>
@@ -37,7 +38,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="conector in filteredConnectors" :key="conector.id">
+              <tr v-for="conector in filteredConnectors" :key="conector.id" @click="toggleConnectorSelection(conector)">
                 <td>
                   <div class="form-check">
                     <input
@@ -46,6 +47,8 @@
                         :id="'check' + conector.id"
                         v-model="selectedConnectors"
                         :value="conector"
+                        @click.stop
+                        style="border-radius: 10px"
                     />
                     <label class="form-check-label" :for="'check' + conector.id"></label>
                   </div>
@@ -76,12 +79,26 @@
             <table class="table table-striped table-hover align-middle table-nowrap mb-0">
               <thead class="table-light">
               <tr>
+                <th></th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Costo</th>
               </tr>
               </thead>
               <tbody>
               <tr v-for="(tarifa, index) in resultQuery" :key="index" @click="selectPlan(tarifa)">
+                <td>
+                  <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        :value="tarifa"
+                        v-model="selectedTarifa"
+                        :id="'tarifa' + tarifa.id"
+                        @click.stop
+                    />
+                    <label class="form-check-label" :for="'tarifa' + tarifa.id"></label>
+                  </div>
+                </td>
                 <td>{{ tarifa.nombreTarifa }}</td>
                 <td>{{ tarifa.precioTarifa }}</td>
               </tr>
@@ -162,6 +179,14 @@ export default {
           });
     },
 
+    toggleConnectorSelection(conector) {
+      const index = this.selectedConnectors.findIndex(c => c.id === conector.id);
+      if (index > -1) {
+        this.selectedConnectors.splice(index, 1);  // Deselect if already selected
+      } else {
+        this.selectedConnectors.push(conector);    // Select if not selected
+      }
+    },
     selectPlan(plan) {
       this.selectedTarifa = plan;
     },

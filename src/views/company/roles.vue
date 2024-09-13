@@ -137,7 +137,7 @@ export default {
         if (result.isConfirmed) {
           try {
             const response = await axios.patch(`http://localhost:8080/api/roles/${roleId}/delete`);
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
               Swal.fire(
                   "¡Eliminado!",
                   "Tu Rol ha sido eliminada.",

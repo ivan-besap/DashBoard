@@ -14,6 +14,11 @@
               Crear Conector
             </router-link>
           </BButton>
+          <BButton style="border: 1px solid #d8d8d8; margin-left: 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(62)">
+            <router-link class="nav-link menu-link" target="" to="/company/crear-tipo-conector">
+              Crear Tipo de Conector
+            </router-link>
+          </BButton>
         </div>
         <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px;">
           <!-- Input de búsqueda -->
@@ -37,10 +42,12 @@
                 <th class="sort" data-sort="current_value" scope="col" @click="onSort('alias')">Alias</th>
                 <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('tipoConector')">Tipo Conector</th>
                 <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Cargador</th>
-                <th class="sort pe-4" data-sort="" scope="col" @click="onSort('connectorNumber')">Número Conector</th>
-                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('currentMax')">Corriente Máxima</th>
-                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('powerMax')">Potencia Máxima</th>
-                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('voltageMax')">Voltaje Máximo</th>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Nombre Tarifa</th>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Costo Tarifa</th>
+<!--                <th class="sort pe-4" data-sort="" scope="col" @click="onSort('connectorNumber')">Número Conector</th>-->
+<!--                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('currentMax')">Corriente Máxima</th>-->
+<!--                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('powerMax')">Potencia Máxima</th>-->
+<!--                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('voltageMax')">Voltaje Máximo</th>-->
                 <th class="sort " data-sort="high" scope="col" @click="onSort('connectorStatus')">Estado</th>
                 <th scope="col" style="width: 1%;">Acciones</th>
               </tr>
@@ -49,12 +56,20 @@
               <tr v-for="(dat, index) in resultQuery" :key="index">
                 <td>{{ dat.alias }}</td>
 <!--                <td class="pairs">{{ dat.connectorType }}</td>-->
-                <td>{{ dat.tipoConector }}</td>
+                <td>{{ dat.tipoConector.nombre }}</td>
                 <td>{{ dat.idCargador }}</td>
-                <td>{{ dat.nconector }}</td>
-                <td>{{ dat.corrienteMaxima }}</td>
-                <td>{{ dat.potenciaMaxima }}</td>
-                <td>{{ dat.voltajeMaximo }}</td>
+                <td>
+                  <span v-if="dat.tarifa">{{ dat.tarifa.nombreTarifa }}</span>
+                  <span v-else>No tiene tarifa asignada</span>
+                </td>
+                <td>
+                  <span v-if="dat.tarifa">{{ dat.tarifa.precioTarifa }}</span>
+                  <span v-else>No tiene tarifa asignada</span>
+                </td>
+<!--                <td>{{ dat.nconector }}</td>-->
+<!--                <td>{{ dat.corrienteMaxima }}</td>-->
+<!--                <td>{{ dat.potenciaMaxima }}</td>-->
+<!--                <td>{{ dat.voltajeMaximo }}</td>-->
                 <td class="d-flex align-items-center">
                   <span :class="dat.estadoConector === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
                     {{ dat.estadoConector === 'CONNECTED' ? 'Conectado' : 'Desconectado' }}
@@ -86,19 +101,20 @@
           </div>
           <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
             <div class="pagination-wrap hstack gap-2">
-              <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+              <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
                 Anterior
               </BLink>
               <ul class="pagination listjs-pagination mb-0">
                 <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                    @click="goToPage(pageNumber)">
-                  <BLink class="page" href="#">{{ pageNumber }}</BLink>
+                  active: pageNumber == page,
+                  disabled: pageNumber == '...',
+                          }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                  <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                    {{ pageNumber }}
+                  </BLink>
                 </li>
               </ul>
-              <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+              <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
                 Siguiente
               </BLink>
             </div>
@@ -143,32 +159,34 @@
         }
         return pages;
       },
-      filteredPlans() {
-        const query = this.searchQuery.toLowerCase();
-        return this.data.filter(dat => dat.alias.toLowerCase().includes(query));
-      },
-      displayedPosts() {
-        return this.paginate(this.data);
-      },
+      // filteredPlans() {
+      //   const query = this.searchQuery.toLowerCase();
+      //   return this.data.filter(dat => dat.alias.toLowerCase().includes(query));
+      // },
+      // displayedPosts() {
+      //   return this.paginate(this.data);
+      // },
       resultQuery() {
-        if (this.searchQuery) {
-          const search = this.searchQuery.toLowerCase();
-          return this.displayedPosts.filter((data) => {
-            return (
-                data.alias.toLowerCase().includes(search) ||
-                data.tipoConector.toLowerCase().includes(search) ||
-                data.idCargador.toLowerCase().includes(search)
-            );
-          });
-        } else {
-          return this.displayedPosts;
-        }
+        let filteredData = this.filteredConnector;
+        return this.paginate(filteredData);
       },
+      filteredConnector() {
+        const query = this.searchQuery.toLowerCase();
+        return this.data.filter(connector =>
+            connector.alias.toLowerCase().includes(query) ||
+            connector.tipoConector.nombre.toLowerCase().includes(query) ||
+            connector.idCargador.toLowerCase().includes(query) ||
+            connector.tarifa.nombreTarifa.toLowerCase().includes(query)
+        );
+      }
    },
     watch: {
-      posts() {
+      data() {
         this.setPages();
       },
+      searchQuery() {
+        this.setPages();
+      }
     },
     created() {
       this.setPages();
@@ -203,7 +221,7 @@
               activeStatus: estadoConector
             }
           });
-          if (response.status === 200) {
+          if (response.status === 200 || response.status === 201) {
             Swal.fire("Estado del Conector Actualizado!", "", "success");
           }
         } catch (error) {
@@ -263,7 +281,7 @@
             try {
               // Hacer la solicitud PUT al endpoint para "eliminar" el conector
               const response = await axios.patch(`http://localhost:8080/api/companies/current/connectors/${connectorId}/delete`);
-              if (response.status === 200) {
+              if (response.status === 200 || response.status === 201) {
                 Swal.fire(
                     "¡Eliminado!",
                     "Tu conector ha sido eliminado.",
@@ -284,6 +302,23 @@
   </script>
   
 <style scoped>
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
 
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
+}
 </style>
   

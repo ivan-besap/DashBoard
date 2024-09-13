@@ -10,27 +10,26 @@
                 <BRow>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="patente" class="form-label">Patente</label>
-                      <BFormInput 
-                        v-model="car.patente" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Patente del auto" 
-                        id="patente" 
-                        required 
+                      <label for="alias" class="form-label">Alias</label>
+                      <BFormInput
+                          v-model="car.alias"
+                          type="text"
+                          class="form-control"
+                          placeholder="Alias del auto"
+                          id="alias"
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="modelo" class="form-label">Modelo</label>
-                      <BFormInput 
-                        v-model="car.modelo" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Modelo del auto" 
-                        id="modelo" 
-                        required 
+                      <label for="patente" class="form-label">Patente</label>
+                      <BFormInput
+                          v-model="car.patente"
+                          type="text"
+                          class="form-control"
+                          placeholder="Patente del auto"
+                          id="patente"
+                          required
                       />
                     </div>
                   </BCol>
@@ -75,17 +74,18 @@
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="añoFabricacion" class="form-label">Año de Fabricación</label>
-                      <BFormInput 
-                        v-model="car.anoFabricacion"
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Año de Fabricación" 
-                        id="añoFabricacion" 
-                        required 
+                      <label for="modelo" class="form-label">Modelo</label>
+                      <BFormInput
+                          v-model="car.modelo"
+                          type="text"
+                          class="form-control"
+                          placeholder="Modelo del auto"
+                          id="modelo"
+                          required
                       />
                     </div>
                   </BCol>
+
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="capacidadPotencia" class="form-label">Capacidad de Potencia</label>
@@ -99,10 +99,25 @@
                       />
                     </div>
                   </BCol>
-                  
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="añoFabricacion" class="form-label">Año de Fabricación</label>
+                      <BFormInput
+                          v-model="car.anoFabricacion"
+                          type="text"
+                          class="form-control"
+                          placeholder="Año de Fabricación"
+                          id="añoFabricacion"
+                          required
+                      />
+                    </div>
+                  </BCol>
                   <BCol lg="12">
-                    <div class="text-end">
-                      <BButton style="" type="submit" variant="light"  @click="successmsg">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/vehiculos')">
+                        Volver
+                      </BButton>
+                      <BButton style="" type="submit" variant="light">
                         Crear
                       </BButton>
                     </div>
@@ -133,6 +148,7 @@ export default {
   data() {
     return {
       car: {
+        alias: '',
         patente: '',
         modelo: '',
         vin: '',
@@ -164,7 +180,7 @@ export default {
         console.error("Error creando el auto:", error);
         Swal.fire(
             "Error",
-            "No se pudo crear el rol.",
+            "No se pudo crear el vehiculo.",
             "error"
         );
       }

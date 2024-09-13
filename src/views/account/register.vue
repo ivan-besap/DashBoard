@@ -21,8 +21,11 @@ export default {
         confirm_password: "",
         nombre: "",
         apellidoMaterno: "",
-        apellidoPaterno: ""
+        apellidoPaterno: "",
       },
+      showPassword: false,
+      showConfirmPassword: false,
+      loading: false,
     };
   },
   validations: {
@@ -64,24 +67,46 @@ export default {
     },
   },
   methods: {
+    togglePasswordVisibility(field) {
+      if (field === 'password') {
+        this.showPassword = !this.showPassword;
+      } else if (field === 'confirm_password') {
+        this.showConfirmPassword = !this.showConfirmPassword;
+      }
+    },
     async submitForm() {
       this.v$.$touch();
       if (this.v$.$invalid) {
         return;
       }
+      this.loading = true;
 
       try {
         const response = await axios.post('http://localhost:8080/auth/register', this.user);
-        if (response.data.status === 'errors') {
-          this.authError = response.data.data;
-          return;
-        } else {
+        if (response.status === 200 || response.status === 201) {
+          this.loading = false;
           Swal.fire("Cuenta compañía creada!", "", "success");
-          this.$router.push({ path: '/login' });
+          this.$router.push({path: '/login'});
         }
       } catch (error) {
-        console.error('Error during registration:', error);
-        this.authError = 'Registro fallido. Por favor revise sus datos e intente de nuevo.';
+        // Si hay un error, capturamos el mensaje y lo mostramos con Swal
+        if (error.response && error.response.status === 400) {
+          this.loading = false;
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response.data // Mostrar el mensaje de error del backend
+          });
+        } else {
+          this.loading = false;
+          // En caso de otro tipo de error
+          console.error('Error during registration:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: 'Registro fallido. Por favor revise sus datos e intente de nuevo.'
+          });
+        }
       }
     }
 
@@ -112,6 +137,9 @@ export default {
 
 <template>
   <div class="auth-page-wrapper pt-5">
+    <div v-if="loading" class="loader-overlay">
+      <p>Cargando, por favor espere...</p>
+    </div>
     <div class="auth-one-bg-position" style="background-color: #222c27" id="auth-particles">
       <div></div>
 
@@ -175,7 +203,7 @@ export default {
 
                   <div class="mb-3" :class="{ 'has-error': v$.user.rut.$invalid && v$.user.rut.$dirty }">
                     <label for="rut" class="form-label">Número de registro único <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Rut" @blur="v$.user.rut.$touch()">
+                    <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Número de registro único" @blur="v$.user.rut.$touch()">
                     <span v-if="v$.user.rut.$invalid && v$.user.rut.$dirty" class="text-danger">{{ v$.user.rut.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-3" :class="{ 'has-error': v$.user.telefono.$invalid && v$.user.telefono.$dirty }">
@@ -190,12 +218,27 @@ export default {
                   </div>
                   <div class="mb-2" :class="{ 'has-error': v$.user.password.$invalid && v$.user.password.$dirty }">
                     <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" v-model="user.password" id="password" placeholder="Ingrese contraseña" @blur="v$.user.password.$touch()">
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <input :type="showPassword ? 'text' : 'password'" class="form-control" v-model="user.password" id="password"
+                             placeholder="Ingrese contraseña" @blur="v$.user.password.$touch()">
+                      <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                               @click="togglePasswordVisibility('password')">
+                        <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                      </BButton>
+                    </div>
                     <span v-if="v$.user.password.$invalid && v$.user.password.$dirty" class="text-danger">{{ v$.user.password.$errors[0].$message }}</span>
                   </div>
+
                   <div class="mb-2" :class="{ 'has-error': v$.user.confirm_password.$invalid && v$.user.confirm_password.$dirty }">
                     <label for="confirm_password" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" v-model="user.confirm_password" id="confirm_password" placeholder="Ingrese contraseña" @blur="v$.user.confirm_password.$touch()">
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <input :type="showConfirmPassword ? 'text' : 'password'" class="form-control" v-model="user.confirm_password" id="confirm_password"
+                             placeholder="Ingrese contraseña" @blur="v$.user.confirm_password.$touch()">
+                      <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                               @click="togglePasswordVisibility('confirm_password')">
+                        <i :class="showConfirmPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                      </BButton>
+                    </div>
                     <span v-if="v$.user.confirm_password.$invalid && v$.user.confirm_password.$dirty" class="text-danger">{{ v$.user.confirm_password.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-4">
@@ -238,5 +281,19 @@ export default {
 }
 .text-danger {
   color: red;
+}
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

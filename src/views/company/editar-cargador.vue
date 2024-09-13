@@ -51,49 +51,49 @@
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="manufacturerId" class="form-label">Fabricante</label>
-                      <BFormSelect
+                      <Multiselect
+                          style="border: 1px solid black;"
                           v-model="charger.manufacturerId"
-                          class="form-control"
-                          id="manufacturerId"
-                          required
-                      >
-                        <option value="">Seleccionar un fabricante</option>
-                        <option v-for="manufacturer in manufacturers" :key="manufacturer.id" :value="manufacturer.id">
-                          {{ manufacturer.name }}
-                        </option>
-                      </BFormSelect>
+                          :options="manufacturers"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese un fabricante"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="modelId" class="form-label">Modelo</label>
-                      <BFormSelect
+                      <Multiselect
+                          style="border: 1px solid black;"
                           v-model="charger.modelId"
-                          class="form-control"
-                          id="modelId"
-                          required
-                      >
-                        <option value="">Seleccionar un modelo</option>
-                        <option v-for="model in models" :key="model.id" :value="model.id">
-                          {{ model.name }}
-                        </option>
-                      </BFormSelect>
+                          :options="models"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese un modelo"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="stationId" class="form-label">Estación de carga</label>
-                      <BFormSelect
+                      <Multiselect
+                          style="border: 1px solid black;"
                           v-model="charger.terminalId"
-                          class="form-control"
-                          id="stationId"
-                          required
-                      >
-                        <option value="">Seleccionar una estación</option>
-                        <option v-for="station in chargingStations" :key="station.id" :value="station.id">
-                          {{ station.nombreTerminal }}
-                        </option>
-                      </BFormSelect>
+                          :options="chargingStations"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese un terminal"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
                   <BCol lg="12">
@@ -122,6 +122,7 @@ import Swal from "sweetalert2";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   data() {
@@ -143,6 +144,7 @@ export default {
     Layout,
     PageHeader,
     CardHeader,
+    Multiselect
   },
   methods: {
     async loadCharger() {
@@ -178,7 +180,10 @@ export default {
     async chargerManufacturers() {
       try {
         const response = await axios.get('http://localhost:8080/api/manufacturers');
-        this.manufacturers = response.data;
+        this.manufacturers = response.data.map(data => ({
+          label: data.name,
+          value: data.id
+        }));
       } catch (error) {
         console.error("Error cargando los fabricantes:", error);
       }
@@ -186,7 +191,10 @@ export default {
     async chargerModels() {
       try {
         const response = await axios.get('http://localhost:8080/api/models');
-        this.models = response.data;
+        this.models = response.data.map(data => ({
+          label: data.name,
+          value: data.id
+        }));
       } catch (error) {
         console.error("Error cargando los modelos:", error);
       }
@@ -194,7 +202,10 @@ export default {
     async chargingStations2() {
       try {
         const response = await axios.get('http://localhost:8080/api/chargingStations');
-        this.chargingStations = response.data;
+        this.chargingStations = response.data.map(data => ({
+          label: data.nombreTerminal,
+          value: data.id
+        }));
       } catch (error) {
         console.error("Error cargando las estaciones de carga:", error);
       }

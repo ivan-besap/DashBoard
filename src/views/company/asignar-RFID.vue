@@ -7,12 +7,12 @@
         <BCol xl="6">
           <div class="search-box mb-4">
             <input
-              type="text"
-              class="form-control border-light"
-              autocomplete="off"
-              id="searchRFID"
-              placeholder="Buscar RFID..."
-              v-model="rfidSearchQuery"
+                type="text"
+                class="form-control border-light"
+                autocomplete="off"
+                id="searchRFID"
+                placeholder="Buscar RFID..."
+                v-model="rfidSearchQuery"
             />
             <i class="ri-search-line search-icon"></i>
           </div>
@@ -20,16 +20,26 @@
             <div style="max-height: 500px; overflow-y: auto;">
               <table class="table table-striped table-hover align-middle table-nowrap mb-0">
                 <thead class="table-light">
-                  <tr>
-                    <th scope="col">RFID</th>
-                    <th scope="col">Nombre Identificador</th>
-                  </tr>
+                <tr>
+                  <th scope="col"></th> <!-- Checkbox column -->
+                  <th scope="col">RFID</th>
+                  <th scope="col">Nombre Identificador</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="rfid in filteredRFIDs" :key="rfid.id" @click="selectRFID(rfid)">
-                    <td>{{ rfid.rfid }}</td>
-                    <td>{{ rfid.nombreDeIdentificador }}</td>
-                  </tr>
+                <tr v-for="rfid in filteredRFIDs" :key="rfid.id" @click="selectRFID(rfid)">
+                  <td>
+                    <input
+                        type="radio"
+                        name="rfidSelection"
+                        :value="rfid"
+                        v-model="selectedRFID"
+                        @click.stop="selectRFID(rfid)"
+                    />
+                  </td>
+                  <td>{{ rfid.rfid }}</td>
+                  <td>{{ rfid.nombreDeIdentificador }}</td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -40,12 +50,12 @@
         <BCol xl="6">
           <div class="search-box mb-4">
             <input
-              type="text"
-              class="form-control border-light"
-              autocomplete="off"
-              id="searchCars"
-              placeholder="Buscar Auto..."
-              v-model="carSearchQuery"
+                type="text"
+                class="form-control border-light"
+                autocomplete="off"
+                id="searchCars"
+                placeholder="Buscar Auto..."
+                v-model="carSearchQuery"
             />
             <i class="ri-search-line search-icon"></i>
           </div>
@@ -53,16 +63,28 @@
             <div style="max-height: 500px; overflow-y: auto;">
               <table class="table table-striped table-hover align-middle table-nowrap mb-0">
                 <thead class="table-light">
-                  <tr>
-                    <th scope="col">Patente</th>
-                    <th scope="col">Modelo</th>
-                  </tr>
+                <tr>
+                  <th scope="col"></th> <!-- Checkbox column -->
+                  <th scope="col">Alias</th>
+                  <th scope="col">Patente</th>
+                  <th scope="col">Modelo</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="car in filteredCars" :key="car.id" @click="selectCar(car)">
-                    <td>{{ car.patente }}</td>
-                    <td>{{ car.modelo }}</td>
-                  </tr>
+                <tr v-for="car in filteredCars" :key="car.id" @click="selectCar(car)">
+                  <td>
+                    <input
+                        type="radio"
+                        name="carSelection"
+                        :value="car"
+                        v-model="selectedCar"
+                        @click.stop="selectCar(car)"
+                    />
+                  </td>
+                  <td>{{ car.alias }}</td>
+                  <td>{{ car.patente }}</td>
+                  <td>{{ car.modelo }}</td>
+                </tr>
                 </tbody>
               </table>
             </div>

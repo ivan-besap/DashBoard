@@ -77,9 +77,24 @@
                       />
                     </div>
                   </BCol>
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="consumoEnergiaAlarma" class="form-label">Consumo de Energía para Alarma Crítica</label>
+                      <BFormInput
+                          v-model="tarifa.consumoDeEnergiaAlarma"
+                          type="text"
+                          class="form-control"
+                          placeholder="Consumo de energía crítica"
+                          id="consumoEnergiaAlarma"
+                      />
+                    </div>
+                  </BCol>
 
                   <BCol lg="12">
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/tarifas')">
+                        Volver
+                      </BButton>
                       <BButton style="" type="submit" variant="light">
                         Crear Tarifa
                       </BButton>
@@ -115,7 +130,8 @@ export default {
         horaInicio: '',
         horaFin: '',
         diasDeLaSemana: [],
-        precioTarifa: 0.0
+        precioTarifa: 0.0,
+        consumoDeEnergiaAlarma: ''
       },
       dateConfig: {
         enableTime: false,
@@ -158,6 +174,9 @@ export default {
       });
     },
     async createTarifa() {
+      if (this.tarifa.consumoDeEnergiaAlarma === '') {
+        this.tarifa.consumoDeEnergiaAlarma = null;
+      }
       try {
         await axios.post('http://localhost:8080/api/fees', this.tarifa);
         this.successmsg();

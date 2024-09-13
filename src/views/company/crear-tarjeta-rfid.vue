@@ -49,9 +49,12 @@
                     </div>
                   </BCol>
                   <BCol lg="12">
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/tarjetas-rfid')">
+                        Volver
+                      </BButton>
                       <BButton style="" type="submit" variant="light">
-                        Crear Tarjeta RFID
+                        Crear
                       </BButton>
                     </div>
                   </BCol>
@@ -96,7 +99,7 @@ export default {
     async createDeviceIdentifier() {
       try {
         const response = await axios.post('http://localhost:8080/api/accounts/current/device-identifiers', this.deviceIdentifier);
-        if (response.status === 201) {
+        if (response.status === 200 || response.status === 201){
           Swal.fire({
             title: "Tarjeta RFID Creada!",
             text: "Redirigiendo a la página de Tarjetas RFID...",

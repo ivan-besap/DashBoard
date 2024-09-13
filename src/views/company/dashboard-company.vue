@@ -198,16 +198,20 @@ export default {
               </BCardHeader>
               <BCardBody>
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                  <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
-                    <i class="mdi mdi-eye"></i>
-                  </BButton>
+                  <RouterLink :to="{ name: 'Alarmas Diarias' }">
+                    <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
+                      <i class="mdi mdi-eye"></i>
+                    </BButton>
+                  </RouterLink>
                   <p class="mb-0 text-end w-100">2 reinicios de cargadores</p>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
-                  <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
-                    <i class="mdi mdi-eye"></i>
-                  </BButton>
-                  <p class="mb-0 text-end w-100">0 errores de cargadores</p>
+                  <RouterLink :to="{ name: 'Errores por Conector' }">
+                    <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
+                      <i class="mdi mdi-eye"></i>
+                    </BButton>
+                  </RouterLink>
+                  <p class="mb-0 text-end w-100">0 errores de conector</p>
                 </div>
               </BCardBody>
             </BCol>

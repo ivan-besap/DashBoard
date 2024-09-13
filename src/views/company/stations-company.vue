@@ -78,19 +78,20 @@
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
-            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+            <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                  @click="goToPage(pageNumber)">
-                <BLink class="page" href="#">{{ pageNumber }}</BLink>
+                  active: pageNumber == page,
+                  disabled: pageNumber == '...',
+                          }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                  {{ pageNumber }}
+                </BLink>
               </li>
             </ul>
-            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+            <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
           </div>
@@ -138,39 +139,32 @@ export default {
       }
       return pages;
     },
-    filteredPlans() {
-      const query = this.searchQuery.toLowerCase();
-      return this.data.filter(dat => dat.name.toLowerCase().includes(query));
-    },
-    displayedPosts() {
-      return this.paginate(this.data);
-    },
+    // filteredPlans() {
+    //   const query = this.searchQuery.toLowerCase();
+    //   return this.data.filter(dat => dat.name.toLowerCase().includes(query));
+    // },
+    // displayedPosts() {
+    //   return this.paginate(this.data);
+    // },
     resultQuery() {
-      if (this.searchQuery) {
-        const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
-          return (
-              data.nombreTerminal.toLowerCase().includes(search) ||
-              data.ubicacionTerminal.direccion.toLowerCase().includes(search) ||
-              // data.alarms.toLowerCase().includes(search) ||
-              data.fechaDeCreacion.toLowerCase().includes(search)
-          );
-        });
-      } else {
-        return this.displayedPosts;
-      }
+      let filteredData = this.filteredChargingStations;
+      return this.paginate(filteredData);
     },
     filteredChargingStations() {
       const query = this.searchQuery.toLowerCase();
-      return this.chargingStations.filter(station =>
-        station.name.toLowerCase().includes(query)
+      return this.data.filter(station =>
+        station.nombreTerminal.toLowerCase().includes(query) ||
+        station.ubicacionTerminal.direccion.toLowerCase().includes(query)
       );
     }
   },
   watch: {
-    posts() {
+    data() {
       this.setPages();
     },
+    searchQuery() {
+      this.setPages();
+    }
   },
   created() {
     this.setPages();
@@ -205,7 +199,7 @@ export default {
             activeStatus: estadoTerminal
           }
         });
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
           Swal.fire("Estación Actualizada!", "", "success")
         }
       } catch (error) {
@@ -264,7 +258,7 @@ export default {
           try {
             // Hacer la solicitud PUT al endpoint para "eliminar" la estación
             const response = await axios.patch(`http://localhost:8080/api/companies/current/chargingStations/${stationId}/delete`);
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201){
               Swal.fire("¡Estación eliminada!", "", "success").then(() => {
                 this.$router.go(0);
               });
@@ -280,8 +274,26 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .flex-shrink-0 {
   display: none;
+}
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
+
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
 }
 </style>

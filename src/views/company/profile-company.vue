@@ -68,7 +68,7 @@ export default {
             activeStatus: activeStatus
           }
         });
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
           Swal.fire("Estado de usuario Actualizado!", "", "success").then(() => {
             if (activeStatus === true) {
               this.$router.push('/company/dashboard-company').then(() => {

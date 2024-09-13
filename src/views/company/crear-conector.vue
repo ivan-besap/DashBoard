@@ -80,49 +80,49 @@
                     <BCol md="6">
                       <div class="mb-3">
                         <label for="charger" class="form-label">Cargador</label>
-                        <BFormSelect
+                        <Multiselect
+                            style="border: 1px solid black;"
                             v-model="connector.cargador"
-                            class="form-control"
-                            id="charger"
-                            required
-                        >
-                          <option value="">Seleccionar un Cargador</option>
-                          <option v-for="charger in chargers" :key="charger.id" :value="charger.id">
-                            {{ charger.nombre }} <!-- Usar el nombre del cargador aquí -->
-                          </option>
-                        </BFormSelect>
+                            :options="chargers"
+                            label="label"
+                            track-by="label"
+                            placeholder="Selecciona o ingrese un cargador"
+                            :close-on-select="true"
+                            :searchable="true"
+                            :create-option="true"
+                        />
                       </div>
                     </BCol>
                     <BCol md="6">
                       <div class="mb-3">
                         <label for="connectorType" class="form-label">Tipo de Conector</label>
-                        <BFormSelect
+                        <Multiselect
+                            style="border: 1px solid black;"
                             v-model="connector.tipoConector"
-                            class="form-control"
-                            id="connectorType"
-                            required
-                        >
-                          <option value="">Seleccionar un Tipo de Conector</option>
-                          <option v-for="type in connectorTypes" :key="type" :value="type">
-                            {{ type }}
-                          </option>
-                        </BFormSelect>
+                            :options="connectorTypes"
+                            label="label"
+                            track-by="label"
+                            placeholder="Selecciona o ingrese un tipo de conector"
+                            :close-on-select="true"
+                            :searchable="true"
+                            :create-option="true"
+                        />
                       </div>
                     </BCol>
                     <BCol md="6">
                       <div class="mb-3">
                         <label for="charger" class="form-label">Terminal</label>
-                        <BFormSelect
+                        <Multiselect
+                            style="border: 1px solid black;"
                             v-model="connector.terminal"
-                            class="form-control"
-                            id="charger"
-                            required
-                        >
-                          <option value="">Seleccionar un Cargador</option>
-                          <option v-for="station in chargingStations" :key="station.id" :value="station.id">
-                            {{ station.nombreTerminal }} <!-- Usar el nombre del cargador aquí -->
-                          </option>
-                        </BFormSelect>
+                            :options="chargingStations"
+                            label="label"
+                            track-by="label"
+                            placeholder="Selecciona o ingrese un cargador"
+                            :close-on-select="true"
+                            :searchable="true"
+                            :create-option="true"
+                        />
                       </div>
                     </BCol>
                     <BCol lg="12">
@@ -153,6 +153,7 @@
   import Layout from "@/layouts/main.vue";
   import PageHeader from "@/components/page-header";
   import CardHeader from "@/common/card-header";
+  import Multiselect from "@vueform/multiselect";
   
   export default {
     data() {
@@ -181,25 +182,22 @@
     components: {
       Layout,
       PageHeader,
-      CardHeader, 
+      CardHeader,
+      Multiselect
     },
     methods: {
       async createConnector() {
         try {
-          const response = await axios.post('http://localhost:8080/api/companies/current/connectors', this.connector);
+          const conector = {
+            ...this.connector,
+            tipoConector: { id: this.connector.tipoConector }, // Enviar el objeto con el id
+          };
+          const response = await axios.post('http://localhost:8080/api/companies/current/connectors', conector);
           if (response.status === 200 || response.status === 201) {
-            this.connector.alias = '';
-            this.connector.voltajeMaximo = '';
-            this.connector.potenciaMaxima = '';
-            this.connector.corrienteMaxima = '';
-            this.connector.nConector = '';
-            this.connector.cargador = null;
-            this.connector.tipoConector = null;
-            this.connector.terminal = null;
+            Swal.fire("Conector Creado Exitosamente", "", "success").then(() => {
+              this.$router.push('/company/conector');
+            });
           }
-          Swal.fire("Conector Creado Exitosamente", "", "success").then(() => {
-            this.$router.push('/company/conector');
-          });
         } catch (error) {
           console.error("Error creando el conector:", error);
           Swal.fire("Error al crear el conector ", "", "error")
@@ -208,7 +206,10 @@
       async charges() {
         try {
           const response = await axios.get('http://localhost:8080/api/chargers');
-          this.chargers = response.data
+          this.chargers = response.data.map(data => ({
+            label: data.nombre,
+            value: data.id
+          }));
         } catch (error) {
           console.error("Error obteniendo las estaciones de carga:", error);
         }
@@ -216,7 +217,10 @@
       async loadConnectorTypes() {
         try {
           const response = await axios.get('http://localhost:8080/api/connector-types');
-          this.connectorTypes = response.data;
+          this.connectorTypes = response.data.map(data => ({
+            label: data.nombre,
+            value: data.id
+          }));
         } catch (error) {
           console.error("Error obteniendo los tipos de conector:", error);
         }
@@ -224,7 +228,10 @@
       async chargingStation() {
         try {
           const response = await axios.get('http://localhost:8080/api/chargingStations');
-          this.chargingStations = response.data
+          this.chargingStations = response.data.map(data => ({
+            label: data.nombreTerminal,
+            value: data.id
+          }));
         } catch (error) {
           console.error("Error obteniendo las estaciones de carga:", error);
         }

@@ -95,11 +95,11 @@ export default {
           }
         });
       } else if (!isActive && accountType === 'COMPANY') {
-        this.$router.push({ path: '/company/profile-company' }).then(() => {
-          if (!localStorage.getItem('reloadedProfile')) {
-            localStorage.setItem('reloadedProfile', 'true');
-            location.reload();
-          }
+        Swal.fire({
+          title: 'Cuenta Inactiva',
+          text: 'La cuenta con la que intentas ingresar no está activada. Por favor, contacta al administrador.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
         });
       } else if (isActive && accountType === 'EMPLOYEE') {
         this.$router.push({ path: '/company/profile-company' }).then(() => {
@@ -112,7 +112,7 @@ export default {
         // Mostrar alerta si el usuario no está activado
         Swal.fire({
           title: 'Cuenta Inactiva',
-          text: 'El usuario no está activado. Por favor, contacta al administrador.',
+          text: 'La cuenta con la que intentas ingresar no está activada. Por favor, contacta al administrador.',
           icon: 'warning',
           confirmButtonText: 'OK'
         });
@@ -206,8 +206,8 @@ export default {
 
 <template>
   <div class="auth-page-wrapper pt-5">
-    <div class="auth-one-bg-position" style="background-color: #222c27" id="auth-particles">
-      <div class=""></div>
+    <div class="auth-one-bg-position auth-jose-bg" id="auth-particles" >
+<!--      <div class="bg-overlay"></div>-->
 
       <div class="shape">
 

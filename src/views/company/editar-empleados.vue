@@ -61,39 +61,47 @@
                       />
                     </div>
                   </BCol>
-<!--                  <BCol md="6">-->
-<!--                    <div class="mb-3">-->
-<!--                      <label for="password" class="form-label">Contraseña</label>-->
-<!--                      <BFormInput -->
-<!--                        v-model="employee.password" -->
-<!--                        type="password" -->
-<!--                        class="form-control" -->
-<!--                        placeholder="Contraseña" -->
-<!--                        id="password" -->
-<!--                        required -->
-<!--                      />-->
-<!--                    </div>-->
-<!--                  </BCol>-->
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="password" class="form-label">Contraseña</label>
+                      <div class="position-relative auth-pass-inputgroup mb-3">
+                        <BFormInput
+                            :type="showPassword ? 'text' : 'password'"
+                            v-model="employee.password"
+                            class="form-control"
+                            placeholder="Contraseña"
+                            id="password"
+                        />
+                        <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                                 @click="togglePasswordVisibility">
+                          <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                        </BButton>
+                      </div>
+                    </div>
+                  </BCol>
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="role" class="form-label">Rol</label>
-                      <BFormSelect 
+                      <Multiselect
+                        style="border: 1px solid black;"
                         v-model="employee.role.id"
-                        class="form-control" 
-                        id="role" 
-                        required
-                      >
-                        <option value="">Seleccione un rol</option>
-                        <option v-for="rol in roles" :key="rol.id" :value="rol.id">
-                          {{ rol.nombre }}
-                        </option>
-                      </BFormSelect>
+                        :options="roles"
+                        label="label"
+                        track-by="label"
+                        placeholder="Selecciona o ingrese un rol"
+                        :close-on-select="true"
+                        :searchable="true"
+                        :create-option="true"
+                    />
                     </div>
                   </BCol>
                   <BCol lg="12">
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/empleados-company')">
+                        Volver
+                      </BButton>
                       <BButton style="background-color: #dfe4ea;" type="submit" variant="light">
-                        Actualizar Empleado
+                        Actualizar
                       </BButton>
                     </div>
                   </BCol>
@@ -113,6 +121,7 @@ import Swal from "sweetalert2";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   data() {
@@ -122,26 +131,34 @@ export default {
         apellidoPaterno: '',
         apellidoMaterno: '',
         email: '',
-        /*password: '',*/
+        password: '',
         role: " ",
       },
-      roles: []
+      roles: [],
+      showPassword: false,
     };
   },
   components: {
     Layout,
     PageHeader,
     CardHeader,
+    Multiselect
   },
   created() {
     this.fetchEmployeeData();  
     this.fetchRoles();  
   },
   methods: {
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
     async fetchRoles() {
       try {
         const response = await axios.get('http://localhost:8080/api/roles');
-        this.roles = response.data; 
+        this.roles = response.data.map(role => ({
+          label: role.nombre,
+          value: role.id
+        }));
       } catch (error) {
         console.error("Error obteniendo los roles:", error);
       }
@@ -155,7 +172,7 @@ export default {
           apellidoPaterno: response.data.apellidoPaterno || '',
           apellidoMaterno: response.data.apellidoMaterno || '',
           email: response.data.email || '',
-         /* password: response.data.password || '',  */
+          password: '',
           role: response.data.rol || { id: null },
         };
       } catch (error) {
@@ -170,9 +187,12 @@ export default {
           apellidoPaterno: this.employee.apellidoPaterno,
           apellidoMaterno: this.employee.apellidoMaterno,
           email: this.employee.email,
-          /*password: this.employee.password ,*/
           role: this.employee.role.id
         };
+        console.log(this.employee.password)
+        if (this.employee.password.trim() !== '') {
+          employeeData.password = this.employee.password;
+        }
         console.log(employeeData)
 
         await axios.put(
@@ -193,7 +213,17 @@ export default {
 
       } catch (error) {
         console.error("Error actualizando el empleado:", error);
-        Swal.fire("Error", "No se pudo actualizar el empleado", "error");
+
+        if (error.response && error.response.status === 409) {
+          // El email ya existe
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ya existe un usuario con ese correo electrónico."
+          });
+        } else {
+          Swal.fire("Error", "No se pudo actualizar el empleado", "error");
+        }
       }
     }
 

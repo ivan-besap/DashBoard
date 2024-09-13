@@ -347,8 +347,8 @@ export default {
 
 
               <li class="nav-item" v-if="permisos.includes(23)">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-flota">
-                  <span data-key="t-landing">Cargas por Flota</span>
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-vehiculo">
+                  <span data-key="t-landing">Cargas por Vehículo</span>
                 </router-link>
               </li>
 
@@ -363,12 +363,17 @@ export default {
                   <span data-key="t-landing">Alarmas Diarias</span>
                 </router-link>
               </li>
-
-              <li class="nav-item" v-if="permisos.includes(25)">
-                <router-link class="nav-link menu-link" target="" to="/company/errores">
-                  <span data-key="t-landing">Errores</span>
+              <li class="nav-item" >
+                <router-link class="nav-link menu-link" target="" to="/company/reporte-ventas" v-if="permisos.includes(55)">
+                  <span data-key="t-landing">Ventas Por Estación</span>
                 </router-link>
               </li>
+
+<!--              <li class="nav-item" v-if="permisos.includes(25)">-->
+<!--                <router-link class="nav-link menu-link" target="" to="/company/errores">-->
+<!--                  <span data-key="t-landing">Errores</span>-->
+<!--                </router-link>-->
+<!--              </li>-->
             </ul>
           </div>
         </li>
@@ -1752,3 +1757,41 @@ export default {
 
   </template>
 </BContainer></template>
+
+<style scoped>
+.nav-link.menu-link:hover {
+  color: #20dcb5 !important; /* Color personalizado */
+  background-color: transparent; /* Mantén el fondo transparente */
+}
+
+/* Estilo para los íconos en el menú principal */
+.nav-link.menu-link i:hover {
+  color: #20dcb5 !important; /* Cambiar color del ícono */
+}
+
+/* Estilo para los submenús colapsables (como el de Configuración) */
+.menu-dropdown .nav-link:hover {
+  color: #20dcb5 !important; /* Cambiar color del texto en el submenú */
+  background-color: transparent; /* Fondo transparente */
+}
+
+.navbar-menu .navbar-nav .nav-link[data-bs-toggle=collapse][aria-expanded=true]{
+  color: #20dcb5 !important;
+}
+
+.navbar-menu .navbar-nav .nav-link[data-bs-toggle=collapse][aria-expanded=true]:after{
+  color: #20dcb5 !important;
+}
+
+/* Estilo para el ícono de los submenús */
+.menu-dropdown .nav-link i:hover {
+  color: #20dcb5 !important; /* Cambiar color del ícono en el submenú */
+}
+
+/* Estilo para los enlaces que están colapsados o que pertenecen a submenús */
+.nav-item .nav-link:hover {
+  color: #20dcb5 !important; /* Cambiar color al pasar el cursor */
+  background-color: transparent !important; /* Mantén el fondo transparente */
+}
+
+</style>

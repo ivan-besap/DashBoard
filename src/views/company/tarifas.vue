@@ -68,22 +68,24 @@
           </table>
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
-          <div class="pagination-wrap hstack gap-2">
-            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+          <div class="pagination-wrap hstack gap-2 pagination-custom-bg">
+            <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                  @click="goToPage(pageNumber)">
-                <BLink class="page" href="#">{{ pageNumber }}</BLink>
+          active: pageNumber == page,
+          disabled: pageNumber == '...',
+        }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                  {{ pageNumber }}
+                </BLink>
               </li>
             </ul>
-            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+            <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
+
           </div>
         </div>
       </BCardBody>
@@ -176,7 +178,7 @@ export default {
         if (result.isConfirmed) {
           try {
             const response = await axios.patch(`http://localhost:8080/api/fees/${tarifaId}/delete`);
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
               Swal.fire(
                   "¡Eliminado!",
                   "Tu tarifa ha sido eliminada.",
@@ -252,8 +254,26 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .flex-shrink-0 {
   display: none;
+}
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
+
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
 }
 </style>

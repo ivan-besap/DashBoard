@@ -94,25 +94,23 @@
           </div>
           <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
             <div class="pagination-wrap hstack gap-2">
-              <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+              <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
                 Anterior
               </BLink>
               <ul class="pagination listjs-pagination mb-0">
-                <li
-                    :class="{
-          active: pageNumber === page,
-          disabled: pageNumber === '...',
-        }"
-                    v-for="(pageNumber, index) in displayedPages"
-                    :key="index"
-                    @click="goToPage(pageNumber)"
-                >
-                  <BLink class="page" href="#">{{ pageNumber }}</BLink>
+                <li :class="{
+          active: pageNumber == page,
+          disabled: pageNumber == '...',
+        }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                  <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                    {{ pageNumber }}
+                  </BLink>
                 </li>
               </ul>
-              <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+              <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
                 Siguiente
               </BLink>
+
             </div>
           </div>
         </BCardBody>
@@ -129,11 +127,11 @@ import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import * as XLSX from 'xlsx';
 import Swal from "sweetalert2";
-import flatPickr from "vue-flatpickr-component";
+// import flatPickr from "vue-flatpickr-component";
 
 export default {
   components: {
-    flatPickr,
+    /*flatPickr,*/
     Layout,
     PageHeader,
   },
@@ -471,34 +469,26 @@ export default {
         }
       ],
       page: 1,
-      perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
+      filter: '',
+      searchFilter: '',
+      sortColumn: '',
+      sortOrder: 'asc',
     };
   },
   computed: {
-    displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
-
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
-      }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-      return pages;
-    },
     filteredData() {
-      if (!this.filterDate) return this.data;
-      return this.data.filter(item => {
-        const date = new Date(item.estacionDeCarga);
-        return date.toISOString().startsWith(this.filterDate.toISOString().split('T')[0]);
+      const filtered = this.data.filter((d) => {
+        return (
+            d.fecha.toLowerCase().includes(this.filterDate?.toLowerCase() || '') &&
+            d.estacionDeCarga.toLowerCase().includes(this.searchFilter?.toLowerCase() || '')
+        );
       });
+
+      return this.sortData(filtered);
     },
     displayedPosts() {
-      return this.paginate(this.filteredData);
+      return this.paginate(this.data);
     },
     resultQuery() {
       let filteredData = this.data;
@@ -507,17 +497,13 @@ export default {
         const search = this.searchQuery.toLowerCase();
         filteredData = filteredData.filter((data) => {
           return (
-              data.fecha.toLowerCase().includes(search) ||
               data.estacionDeCarga.toLowerCase().includes(search) ||
               data.cargador.toLowerCase().includes(search) ||
               data.conector.toLowerCase().includes(search) ||
-              data.idCargador.toLowerCase().includes(search) ||
-              data.tipoEvento.toLowerCase().includes(search) ||
-              data.resultado.toLowerCase().includes(search)
+              data.idCargador.toLowerCase().includes(search)
           );
         });
       }
-
       if (this.dateRange) {
         // Convertir la fecha a string en formato YYYY-MM-DD
         const selectedDate = this.dateRange
@@ -529,17 +515,16 @@ export default {
 
       return this.paginate(filteredData);
     },
-  },
-  watch: {
-    data() {
-      this.setPages();
+    pages() {
+      return Math.ceil(this.filteredData.length / this.itemsPerPage);
     },
-    page() {
-      this.updateRoute();
-    }
-  },
-  created() {
-    this.setPages();
+    displayedPages() {
+      const pages = [];
+      for (let i = 1; i <= this.pages; i++) {
+        pages.push(i);
+      }
+      return pages;
+    },
   },
   filters: {
     trimWords(value) {
@@ -551,9 +536,6 @@ export default {
     },
     clearDateRange() {
       this.dateRange = null;
-    },
-    updateRoute() {
-      this.$router.push({ query: { page: this.page } });
     },
     showModal(log) {
       this.modalContent = JSON.stringify(JSON.parse(log), null, 2); // Formatear el JSON para una mejor visualización
@@ -588,19 +570,10 @@ export default {
       XLSX.utils.book_append_sheet(wb, ws, "Reportes de Carga");
       XLSX.writeFile(wb, "reportes_de_carga.xlsx");
     },
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
     paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return data.slice(start, end);
     },
     goToPage(pageNumber) {
       if (pageNumber !== '...') {
@@ -613,18 +586,29 @@ export default {
       }
     },
     nextPage() {
-      if (this.page < this.pages.length) {
+      if (this.page < this.pages) {
         this.page++;
       }
     },
     onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
+      if (this.sortColumn === column) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortColumn = column;
+        this.sortOrder = 'asc';
+      }
+    },
+    sortData(data) {
+      return data.sort((a, b) => {
+        const aValue = a[this.sortColumn];
+        const bValue = b[this.sortColumn];
+
+        if (this.sortOrder === 'asc') {
+          return aValue > bValue ? 1 : -1;
+        } else {
+          return aValue < bValue ? 1 : -1;
+        }
       });
-      this.data = sortedArray;
     },
     confirm() {
       Swal.fire({
@@ -649,5 +633,24 @@ export default {
 pre {
   white-space: pre-wrap; /* Permite que el contenido se ajuste al tamaño del contenedor */
   word-wrap: break-word; /* Permite el corte de palabras largas */
+}
+
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
+
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
 }
 </style>
