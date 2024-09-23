@@ -42,7 +42,7 @@
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/roles')">
+                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/roles')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -80,7 +80,7 @@ export default {
   methods: {
     fetchPermisos() {
       axios
-          .get("https://app.evolgreen.com:8080/api/permissions")
+          .get("https://app.evolgreen.com:8088/api/permissions")
           .then((response) => {
             this.permisos = response.data;
           })
@@ -100,7 +100,7 @@ export default {
       };
 
       axios
-          .post("https://app.evolgreen.com:8080/api/create-role", roleData)
+          .post("https://app.evolgreen.com:8088/api/create-role", roleData)
           .then(() => {
             Swal.fire({
               title: "Rol creado!",
@@ -109,7 +109,7 @@ export default {
               timer: 2000,
               timerProgressBar: true,
               willClose: () => {
-                this.$router.push('/company/roles');
+                this.$router.push('https://app.evolgreen.com:8088/api/company/roles');
               }
             });
           })

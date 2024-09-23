@@ -50,7 +50,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/tarjetas-rfid')">
+                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/tarjetas-rfid')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -98,7 +98,7 @@ export default {
   methods: {
     async createDeviceIdentifier() {
       try {
-        const response = await axios.post('https://app.evolgreen.com:8080/api/accounts/current/device-identifiers', this.deviceIdentifier);
+        const response = await axios.post('https://app.evolgreen.com:8088/api/accounts/current/device-identifiers', this.deviceIdentifier);
         if (response.status === 200 || response.status === 201){
           Swal.fire({
             title: "Tarjeta RFID Creada!",
@@ -107,7 +107,7 @@ export default {
             timer: 2000,
             timerProgressBar: true,
             willClose: () => {
-              this.$router.push('/company/tarjetas-rfid');
+              this.$router.push('https://app.evolgreen.com:8088/api/company/tarjetas-rfid');
             }
           });
         }

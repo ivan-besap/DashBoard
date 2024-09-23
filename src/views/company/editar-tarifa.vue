@@ -80,7 +80,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/tarifas')">
+                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/tarifas')">
                         Volver
                       </BButton>
                       <BButton type="submit" variant="light">
@@ -145,7 +145,7 @@ export default {
   methods: {
     fetchTarifa() {
       const id = this.$route.params.id; // Obteniendo el ID de la tarifa desde la ruta
-      axios.get(`https://app.evolgreen.com:8080/api/fees/${id}`).then(response => {
+      axios.get(`https://app.evolgreen.com:8088/api/fees/${id}`).then(response => {
         this.tarifa = response.data;
       }).catch(error => {
         console.error("Error al obtener la tarifa:", error);
@@ -153,10 +153,10 @@ export default {
     },
     updateTarifa() {
       const id = this.$route.params.id; // ID de la tarifa desde la ruta
-      axios.put(`https://app.evolgreen.com:8080/api/fees/${id}`, this.tarifa)
+      axios.put(`https://app.evolgreen.com:8088/api/fees/${id}`, this.tarifa)
           .then(() => {
             Swal.fire("Tarifa actualizada con éxito", "", "success");
-            this.$router.push('/company/tarifas');
+            this.$router.push('https://app.evolgreen.com:8088/api/company/tarifas');
           })
           .catch(error => {
             console.error("Error al actualizar la tarifa:", error);

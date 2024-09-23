@@ -39,7 +39,7 @@
 
                     <BCol lg="12">
                       <div class="d-flex justify-content-between">
-                        <BButton variant="light" @click="$router.push('/company/stations-company')">
+                        <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/stations-company')">
                           Volver
                         </BButton>
                         <BButton style="" type="submit" variant="light">
@@ -86,7 +86,7 @@
     methods: {
       async loadChargingStation() {
         try {
-          const response = await axios.get(`https://app.evolgreen.com:8080/api/chargingStations/${this.stationId}`);
+          const response = await axios.get(`https://app.evolgreen.com:8088/api/chargingStations/${this.stationId}`);
           this.chargingStation = response.data;
         } catch (error) {
           console.error("Error cargando la estación de carga:", error);
@@ -94,9 +94,9 @@
       },
       async updateChargingStation() {
         try {
-          await axios.put(`https://app.evolgreen.com:8080/api/companies/current/chargingStations/${this.stationId}`, this.chargingStation);
+          await axios.put(`https://app.evolgreen.com:8088/api/companies/current/chargingStations/${this.stationId}`, this.chargingStation);
           Swal.fire("Estacion Actualizada!", "", "success").then(() => {
-            this.$router.push('/company/stations-company');
+            this.$router.push('https://app.evolgreen.com:8088/api/company/stations-company');
           });
         } catch (error) {
           console.error("Error actualizando la estación de carga:", error);

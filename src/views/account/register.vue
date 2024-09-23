@@ -82,7 +82,7 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.post('https://app.evolgreen.com:8080/auth/register', this.user);
+        const response = await axios.post('https://app.evolgreen.com:8088/auth/register', this.user);
         if (response.status === 200 || response.status === 201) {
           this.loading = false;
           Swal.fire("Cuenta compañía creada!", "", "success");

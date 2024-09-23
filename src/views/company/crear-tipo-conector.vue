@@ -72,7 +72,7 @@ export default {
     },
     async createTypeConnector() {
       try {
-        await axios.post('https://app.evolgreen.com:8080/api/connector-types', this.typeConnector);
+        await axios.post('https://app.evolgreen.com:8088/api/connector-types', this.typeConnector);
         this.successmsg();
       } catch (error) {
         console.error("Error creando el tipo de conector:", error);

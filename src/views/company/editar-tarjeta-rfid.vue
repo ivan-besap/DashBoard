@@ -59,7 +59,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/tarjetas-rfid')">
+                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/tarjetas-rfid')">
                         Volver
                       </BButton>
                       <BButton style="background-color: #dfe4ea;" type="submit" variant="light">
@@ -115,7 +115,7 @@ export default {
     async fetchDeviceIdentifierData() {
       const deviceId = this.$route.params.id;
       try {
-        const response = await axios.get(`https://app.evolgreen.com:8080/api/accounts/current/deviceIdentifiers/${deviceId}`);
+        const response = await axios.get(`https://app.evolgreen.com:8088/api/accounts/current/deviceIdentifiers/${deviceId}`);
         this.deviceIdentifier = response.data;
         if(response.data.auto === null){
           this.deviceIdentifier.auto = ''
@@ -127,7 +127,7 @@ export default {
     // Obtener lista de autos
     async fetchCars() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/accounts/current/cars');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/accounts/current/cars');
         this.cars = response.data.map(car => ({
           label: car.patente,
           value: car.id
@@ -148,7 +148,7 @@ export default {
         };
 
         await axios.put(
-          `https://app.evolgreen.com:8080/api/accounts/current/device-identifiers/${deviceId}`,
+          `https://app.evolgreen.com:8088/api/accounts/current/device-identifiers/${deviceId}`,
           updatedData
         );
 
@@ -159,7 +159,7 @@ export default {
           timer: 2000,
           timerProgressBar: true,
           willClose: () => {
-            this.$router.push('/company/tarjetas-rfid');
+            this.$router.push('https://app.evolgreen.com:8088/api/company/tarjetas-rfid');
           }
         });
 

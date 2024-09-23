@@ -130,7 +130,7 @@ export default {
   methods: {
     async getUser() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/clients/current');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/clients/current');
         this.client = response.data;
         this.populateChargers();
       } catch (error) {
@@ -172,7 +172,7 @@ export default {
 
 
       try {
-        await axios.post('https://app.evolgreen.com:8080/api/reservations', reservationRequest);
+        await axios.post('https://app.evolgreen.com:8088/api/reservations', reservationRequest);
         alert('Reservación creada con éxito!');
       } catch (error) {
         console.error('Error creating reservation:', error);

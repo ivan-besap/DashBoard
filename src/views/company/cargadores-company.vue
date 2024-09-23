@@ -196,7 +196,7 @@ export default {
     },
     async cambiarActivoCargador(id, estadoCargador) {
       try {
-        const response = await axios.patch('https://app.evolgreen.com:8080/api/chargerStatus/change-active-status', null, {
+        const response = await axios.patch('https://app.evolgreen.com:8088/api/chargerStatus/change-active-status', null, {
           params: {
             id: id,
             activeStatus: estadoCargador
@@ -212,7 +212,7 @@ export default {
     },
     async chargesStation() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/chargers');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/chargers');
         this.data = response.data
       } catch (error) {
         console.error("Error obteniendo las estaciones de carga:", error);
@@ -269,7 +269,7 @@ export default {
         if (result.isConfirmed) {
           try {
             // Hacer la solicitud PUT al endpoint para "eliminar" el cargador
-            const response = await axios.patch(`https://app.evolgreen.com:8080/api/companies/current/chargers/${chargerId}/delete`);
+            const response = await axios.patch(`https://app.evolgreen.com:8088/api/companies/current/chargers/${chargerId}/delete`);
             if (response.status === 200) {
               Swal.fire(
                   "¡Eliminado!",

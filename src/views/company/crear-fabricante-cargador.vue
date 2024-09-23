@@ -62,7 +62,7 @@ export default {
   methods: {
     async createManufacturer() {
       try {
-        const response = await axios.post('https://app.evolgreen.com:8080/api/charger-manufacturers', this.manufacturer);
+        const response = await axios.post('https://app.evolgreen.com:8088/api/charger-manufacturers', this.manufacturer);
         if (response.status === 200 || response.status === 201) {
           Swal.fire("Fabricante Creado Exitosamente", "", "success").then(() => {
             this.$router.push('/company/crear-cargador');

@@ -37,7 +37,7 @@ const router = createRouter({
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         try {
-            const response = await axios.get('https://app.evolgreen.com:8080/api/user/current');
+            const response = await axios.get('https://app.evolgreen.com:8088/api/user/current');
 
             // Acceder directamente a response.data.userType y response.data.userData
             const userType = response.data.userType;

@@ -124,7 +124,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/empleados-company')">
+                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/empleados-company')">
                         Volver
                       </BButton>
                       <BButton type="submit" variant="light">
@@ -202,13 +202,13 @@ export default {
         timer: 2000, // Tiempo en milisegundos antes de redirigir
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('/company/empleados-company'); // Redirigir a la página de planes
+          this.$router.push('https://app.evolgreen.com:8088/api/company/empleados-company'); // Redirigir a la página de planes
         }
       });
     },
     async fetchRoles() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/roles');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/roles');
         this.roles = response.data.map(role => ({
           label: role.nombre,
           value: role.id
@@ -231,7 +231,7 @@ export default {
           rut: this.employee.rut
         };
 
-        const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/employee', newEmployee);
+        const response = await axios.post('https://app.evolgreen.com:8088/api/companies/current/employee', newEmployee);
         this.successmsg();
         console.log("Empleado creado exitosamente:", response.data);
       } catch (error) {

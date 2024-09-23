@@ -207,7 +207,7 @@
       },
       async connectors() {
         try {
-          const response = await axios.get('https://app.evolgreen.com:8080/api/connectors');
+          const response = await axios.get('https://app.evolgreen.com:8088/api/connectors');
           this.data = response.data
         } catch (error) {
           console.error("Error obteniendo las estaciones de carga:", error);
@@ -215,7 +215,7 @@
       },
       async cambiarEstadoConector(id, estadoConector) {
         try {
-          const response = await axios.patch('https://app.evolgreen.com:8080/api/connectorStatus/change-active-status', null, {
+          const response = await axios.patch('https://app.evolgreen.com:8088/api/connectorStatus/change-active-status', null, {
             params: {
               id: id,
               activeStatus: estadoConector
@@ -280,7 +280,7 @@
           if (result.isConfirmed) {
             try {
               // Hacer la solicitud PUT al endpoint para "eliminar" el conector
-              const response = await axios.patch(`https://app.evolgreen.com:8080/api/companies/current/connectors/${connectorId}/delete`);
+              const response = await axios.patch(`https://app.evolgreen.com:8088/api/companies/current/connectors/${connectorId}/delete`);
               if (response.status === 200 || response.status === 201) {
                 Swal.fire(
                     "¡Eliminado!",

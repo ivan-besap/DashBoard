@@ -117,7 +117,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/cargadores-company')">
+                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/cargadores-company')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -177,7 +177,7 @@ export default {
     },
     async createCharger() {
       try {
-        const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/chargers', this.charger);
+        const response = await axios.post('https://app.evolgreen.com:8088/api/companies/current/chargers', this.charger);
         if (response.status === 200 || response.status === 201) {
           this.charger.oCPPid = '';
           this.charger.nombre = '';
@@ -187,7 +187,7 @@ export default {
           this.charger.terminal = null;
         }
         Swal.fire("Cargador Creado Exitosamente", "", "success").then(() => {
-          this.$router.push('/company/cargadores-company');
+          this.$router.push('https://app.evolgreen.com:8088/api/company/cargadores-company');
         });
       } catch (error) {
         console.error("Error creando el cargador:", error);
@@ -196,7 +196,7 @@ export default {
     },
     async chargerManufacturers() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/manufacturers');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/manufacturers');
         this.manufacturers = response.data.map(data => ({
           label: data.name,
           value: data.id
@@ -207,7 +207,7 @@ export default {
     },
     async chargerModels() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/models');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/models');
         this.models = response.data.map(data => ({
           label: data.name,
           value: data.id
@@ -218,7 +218,7 @@ export default {
     },
     async chargingStations2() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/chargingStations');
+        const response = await axios.get('https://app.evolgreen.com:8088/api/chargingStations');
         this.chargingStations = response.data.map(data => ({
           label: data.nombreTerminal,
           value: data.id

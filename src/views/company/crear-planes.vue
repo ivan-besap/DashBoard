@@ -248,7 +248,7 @@ export default {
         timer: 2000, // Tiempo en milisegundos antes de redirigir
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('/company/plan-company'); // Redirigir a la página de planes
+          this.$router.push('https://app.evolgreen.com:8088/api/company/plan-company'); // Redirigir a la página de planes
         }
       });
     },
