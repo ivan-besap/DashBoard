@@ -151,14 +151,14 @@ export default {
     },
     async fetchDeviceIdentifiers() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8088/api/empresa/current/deviceIdentifiers');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/empresa/current/deviceIdentifiers');
         const devices = response.data;
         
         // Obtener los detalles del auto asociado (patente)
         const deviceWithCarDetails = await Promise.all(
           devices.map(async (device) => {
             if (device.auto) {
-              const carResponse = await axios.get(`https://app.evolgreen.com:8088/api/accounts/current/cars/${device.auto}`);
+              const carResponse = await axios.get(`https://app.evolgreen.com:8080/api/accounts/current/cars/${device.auto}`);
               device.patente = carResponse.data.patente;
             } else {
               device.patente = 'No asignada'; 
@@ -234,7 +234,7 @@ export default {
           if (result.isConfirmed) {
               try {
                   await axios.patch(
-                      `https://app.evolgreen.com:8088/api/accounts/current/device-identifiers/${rfidId}/delete`
+                      `https://app.evolgreen.com:8080/api/accounts/current/device-identifiers/${rfidId}/delete`
                   );
 
                   Swal.fire("Tarjeta RFID eliminada", "", "success");

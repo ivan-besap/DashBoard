@@ -59,7 +59,7 @@ const guardarConfiguracion = (index) => {
                 </tbody>
               </table>
             </div>
-            <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/cargadores-company')">
+            <BButton variant="light" @click="$router.push('/company/cargadores-company')">
               Volver
             </BButton>
           </BCardBody>

@@ -57,7 +57,7 @@ export default {
   async signinapi() {
     this.processing = true;
     try {
-      const result = await axios.post('https://app.evolgreen.com:8088/auth/login', {
+      const result = await axios.post('https://app.evolgreen.com:8080/auth/login', {
         username: this.email,
         password: this.password
       });
@@ -88,7 +88,7 @@ export default {
   //   this.$router.push({ path: '/client/dashboard-client' });
   // }
       if (isActive && accountType === 'COMPANY') {
-        this.$router.push({ path: 'https://app.evolgreen.com:8088/api/company/dashboard-company' }).then(() => {
+        this.$router.push({ path: '/company/dashboard-company' }).then(() => {
           if (!localStorage.getItem('reloadedDashboard')) {
             localStorage.setItem('reloadedDashboard', 'true');
             location.reload();
@@ -102,7 +102,7 @@ export default {
           confirmButtonText: 'OK'
         });
       } else if (isActive && accountType === 'EMPLOYEE') {
-        this.$router.push({ path: 'https://app.evolgreen.com:8088/api/company/profile-company' }).then(() => {
+        this.$router.push({ path: '/company/profile-company' }).then(() => {
           if (!localStorage.getItem('reloadedProfile')) {
             localStorage.setItem('reloadedProfile', 'true');
             location.reload();

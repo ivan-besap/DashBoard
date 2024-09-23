@@ -62,7 +62,7 @@ export default {
     },
     async cambiarActivoUsuario(activeStatus) {
       try {
-        const response = await axios.patch('https://app.evolgreen.com:8088/api/update-active-status', null, {
+        const response = await axios.patch('https://app.evolgreen.com:8080/api/update-active-status', null, {
           params: {
             accountId : this.datosCuenta.id,
             activeStatus: activeStatus
@@ -71,11 +71,11 @@ export default {
         if (response.status === 200 || response.status === 201) {
           Swal.fire("Estado de usuario Actualizado!", "", "success").then(() => {
             if (activeStatus === true) {
-              this.$router.push('https://app.evolgreen.com:8088/api/company/dashboard-company').then(() => {
+              this.$router.push('/company/dashboard-company').then(() => {
                   window.location.reload();
               });
             } else {
-              this.$router.push('https://app.evolgreen.com:8088/api/company/profile-company');
+              this.$router.push('/company/profile-company');
             }
           });
         }

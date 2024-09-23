@@ -114,7 +114,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/vehiculos')">
+                      <BButton variant="light" @click="$router.push('/company/vehiculos')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -168,13 +168,13 @@ export default {
         timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('https://app.evolgreen.com:8088/api/company/vehiculos');
+          this.$router.push('/company/vehiculos');
         }
       });
     },
     async createCar() {
       try {
-        await axios.post('https://app.evolgreen.com:8088/api/accounts/current/cars', this.car);
+        await axios.post('https://app.evolgreen.com:8080/api/accounts/current/cars', this.car);
         this.successmsg();
       } catch (error) {
         console.error("Error creando el auto:", error);

@@ -131,7 +131,7 @@ export default {
     },
     async cargarCorreos() {
       try {
-        const response = await axios.get(`https://app.evolgreen.com:8088/api/usuarios/correos`);  // Quitar empresaId
+        const response = await axios.get(`https://app.evolgreen.com:8080/api/usuarios/correos`);  // Quitar empresaId
         this.correos = response.data;
       } catch (error) {
         console.error('Error al cargar los correos', error);
@@ -140,11 +140,11 @@ export default {
     async cargarUsuarios() {
       try {
         // Cargar usuarios para alarmas
-        const responseAlarma = await axios.get(`https://app.evolgreen.com:8088/api/usuarios/alarmaCorreo`);  // Quitar empresaId
+        const responseAlarma = await axios.get(`https://app.evolgreen.com:8080/api/usuarios/alarmaCorreo`);  // Quitar empresaId
         this.usuariosAlarma = responseAlarma.data;
 
         // Cargar usuarios para errores
-        const responseError = await axios.get(`https://app.evolgreen.com:8088/api/usuarios/alarmaError`);  // Quitar empresaId
+        const responseError = await axios.get(`https://app.evolgreen.com:8080/api/usuarios/alarmaError`);  // Quitar empresaId
         this.usuariosError = responseError.data;
       } catch (error) {
         console.error('Error al cargar los usuarios', error);
@@ -169,7 +169,7 @@ export default {
       try {
         if (this.pestanaActiva === 0) {
           this.usuariosAlarma.push(nuevoUsuario);
-          const response = await axios.post('https://app.evolgreen.com:8088/api/usuarios/alarmaCorreo/add', { email: nuevoUsuario.email });
+          const response = await axios.post('https://app.evolgreen.com:8080/api/usuarios/alarmaCorreo/add', { email: nuevoUsuario.email });
           if (response.status === 200 || response.status === 201) {
             Swal.fire("Usuario agregado correctamente", "", "success").then(() => {
               this.$router.go(0);
@@ -177,7 +177,7 @@ export default {
           }
         } else if (this.pestanaActiva === 1) {
           this.usuariosError.push(nuevoUsuario);
-          const response = await axios.post('https://app.evolgreen.com:8088/api/usuarios/alarmaError/add', { email: nuevoUsuario.email });
+          const response = await axios.post('https://app.evolgreen.com:8080/api/usuarios/alarmaError/add', { email: nuevoUsuario.email });
           if (response.status === 200 || response.status === 201) {
             Swal.fire("Usuario agregado correctamente", "", "success").then(() => {
               this.$router.go(0);
@@ -191,8 +191,8 @@ export default {
     },
     async eliminarUsuario(id, tipo) {
       const url = tipo === 'alarma'
-          ? `https://app.evolgreen.com:8088/api/usuarios/alarmaCorreo/${id}/remove`
-          : `https://app.evolgreen.com:8088/api/usuarios/alarmaError/${id}/remove`;
+          ? `https://app.evolgreen.com:8080/api/usuarios/alarmaCorreo/${id}/remove`
+          : `https://app.evolgreen.com:8080/api/usuarios/alarmaError/${id}/remove`;
 
       try {
         const response = await axios.patch(url);

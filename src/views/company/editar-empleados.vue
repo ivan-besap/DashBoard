@@ -97,7 +97,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/empleados-company')">
+                      <BButton variant="light" @click="$router.push('/company/empleados-company')">
                         Volver
                       </BButton>
                       <BButton style="background-color: #dfe4ea;" type="submit" variant="light">
@@ -154,7 +154,7 @@ export default {
     },
     async fetchRoles() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8088/api/roles');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/roles');
         this.roles = response.data.map(role => ({
           label: role.nombre,
           value: role.id
@@ -166,7 +166,7 @@ export default {
     async fetchEmployeeData() {
       const employeeId = this.$route.params.id;
       try {
-        const response = await axios.get(`https://app.evolgreen.com:8088/api/accounts/${employeeId}`);
+        const response = await axios.get(`https://app.evolgreen.com:8080/api/accounts/${employeeId}`);
         this.employee = {
           nombre: response.data.nombre || '',
           apellidoPaterno: response.data.apellidoPaterno || '',
@@ -196,7 +196,7 @@ export default {
         console.log(employeeData)
 
         await axios.put(
-          `https://app.evolgreen.com:8088/api/companies/current/employee/${employeeId}`,
+          `https://app.evolgreen.com:8080/api/companies/current/employee/${employeeId}`,
           employeeData
         );
 
@@ -207,7 +207,7 @@ export default {
           timer: 2000,
           timerProgressBar: true,
           willClose: () => {
-            this.$router.push('https://app.evolgreen.com:8088/api/company/empleados-company');
+            this.$router.push('/company/empleados-company');
           }
         });
 

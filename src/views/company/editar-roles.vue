@@ -41,7 +41,7 @@
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/roles')">
+                      <BButton variant="light" @click="$router.push('/company/roles')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -84,7 +84,7 @@ export default {
     async fetchRole() {
       const roleId = this.$route.params.id; // Obtener el id del rol desde la URL
       try {
-        const response = await axios.get(`https://app.evolgreen.com:8088/api/roles/${roleId}`);
+        const response = await axios.get(`https://app.evolgreen.com:8080/api/roles/${roleId}`);
         const role = response.data;
         this.role.id = role.id;
         this.role.name = role.nombre;
@@ -96,7 +96,7 @@ export default {
     },
     async fetchPermisos() {
       try {
-        const response = await axios.get("https://app.evolgreen.com:8088/api/permissions");
+        const response = await axios.get("https://app.evolgreen.com:8080/api/permissions");
         this.permisos = response.data;
       } catch (error) {
         console.error("Error fetching permisos:", error);
@@ -110,7 +110,7 @@ export default {
           permisosIds: this.role.permissions
         };
 
-        await axios.put(`https://app.evolgreen.com:8088/api/roles/${this.role.id}`, roleData);
+        await axios.put(`https://app.evolgreen.com:8080/api/roles/${this.role.id}`, roleData);
         this.successmsg();
       } catch (error) {
         console.error("Error updating role:", error);
@@ -129,7 +129,7 @@ export default {
         timer: 2000, // Tiempo en milisegundos antes de redirigir
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('https://app.evolgreen.com:8088/api/company/roles'); // Redirigir a la página de roles
+          this.$router.push('/company/roles'); // Redirigir a la página de roles
         }
       });
     }

@@ -92,7 +92,7 @@
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/tarifas')">
+                      <BButton variant="light" @click="$router.push('/company/tarifas')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -169,7 +169,7 @@ export default {
         timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('https://app.evolgreen.com:8088/api/company/tarifas');
+          this.$router.push('/company/tarifas');
         }
       });
     },
@@ -178,7 +178,7 @@ export default {
         this.tarifa.consumoDeEnergiaAlarma = null;
       }
       try {
-        await axios.post('https://app.evolgreen.com:8088/api/fees', this.tarifa);
+        await axios.post('https://app.evolgreen.com:8080/api/fees', this.tarifa);
         this.successmsg();
       } catch (error) {
         console.error("Error creando la tarifa:", error);

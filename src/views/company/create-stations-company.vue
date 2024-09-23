@@ -39,7 +39,7 @@
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/stations-company')">
+                      <BButton variant="light" @click="$router.push('/company/stations-company')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -95,13 +95,13 @@ export default {
   methods: {
     async createChargingStation() {
       try {
-        const response = await axios.post('https://app.evolgreen.com:8088/api/companies/current/chargingStations', this.chargingStation);
+        const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/chargingStations', this.chargingStation);
         if (response.status === 200 || response.status === 201) {
           this.chargingStation.nombreTerminal = '';
           this.chargingStation.ubicacionTerminal.direccion = ''; // Resetea el campo correctamente
         }
         Swal.fire("Estación Creada Exitosamente", "", "success").then(() => {
-          this.$router.push('https://app.evolgreen.com:8088/api/company/stations-company');
+          this.$router.push('/company/stations-company');
         });
       } catch (error) {
         console.error("Error creando la estación de carga:", error);

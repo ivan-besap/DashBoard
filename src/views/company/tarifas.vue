@@ -113,7 +113,7 @@ export default {
     },
     fetchTarifas() {
       axios
-          .get("https://app.evolgreen.com:8088/api/fees")
+          .get("https://app.evolgreen.com:8080/api/fees")
           .then((response) => {
             this.tarifas = response.data;
             this.setPages();
@@ -177,7 +177,7 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await axios.patch(`https://app.evolgreen.com:8088/api/fees/${tarifaId}/delete`);
+            const response = await axios.patch(`https://app.evolgreen.com:8080/api/fees/${tarifaId}/delete`);
             if (response.status === 200 || response.status === 201) {
               Swal.fire(
                   "¡Eliminado!",

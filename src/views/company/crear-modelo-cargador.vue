@@ -67,7 +67,7 @@ export default {
   methods: {
     async createChargerModel() {
       try {
-        const response = await axios.post('https://app.evolgreen.com:8088/api/charger-models', this.model);
+        const response = await axios.post('https://app.evolgreen.com:8080/api/charger-models', this.model);
         if (response.status === 200 || response.status === 201) {
           this.model.name = ''; // Limpiar el campo de texto
         }

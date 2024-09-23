@@ -102,7 +102,7 @@
                   </BCol>
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('https://app.evolgreen.com:8088/api/company/vehiculos')">
+                      <BButton variant="light" @click="$router.push('/company/vehiculos')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
@@ -164,7 +164,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`https://app.evolgreen.com:8088/api/accounts/current/cars/${carId}`);
+      const response = await axios.get(`https://app.evolgreen.com:8080/api/accounts/current/cars/${carId}`);
       console.log("API Response:", response.data); // Verifica los datos obtenidos
       if (response.data) {
         this.car = response.data;  // Carga los datos si el ID es válido y el auto existe
@@ -179,7 +179,7 @@ export default {
     async updateCar() {
       try {
         const carId = this.$route.params.id; // Asume que el ID del auto se pasa como parámetro en la URL
-        await axios.put(`https://app.evolgreen.com:8088/api/accounts/current/cars/${carId}`, this.car);
+        await axios.put(`https://app.evolgreen.com:8080/api/accounts/current/cars/${carId}`, this.car);
         this.successmsg();
       } catch (error) {
         console.error("Error al actualizar el auto:", error);
@@ -194,7 +194,7 @@ export default {
         timer: 2000,
         timerProgressBar: true,
         willClose: () => {
-          this.$router.push('https://app.evolgreen.com:8088/api/company/vehiculos');
+          this.$router.push('/company/vehiculos');
         }
       });
     },

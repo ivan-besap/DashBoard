@@ -120,7 +120,7 @@ export default {
   methods: {
     async loadChargingStation() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8088/api/chargingStations');
+        const response = await axios.get('https://app.evolgreen.com:8080/api/chargingStations');
         this.estacionesOptions = response.data.map(estacion => ({
           value: estacion.id,
           label: estacion.nombreTerminal
@@ -132,7 +132,7 @@ export default {
     handleClick() {
       if (this.permisos.includes(1)) {
         // Realiza la redirección y luego recarga la página
-        this.$router.push({ path: 'https://app.evolgreen.com:8088/api/company/dashboard-company' }).then(() => {
+        this.$router.push({ path: '/company/dashboard-company' }).then(() => {
           setTimeout(() => {
             location.reload();
           }, 100);

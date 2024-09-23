@@ -131,7 +131,7 @@ export default {
     },
     async cambiarActivoUsuario(id, activeStatus) {
       try {
-        const response = await axios.patch(`https://app.evolgreen.com:8088/api/update-active-status`, null, {
+        const response = await axios.patch(`https://app.evolgreen.com:8080/api/update-active-status`, null, {
           params: {
             accountId: id,
             activeStatus: activeStatus
@@ -147,7 +147,7 @@ export default {
     },
     fetchEmployees() {
       axios
-        .get("https://app.evolgreen.com:8088/api/companies/current/employee")
+        .get("https://app.evolgreen.com:8080/api/companies/current/employee")
         .then((response) => {
           this.employees = response.data;
           this.setPages();
@@ -204,7 +204,7 @@ export default {
         if (result.isConfirmed) {
           try {
             await axios.patch(
-              `https://app.evolgreen.com:8088/api/companies/current/employees/${employeeId}/delete`
+              `https://app.evolgreen.com:8080/api/companies/current/employees/${employeeId}/delete`
             );
 
             Swal.fire("Empleado eliminado", "", "success");
