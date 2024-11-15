@@ -161,6 +161,10 @@ export default {
     flatPickr
   },
   methods: {
+
+    removeAccents(text) {
+      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    },
     successmsg() {
       Swal.fire({
         title: "Tarifa creada!",
@@ -177,8 +181,13 @@ export default {
       if (this.tarifa.consumoDeEnergiaAlarma === '') {
         this.tarifa.consumoDeEnergiaAlarma = null;
       }
+      const diasSinTildes = this.tarifa.diasDeLaSemana.map(dia => this.removeAccents(dia));
+      const tarifaParaEnviar = {
+        ...this.tarifa,
+        diasDeLaSemana: diasSinTildes
+      };
       try {
-        await axios.post('https://app.evolgreen.com:8080/api/fees', this.tarifa);
+        await axios.post('https://app.evolgreen.com/api/fees', tarifaParaEnviar);
         this.successmsg();
       } catch (error) {
         console.error("Error creando la tarifa:", error);

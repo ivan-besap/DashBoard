@@ -38,6 +38,7 @@
                 <th class="sort" @click="onSort('rfid')">Código</th>
                 <th class="sort" @click="onSort('fechaExpiracion')">Fecha de expiración</th>
                 <th class="sort" @click="onSort('patente')">Patente asociada</th>
+                <th class="sort" @click="onSort('usable')">Usable</th>
                 <th scope="col" style="width: 1%;">Acciones</th>
               </tr>
             </thead>
@@ -47,6 +48,18 @@
                 <td>{{ dat.rfid }}</td>
                 <td>{{ dat.fechaExpiracion }}</td>
                 <td>{{ dat.patente || 'No asignada' }}</td>
+                <td>
+                  <BFormCheckbox
+                      v-model="dat.usable"
+                      switch
+                      :value=true
+                      :unchecked-value=false
+                      @change="cambiarActivoRfid(dat.id, dat.usable)"
+                      class="mt-1 mb-2"
+                      style="height: 19px; width: 35px"
+                  >
+                  </BFormCheckbox>
+                </td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(35)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/${dat.id}`">
@@ -144,6 +157,22 @@ export default {
     this.loadUserData();
   },
   methods: {
+    async cambiarActivoRfid(id, estado) {
+      try {
+        const response = await axios.patch('https://app.evolgreen.com/api/rfidStatus/change-active-status', null, {
+          params: {
+            id: id,
+            usable: estado
+          }
+        });
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("RFID Actualizada!", "", "success");
+        }
+      } catch (error) {
+        console.error("Error Actualizando RFID", error);
+        Swal.fire("Error al actualizar la RFID", "", "error");
+      }
+    },
     loadUserData() {
       const userDataString = localStorage.getItem('userData');
       this.userData = JSON.parse(userDataString);
@@ -151,14 +180,14 @@ export default {
     },
     async fetchDeviceIdentifiers() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/empresa/current/deviceIdentifiers');
+        const response = await axios.get('https://app.evolgreen.com/api/empresa/current/deviceIdentifiers');
         const devices = response.data;
         
         // Obtener los detalles del auto asociado (patente)
         const deviceWithCarDetails = await Promise.all(
           devices.map(async (device) => {
             if (device.auto) {
-              const carResponse = await axios.get(`https://app.evolgreen.com:8080/api/accounts/current/cars/${device.auto}`);
+              const carResponse = await axios.get(`https://app.evolgreen.com/api/accounts/current/cars/${device.auto}`);
               device.patente = carResponse.data.patente;
             } else {
               device.patente = 'No asignada'; 
@@ -234,7 +263,7 @@ export default {
           if (result.isConfirmed) {
               try {
                   await axios.patch(
-                      `https://app.evolgreen.com:8080/api/accounts/current/device-identifiers/${rfidId}/delete`
+                      `https://app.evolgreen.com/api/accounts/current/device-identifiers/${rfidId}/delete`
                   );
 
                   Swal.fire("Tarjeta RFID eliminada", "", "success");

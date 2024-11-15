@@ -208,7 +208,7 @@ export default {
     },
     async fetchRoles() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/roles');
+        const response = await axios.get('https://app.evolgreen.com/api/roles');
         this.roles = response.data.map(role => ({
           label: role.nombre,
           value: role.id
@@ -231,7 +231,7 @@ export default {
           rut: this.employee.rut
         };
 
-        const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/employee', newEmployee);
+        const response = await axios.post('https://app.evolgreen.com/api/companies/current/employee', newEmployee);
         this.successmsg();
         console.log("Empleado creado exitosamente:", response.data);
       } catch (error) {

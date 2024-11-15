@@ -14,7 +14,7 @@ const configuraciones = ref([
   { nombre: "MaxChargingProfilesInstalled", valor: "7" },
   { nombre: "ChargingScheduleMaxPeriods", valor: "7" },
   { nombre: "ChargeProfileMaxStackLevel", valor: "5" },
-  { nombre: "ConnectionUrl", valor: "ws://demo.ocpp.dhemax.link/v1_6/" },
+  { nombre: "ConnectionUrl", valor: "ws://demo.ocpp.evolgreen.link/v1_6/" },
   { nombre: "maxIntensitySocket", valor: "50" },
   { nombre: "NumberOfConnectors", valor: "1" },
   { nombre: "ConnectorPhaseRotation", valor: "1.NotApplicable" },

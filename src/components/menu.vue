@@ -308,10 +308,10 @@ export default {
 <!--          </router-link>-->
 <!--        </li>-->
        
-        <li class="nav-item" v-if="permisos.includes(15)">
-          <router-link class="nav-link menu-link"  target="" to="/company/vehiculos">
+        <li class="nav-item" v-if="permisos.includes(78)">
+          <router-link class="nav-link menu-link"  target="" to="/company/flotas">
             <i class="mdi mdi-car-connected"></i>
-            <span data-key="t-dashboards"> Vehículos</span>
+            <span data-key="t-dashboards"> Flotas</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -348,7 +348,7 @@ export default {
 
               <li class="nav-item" v-if="permisos.includes(23)">
                 <router-link class="nav-link menu-link" target="" to="/company/cargas-por-vehiculo">
-                  <span data-key="t-landing">Cargas por Vehículo</span>
+                  <span data-key="t-landing">Cargas por Flota</span>
                 </router-link>
               </li>
 

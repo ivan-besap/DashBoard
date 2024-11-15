@@ -62,7 +62,7 @@ export default {
     },
     async cambiarActivoUsuario(activeStatus) {
       try {
-        const response = await axios.patch('https://app.evolgreen.com:8080/api/update-active-status', null, {
+        const response = await axios.patch('https://app.evolgreen.com/api/update-active-status', null, {
           params: {
             accountId : this.datosCuenta.id,
             activeStatus: activeStatus

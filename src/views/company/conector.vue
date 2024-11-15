@@ -14,11 +14,11 @@
               Crear Conector
             </router-link>
           </BButton>
-          <BButton style="border: 1px solid #d8d8d8; margin-left: 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(62)">
-            <router-link class="nav-link menu-link" target="" to="/company/crear-tipo-conector">
-              Crear Tipo de Conector
-            </router-link>
-          </BButton>
+<!--          <BButton style="border: 1px solid #d8d8d8; margin-left: 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(62)">-->
+<!--            <router-link class="nav-link menu-link" target="" to="/company/crear-tipo-conector">-->
+<!--              Crear Tipo de Conector-->
+<!--            </router-link>-->
+<!--          </BButton>-->
         </div>
         <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px;">
           <!-- Input de búsqueda -->
@@ -43,7 +43,7 @@
                 <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('tipoConector')">Tipo Conector</th>
                 <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Cargador</th>
                 <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Nombre Tarifa</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Costo Tarifa</th>
+                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Costo Tarifa</th>
 <!--                <th class="sort pe-4" data-sort="" scope="col" @click="onSort('connectorNumber')">Número Conector</th>-->
 <!--                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('currentMax')">Corriente Máxima</th>-->
 <!--                <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('powerMax')">Potencia Máxima</th>-->
@@ -74,7 +74,7 @@
                   <span :class="dat.estadoConector === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
                     {{ dat.estadoConector === 'CONNECTED' ? 'Conectado' : 'Desconectado' }}
                   </span>
-                  <BFormCheckbox
+                  <BFormCheckbox  v-if="permisos.includes(64)"
                       v-model="dat.estadoConector"
                       switch
                       :value="'CONNECTED'"
@@ -207,7 +207,7 @@
       },
       async connectors() {
         try {
-          const response = await axios.get('https://app.evolgreen.com:8080/api/connectors');
+          const response = await axios.get('https://app.evolgreen.com/api/connectors');
           this.data = response.data
         } catch (error) {
           console.error("Error obteniendo las estaciones de carga:", error);
@@ -215,7 +215,7 @@
       },
       async cambiarEstadoConector(id, estadoConector) {
         try {
-          const response = await axios.patch('https://app.evolgreen.com:8080/api/connectorStatus/change-active-status', null, {
+          const response = await axios.patch('https://app.evolgreen.com/api/connectorStatus/change-active-status', null, {
             params: {
               id: id,
               activeStatus: estadoConector
@@ -280,7 +280,7 @@
           if (result.isConfirmed) {
             try {
               // Hacer la solicitud PUT al endpoint para "eliminar" el conector
-              const response = await axios.patch(`https://app.evolgreen.com:8080/api/companies/current/connectors/${connectorId}/delete`);
+              const response = await axios.patch(`https://app.evolgreen.com/api/companies/current/connectors/${connectorId}/delete`);
               if (response.status === 200 || response.status === 201) {
                 Swal.fire(
                     "¡Eliminado!",

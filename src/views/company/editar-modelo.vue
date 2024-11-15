@@ -1,36 +1,35 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Modelo de Cargador" pageTitle="Compañía" />
+    <PageHeader title="Editar Modelo" pagetitle="Forms" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
-          <CardHeader title="Crear Modelo de Cargador" />
+          <CardHeader title="Editar Modelo" />
           <BCardBody>
             <div class="live-preview">
-              <BForm @submit.prevent="createChargerModel">
+              <BForm @submit.prevent="updateModel">
+
                 <BRow>
-                  <!-- Campo de texto para el nombre del modelo -->
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="modelName" class="form-label">Nombre del Modelo</label>
+                      <label for="nombreModelo" class="form-label">Nombre</label>
                       <BFormInput
                           v-model="model.name"
                           type="text"
                           class="form-control"
-                          placeholder="Nombre del Modelo"
-                          id="modelName"
+                          placeholder="Nombre del modelo"
+                          id="nombreModelo"
                           required
                       />
                     </div>
                   </BCol>
-
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/cargadores-company')">
+                      <BButton variant="light" @click="$router.push('/company/charger-models')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">
-                        Crear Modelo de Cargador
+                        Actualizar Modelo
                       </BButton>
                     </div>
                   </BCol>
@@ -46,17 +45,20 @@
 
 <script>
 import axios from 'axios';
-import Swal from "sweetalert2";
+import "flatpickr/dist/flatpickr.css";
+import "@vueform/multiselect/themes/default.css";
+
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
-
+import Swal from 'sweetalert2';
 export default {
   data() {
     return {
       model: {
-        name: '', // Campo para el nombre del modelo
-      }
+        name: '',
+      },
+      modelId: this.$route.params.id,
     };
   },
   components: {
@@ -65,20 +67,28 @@ export default {
     CardHeader,
   },
   methods: {
-    async createChargerModel() {
+    async loadModel() {
       try {
-        const response = await axios.post('https://app.evolgreen.com/api/charger-models', this.model);
-        if (response.status === 200 || response.status === 201) {
-          this.model.name = ''; // Limpiar el campo de texto
-        }
-        Swal.fire("Modelo Creado Exitosamente", "", "success").then(() => {
-          this.$router.push('/company/crear-cargador');
+        const response = await axios.get(`https://app.evolgreen.com/api/models/${this.modelId}`);
+        this.model = response.data;
+      } catch (error) {
+        console.error("Error cargando el modelo:", error);
+      }
+    },
+    async updateModel() {
+      try {
+        await axios.put(`https://app.evolgreen.com/api/models/${this.modelId}`, this.model);
+        Swal.fire("Modelo Actualizado!", "", "success").then(() => {
+          this.$router.push('/company/charger-models');
         });
       } catch (error) {
-        console.error("Error creando el modelo de cargador:", error);
-        Swal.fire("Error al crear el modelo de cargador", "", "error")
+        console.error("Error actualizando el modelo:", error);
+        Swal.fire("Error actualizando el modelo", "", "error");
       }
     }
+  },
+  created() {
+    this.loadModel();
   }
 };
 </script>

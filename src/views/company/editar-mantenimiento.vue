@@ -1,13 +1,13 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Mantenimiento" pagetitle="Forms" />
+    <PageHeader title="Editar Mantenimiento" pagetitle="Forms" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
-          <CardHeader title="Crear Mantenimiento" />
+          <CardHeader title="Editar Mantenimiento" />
           <BCardBody>
             <div class="live-preview">
-              <BForm @submit.prevent="createMantenimiento">
+              <BForm @submit.prevent="updateMantenimiento">
                 <BRow>
                   <BCol md="6">
                     <div class="mb-3">
@@ -65,11 +65,11 @@
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/cargadores-company')">
+                      <BButton variant="light" @click="$router.push('/company/mantenimientos')">
                         Volver
                       </BButton>
                       <BButton type="submit" variant="light">
-                        Crear
+                        Guardar
                       </BButton>
                     </div>
                   </BCol>
@@ -82,6 +82,7 @@
     </BRow>
   </Layout>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -121,7 +122,8 @@ export default {
         { value: 'viernes', text: 'Viernes' },
         { value: 'sábado', text: 'Sábado' },
         { value: 'domingo', text: 'Domingo' }
-      ]
+      ],
+      mantenimientoId: this.$route.params.id  // Tomar el ID desde la URL
     };
   },
   components: {
@@ -130,20 +132,41 @@ export default {
     CardHeader,
     flatPickr
   },
+  created() {
+    this.loadMantenimientoData();
+  },
   methods: {
-    async createMantenimiento() {
+    // Cargar los datos del mantenimiento existente
+    async loadMantenimientoData() {
       try {
-        await axios.post('https://app.evolgreen.com/api/create-mantenimiento', this.mantenimiento);
-        Swal.fire("Mantenimiento creado exitosamente!", "", "success");
-        this.$router.push('/company/cargadores-company');
+        const response = await axios.get(`https://app.evolgreen.com/api/mantenimiento/${this.mantenimientoId}`);
+        this.mantenimiento = {
+          descripcion: response.data.descripcion,
+          fechaInicial: response.data.fechaInicial,
+          fechaFinal: response.data.fechaFinal,
+          horarioInicio: response.data.horarioInicio,
+          horarioFin: response.data.horarioFin,
+          diasDeLaSemana: response.data.diasDeLaSemana
+        };
       } catch (error) {
-        console.error("Error creando el mantenimiento:", error);
-        Swal.fire("Error al crear el mantenimiento", "", "error");
+        console.error("Error cargando el mantenimiento:", error);
+      }
+    },
+    // Actualizar el mantenimiento existente
+    async updateMantenimiento() {
+      try {
+        await axios.put(`https://app.evolgreen.com/api/mantenimiento/${this.mantenimientoId}`, this.mantenimiento);
+        Swal.fire("Mantenimiento actualizado exitosamente!", "", "success");
+        this.$router.push('/company/mantenimientos');
+      } catch (error) {
+        console.error("Error actualizando el mantenimiento:", error);
+        Swal.fire("Error al actualizar el mantenimiento", "", "error");
       }
     }
   }
 };
 </script>
+
 
 <style>
 .flex-shrink-0 {

@@ -74,16 +74,22 @@
             </tbody>
           </table>
         </div>
-        <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
-          <div class="pagination-wrap hstack gap-2">
+        <div class="d-flex justify-content-between mt-3">
+          <!-- Botón de Volver alineado a la izquierda -->
+          <BButton variant="light" @click="$router.push('/company/flotas')">
+            Volver
+          </BButton>
+
+          <!-- Paginación alineada a la derecha -->
+          <div class="pagination-wrap hstack gap-2" v-if="resultQuery.length >= 1">
             <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-          active: pageNumber == page,
-          disabled: pageNumber == '...',
-        }" v-for="pageNumber in displayedPages" :key="pageNumber">
+            active: pageNumber == page,
+            disabled: pageNumber == '...',
+          }" v-for="pageNumber in displayedPages" :key="pageNumber">
                 <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
                   {{ pageNumber }}
                 </BLink>
@@ -92,7 +98,6 @@
             <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
-
           </div>
         </div>
       </BCardBody>
@@ -156,7 +161,7 @@ export default {
       formData.append("file", this.selectedFile); // Añadir el archivo al FormData
 
       try {
-        const response = await axios.post('https://app.evolgreen.com:8080/api/cars/upload', formData, {
+        const response = await axios.post('https://app.evolgreen.com/api/cars/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -182,7 +187,7 @@ export default {
     },
     async downloadTemplate() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/cars/template', { responseType: 'blob' });
+        const response = await axios.get('https://app.evolgreen.com/api/cars/template', { responseType: 'blob' });
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
@@ -209,7 +214,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`https://app.evolgreen.com:8080/api/accounts/current/cars/${carId}`);
+      const response = await axios.get(`https://app.evolgreen.com/api/accounts/current/cars/${carId}`);
       console.log("API Response:", response.data); // Verifica los datos obtenidos
       if (response.data) {
         this.car = response.data;  // Carga los datos si el ID es válido y el auto existe
@@ -224,7 +229,7 @@ export default {
     // Este método es la chispa que enciende la conexión con el backend, trayendo a la vida las flotas activas para que puedan ser vistas y gestionadas.
     async fetchCars() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/accounts/current/cars');
+        const response = await axios.get('https://app.evolgreen.com/api/accounts/current/cars');
         this.data = response.data;  // Cada respuesta es una nueva página en el libro de tu compañía.
         this.setPages();  // Organizamos las páginas para que cada historia tenga su espacio.
       } catch (error) {
@@ -234,7 +239,7 @@ export default {
 
     async deleteCar(carId) {
       try {
-        const response = await axios.patch(`https://app.evolgreen.com:8080/api/accounts/current/cars/${carId}/delete`);
+        const response = await axios.patch(`https://app.evolgreen.com/api/accounts/current/cars/${carId}/delete`);
         console.log(response.data);
         this.successmsg("El auto ha sido eliminado correctamente.");
         this.fetchCars();  // Volvemos a cargar la lista.

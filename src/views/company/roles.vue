@@ -111,7 +111,7 @@ export default {
       this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
     },
     fetchRoles() {
-      axios.get("https://app.evolgreen.com:8080/api/roles")
+      axios.get("https://app.evolgreen.com/api/roles")
           .then((response) => {
             this.roles = response.data;
           })
@@ -136,7 +136,7 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await axios.patch(`https://app.evolgreen.com:8080/api/roles/${roleId}/delete`);
+            const response = await axios.patch(`https://app.evolgreen.com/api/roles/${roleId}/delete`);
             if (response.status === 200 || response.status === 201) {
               Swal.fire(
                   "¡Eliminado!",

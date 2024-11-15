@@ -94,8 +94,11 @@ export default {
   },
   methods: {
     async createChargingStation() {
+      // Llama a la función para remover las tildes antes de enviar los datos
+      this.chargingStation.ubicacionTerminal.direccion = this.removeAccents(this.chargingStation.ubicacionTerminal.direccion);
+
       try {
-        const response = await axios.post('https://app.evolgreen.com:8080/api/companies/current/chargingStations', this.chargingStation);
+        const response = await axios.post('https://app.evolgreen.com/api/companies/current/chargingStations', this.chargingStation);
         if (response.status === 200 || response.status === 201) {
           this.chargingStation.nombreTerminal = '';
           this.chargingStation.ubicacionTerminal.direccion = ''; // Resetea el campo correctamente
@@ -105,8 +108,11 @@ export default {
         });
       } catch (error) {
         console.error("Error creando la estación de carga:", error);
-        Swal.fire("Error al crear la estación de carga", "", "error")
+        Swal.fire("Error al crear la estación de carga", "", "error");
       }
+    },
+    removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
   }
 };

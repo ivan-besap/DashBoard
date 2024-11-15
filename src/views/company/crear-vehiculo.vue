@@ -174,7 +174,7 @@ export default {
     },
     async createCar() {
       try {
-        await axios.post('https://app.evolgreen.com:8080/api/accounts/current/cars', this.car);
+        await axios.post('https://app.evolgreen.com/api/accounts/current/cars', this.car);
         this.successmsg();
       } catch (error) {
         console.error("Error creando el auto:", error);

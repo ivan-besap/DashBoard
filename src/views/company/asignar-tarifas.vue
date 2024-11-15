@@ -35,6 +35,7 @@
                 <th scope="col">Estación</th>
                 <th scope="col">Cargador</th>
                 <th scope="col">Conector</th>
+                <th scope="col">Tarifa activa</th>
               </tr>
               </thead>
               <tbody>
@@ -56,6 +57,7 @@
                 <td>{{ conector.nombreTerminal }}</td>
                 <td>{{ conector.idCargador }}</td>
                 <td>{{ conector.alias }}</td>
+                <td>{{ conector.tarifa && conector.tarifa.nombreTarifa ? conector.tarifa.nombreTarifa : "No tiene tarifa activa" }}</td>
               </tr>
               </tbody>
             </table>
@@ -100,7 +102,7 @@
                   </div>
                 </td>
                 <td>{{ tarifa.nombreTarifa }}</td>
-                <td>{{ tarifa.precioTarifa }}</td>
+                <td>{{ "$" + tarifa.precioTarifa }}</td>
               </tr>
               </tbody>
             </table>
@@ -109,7 +111,7 @@
             <div>
               <h5>Tarifa Seleccionada</h5>
               <p class="mb-1"><strong>Nombre:</strong> {{ selectedTarifa.nombreTarifa }}</p>
-              <p><strong>Costo:</strong> {{ selectedTarifa.precioTarifa }}</p>
+              <p><strong>Costo:</strong> {{ "$" + selectedTarifa.precioTarifa }}</p>
             </div>
             <div class="ms-auto me-3">
               <BButton variant="light" @click="assignPlan">Asignar Tarifa</BButton>
@@ -160,7 +162,7 @@ export default {
 
   methods: {
     fetchTarifas() {
-      axios.get("https://app.evolgreen.com:8080/api/fees")
+      axios.get("https://app.evolgreen.com/api/fees")
           .then(response => {
             this.tarifas = response.data;
           })
@@ -170,7 +172,7 @@ export default {
     },
 
     fetchConnectors() {
-      axios.get("https://app.evolgreen.com:8080/api/connectors")
+      axios.get("https://app.evolgreen.com/api/connectors")
           .then(response => {
             this.connectors = response.data;
           })
@@ -204,7 +206,7 @@ export default {
       if (this.selectedTarifa && this.selectedConnectors.length > 0) {
         // Mapeamos cada conector seleccionado y realizamos una solicitud PATCH
         const requests = this.selectedConnectors.map(conector => {
-          return axios.patch(`https://app.evolgreen.com:8080/api/connectors/${conector.id}/assign-fee`, null, {
+          return axios.patch(`https://app.evolgreen.com/api/connectors/${conector.id}/assign-fee`, null, {
             params: {
               tarifaId: this.selectedTarifa.id
             }
@@ -214,13 +216,19 @@ export default {
         // Ejecutar todas las solicitudes en paralelo
         Promise.all(requests)
             .then(() => {
-              Swal.fire("Tarifa asignada exitosamente!", "", "success");
-              this.selectedConnectors = []; // Resetea los conectores seleccionados después de asignar
+              Swal.fire({
+                title: "Tarifa asignada exitosamente!",
+                icon: "success",
+                timer: 3000, // Tiempo en milisegundos antes de que el modal se cierre automáticamente
+                timerProgressBar: true
+              }).then((result) => {
+                // Se ejecuta cuando el usuario hace clic en "OK" o cuando el timer finaliza
+                if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+                  this.selectedConnectors = []; // Resetea los conectores seleccionados después de asignar
+                  location.reload();
+                }
+              });
             })
-            .catch(error => {
-              console.error("Error al asignar tarifa:", error);
-              Swal.fire("Error al asignar tarifa", "No se pudo asignar la tarifa", "error");
-            });
       } else {
         Swal.fire("Error", "Seleccione una tarifa y al menos un conector antes de asignar", "warning");
       }

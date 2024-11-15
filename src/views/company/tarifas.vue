@@ -34,25 +34,29 @@
           <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
             <tr>
-              <th class="sort" data-sort="current_value" scope="col" @click="onSort('name')">Tarifa</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Inicio</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Fin</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('weekDays')">Días de la semana</th>
-              <th class="sort" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Inicio</th>
-              <th class="sort" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Fin</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('location')">Valor</th>
+              <th class="sort pe-4" data-sort="current_value" scope="col" @click="onSort('name')">Tarifa</th>
+              <th class="sort pe-4" data-sort="current_value" scope="col" @click="onSort('name')">Conector Asociado</th>
+              <th class="sort pe-4" data-sort="current_value" scope="col" @click="onSort('name')">Cargador del Conector</th>
+              <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Inicio</th>
+              <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Fin</th>
+              <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('weekDays')">Días de la semana</th>
+              <th class="sort pe-4" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Inicio</th>
+              <th class="sort pe-4" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Fin</th>
+              <th class="sort pe-4" data-sort="market_cap" scope="col" @click="onSort('location')">Valor</th>
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
             <tbody class="list form-check-all">
               <tr v-for="(tarifa, index) in resultQuery" :key="index">
                 <td>{{ tarifa.nombreTarifa }}</td>
+                <td>{{ tarifa.nombreConector ? tarifa.nombreConector : "No tiene Conector Asociado" }}</td>
+                <td>{{ tarifa.nombreCargador ? tarifa.nombreCargador : "No tiene Conector Asociado" }}</td>
                 <td>{{ tarifa.fechaInicio }}</td>
                 <td>{{ tarifa.fechaFin }}</td>
                 <td>{{ tarifa.diasDeLaSemana.join(', ') }}</td>
                 <td>{{ tarifa.horaInicio }}</td>
                 <td>{{ tarifa.horaFin }}</td>
-                <td>{{ tarifa.precioTarifa }}</td>
+                <td>{{ "$" + tarifa.precioTarifa }}</td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(12)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-tarifa/${tarifa.id}`">
@@ -113,7 +117,7 @@ export default {
     },
     fetchTarifas() {
       axios
-          .get("https://app.evolgreen.com:8080/api/fees")
+          .get("https://app.evolgreen.com/api/fees")
           .then((response) => {
             this.tarifas = response.data;
             this.setPages();
@@ -177,7 +181,7 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await axios.patch(`https://app.evolgreen.com:8080/api/fees/${tarifaId}/delete`);
+            const response = await axios.patch(`https://app.evolgreen.com/api/fees/${tarifaId}/delete`);
             if (response.status === 200 || response.status === 201) {
               Swal.fire(
                   "¡Eliminado!",

@@ -27,17 +27,18 @@ const router = createRouter({
    if (!authRequired) return next();
  
    const token = localStorage.getItem('jwt');
+
+
  
    if (!token) {
     console.log('No se encontró un token de autenticación. Redirigiendo al login');
      return next({ name: 'login', query: { redirectFrom: routeTo.fullPath } });
    }
 
-     if (!window.location.pathname.includes('/login')) {
+     if (routeTo.name !== 'login') {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
         try {
-            const response = await axios.get('https://app.evolgreen.com:8080/api/user/current');
+            const response = await axios.get('https://app.evolgreen.com/api/user/current');
 
             // Acceder directamente a response.data.userType y response.data.userData
             const userType = response.data.userType;

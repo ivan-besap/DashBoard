@@ -1,32 +1,20 @@
 <template>
   <Layout>
-    <PageHeader title="Estaciones de Carga" pageTitle="items" />
+    <PageHeader title="Modelos" pageTitle="items" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8; margin-right: 7px "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(38)">
-            <router-link class="nav-link menu-link" target="" to="create-stations-company">
-              Crear Estación
-            </router-link>
-          </BButton>
-          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(65)">
-            <router-link class="nav-link menu-link" target="" to="/company/stationsList-company">
-              Lista Estaciones
-            </router-link>
-          </BButton>
-        </div>
         <div class="contenedor-finac" style="width: 246px;">
           <!-- Input de búsqueda -->
           <div class="d-flex justify-content-sm-end" style="height: 35px; margin-bottom: 10px">
             <BFormInput
-              v-model="searchQuery"
-              type="text"
-              class="form-control"
-              placeholder="Buscar Estación ..."
+                v-model="searchQuery"
+                type="text"
+                class="form-control"
+                placeholder="Buscar Modelo ..."
             />
           </div>
         </div>
-      </div>
+        </div>
     </BRow>
     <BCard no-body class="card-body">
       <BCardBody>
@@ -35,45 +23,19 @@
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" data-sort="current_value" scope="col" @click="onSort('name')">Nombre</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('location')">Ubicación</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('alarms')">Alarmas</th>
-              <th class="sort" data-sort="low" scope="col" @click="onSort('createdDay')">Creado</th>
-              <th scope="col">Activo</th>
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
             <tbody class="list form-check-all">
             <tr v-for="(dat, index) in resultQuery" :key="index">
-              <td>{{ dat.nombreTerminal }}</td>
-              <td class="pairs">{{ dat.ubicacionTerminal.direccion }}</td>
-              <td class="high">
-                0 alarmas
-<!--                {{ dat.alarms && dat.alarms.length > 0 ? dat.alarms.join(', ') : '0 alarmas' }}-->
-              </td>
-              <td class="low">{{ dat.fechaDeCreacion }}</td>
-              <td class="d-flex align-items-center">
-                <span :class="dat.estadoTerminal === 'ACTIVE' ? 'badge bg-success' : 'badge bg-danger'"
-                      class="me-2 mt-2 mb-2" style="font-size: 14px">
-                  {{ dat.estadoTerminal === 'ACTIVE' ? 'Activo' : 'Inactivo' }}
-                </span>
-                <BFormCheckbox  v-if="permisos.includes(62)"
-                    v-model="dat.estadoTerminal"
-                    switch
-                    :value="'ACTIVE'"
-                    :unchecked-value="'INACTIVE'"
-                    @change="cambiarActivoEstacion(dat.id, dat.estadoTerminal)"
-                    class="mt-1 mb-2"
-                    style="height: 20px; width: 36px"
-                >
-                </BFormCheckbox>
-              </td>
+              <td>{{ dat.name }}</td>
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(39)">
-                  <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${dat.id}`">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(69)">
+                  <router-link class="nav-link menu-link" :to="`/company/editar-modelo/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(40)">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)"  v-if="permisos.includes(71)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -81,7 +43,10 @@
             </tbody>
           </table>
         </div>
-        <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
+        <div class="d-flex justify-content-between mt-3" v-if="resultQuery.length >= 1">
+          <BButton variant="light" @click="$router.push('/company/crear-cargador')">
+            Volver
+          </BButton>
           <div class="pagination-wrap hstack gap-2">
             <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
@@ -157,9 +122,8 @@ export default {
     },
     filteredChargingStations() {
       const query = this.searchQuery.toLowerCase();
-      return this.data.filter(station =>
-        station.nombreTerminal.toLowerCase().includes(query) ||
-        station.ubicacionTerminal.direccion.toLowerCase().includes(query)
+      return this.data.filter(dat =>
+          dat.name.toLowerCase().includes(query)
       );
     }
   },
@@ -173,7 +137,7 @@ export default {
   },
   created() {
     this.setPages();
-    this.ChargingStation();
+    this.manufacturers();
     this.loadUserData();
   },
   filters: {
@@ -188,27 +152,12 @@ export default {
       this.userData = JSON.parse(userDataString);
       this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
     },
-    async ChargingStation() {
+    async manufacturers() {
       try {
-       const response = await axios.get('https://app.evolgreen.com/api/chargingStations');
+        const response = await axios.get('https://app.evolgreen.com/api/models');
         this.data = response.data
       } catch (error) {
         console.error("Error obteniendo las estaciones de carga:", error);
-      }
-    },
-    async cambiarActivoEstacion(id, estadoTerminal) {
-      try {
-        const response = await axios.patch(`https://app.evolgreen.com/api/chargingStationsStatus/change-active-status`, null, {
-          params: {
-            id: id,
-            activeStatus: estadoTerminal
-          }
-        });
-        if (response.status === 200 || response.status === 201) {
-          Swal.fire("Estación Actualizada!", "", "success")
-        }
-      } catch (error) {
-        console.error("Error Actualizando Estación", error);
       }
     },
     setPages() {
@@ -249,7 +198,7 @@ export default {
       });
       this.data = sortedArray;
     },
-    confirm(stationId) {
+    confirm(modelId) {
       Swal.fire({
         title: "¿Estás seguro de eliminar?",
         text: "¡No podrás revertir la acción!",
@@ -262,15 +211,15 @@ export default {
         if (result.isConfirmed) {
           try {
             // Hacer la solicitud PUT al endpoint para "eliminar" la estación
-            const response = await axios.patch(`https://app.evolgreen.com/api/companies/current/chargingStations/${stationId}/delete`);
+            const response = await axios.patch(`https://app.evolgreen.com/api/models/${modelId}`);
             if (response.status === 200 || response.status === 201){
-              Swal.fire("¡Estación eliminada!", "", "success").then(() => {
+              Swal.fire("¡Modelo eliminado!", "", "success").then(() => {
                 this.$router.go(0);
               });
             }
           } catch (error) {
-            console.error("Error eliminando la estación de carga:", error);
-            Swal.fire("Error", "No se pudo eliminar la estación de carga.", "error");
+            console.error("Error eliminandoel modelo :", error);
+            Swal.fire("Error", "No se pudo eliminar el modelo.", "error");
           }
         }
       });

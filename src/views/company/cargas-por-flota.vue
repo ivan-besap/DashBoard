@@ -38,7 +38,7 @@
             <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
               <thead class="table-light text-muted">
               <tr>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('flota')">Vehículo</th>
+                <th class="sort" data-sort="high" scope="col" @click="onSort('flota')">Flota</th>
                 <th class="sort" data-sort="high" scope="col" @click="onSort('carga')">Cargas</th>
                 <th class="sort" data-sort="market_cap" scope="col" @click="onSort('energia')">Energía</th>
                 <th class="sort" data-sort="current_value" scope="col" @click="onSort('tiempo')">Tiempo</th>
@@ -107,18 +107,18 @@ export default {
       searchQuery: '',
       filterDate: null,
       data: [
-        { flota: "Vehículo 1", carga: 144, energia: "15.98 kWh", tiempo: "01:05:46", costo: "1234 CLP", inicioCarga: "2024-07-24 08:30:00", finCarga: "2024-07-24 09:35:46" },
-        { flota: "Vehículo 2", carga: 232, energia: "13.47 kWh", tiempo: "00:55:26", costo: "2345 CLP", inicioCarga: "2024-07-23 10:20:00", finCarga: "2024-07-23 11:15:26" },
-        { flota: "Vehículo 3", carga: 3112, energia: "18.76 kWh", tiempo: "01:05:41", costo: "3456 CLP", inicioCarga: "2024-07-22 12:00:00", finCarga: "2024-07-22 13:05:41" },
-        { flota: "Vehículo 4", carga: 7, energia: "14.56 kWh", tiempo: "01:05:57", costo: "4567 CLP", inicioCarga: "2024-07-21 14:15:00", finCarga: "2024-07-21 15:20:57" },
-        { flota: "Vehículo 5", carga: 87, energia: "16.23 kWh", tiempo: "12:15:00", costo: "5678 CLP", inicioCarga: "2024-07-20 16:30:00", finCarga: "2024-07-21 04:45:00" },
-        { flota: "Vehículo 6", carga: 10, energia: "17.89 kWh", tiempo: "05:20:12", costo: "6789 CLP", inicioCarga: "2024-07-19 18:45:00", finCarga: "2024-07-20 00:05:12" },
-        { flota: "Vehículo 7", carga: 7, energia: "19.45 kWh", tiempo: "01:32:26", costo: "7890 CLP", inicioCarga: "2024-07-18 20:00:00", finCarga: "2024-07-18 21:32:26" },
-        { flota: "Vehículo 8", carga: 8, energia: "20.12 kWh", tiempo: "02:17:19", costo: "8901 CLP", inicioCarga: "2024-07-17 22:15:00", finCarga: "2024-07-18 00:32:19" },
-        { flota: "Vehículo 9", carga: 9, energia: "21.56 kWh", tiempo: "04:44:14", costo: "9012 CLP", inicioCarga: "2024-07-16 23:30:00", finCarga: "2024-07-17 04:14:14" },
-        { flota: "Vehículo 10", carga: 10, energia: "22.34 kWh", tiempo: "03:58:09", costo: "10123 CLP", inicioCarga: "2024-07-15 01:00:00", finCarga: "2024-07-15 04:58:09" },
-        { flota: "Vehículo 11", carga: 11, energia: "23.78 kWh", tiempo: "02:54:01", costo: "11234 CLP", inicioCarga: "2024-07-14 03:15:00", finCarga: "2024-07-14 06:09:01" },
-        { flota: "Vehículo 12", carga: 12, energia: "24.56 kWh", tiempo: "20:10:34", costo: "12345 CLP", inicioCarga: "2024-07-13 05:30:00", finCarga: "2024-07-14 01:40:34" },
+        { flota: "Flota 1", carga: 144, energia: "15.98 kWh", tiempo: "01:05:46", costo: "1234 CLP", inicioCarga: "2024-07-24 08:30:00", finCarga: "2024-07-24 09:35:46" },
+        { flota: "Flota 2", carga: 232, energia: "13.47 kWh", tiempo: "00:55:26", costo: "2345 CLP", inicioCarga: "2024-07-23 10:20:00", finCarga: "2024-07-23 11:15:26" },
+        { flota: "Flota 3", carga: 3112, energia: "18.76 kWh", tiempo: "01:05:41", costo: "3456 CLP", inicioCarga: "2024-07-22 12:00:00", finCarga: "2024-07-22 13:05:41" },
+        { flota: "Flota 4", carga: 7, energia: "14.56 kWh", tiempo: "01:05:57", costo: "4567 CLP", inicioCarga: "2024-07-21 14:15:00", finCarga: "2024-07-21 15:20:57" },
+        { flota: "Flota 5", carga: 87, energia: "16.23 kWh", tiempo: "12:15:00", costo: "5678 CLP", inicioCarga: "2024-07-20 16:30:00", finCarga: "2024-07-21 04:45:00" },
+        { flota: "Flota 6", carga: 10, energia: "17.89 kWh", tiempo: "05:20:12", costo: "6789 CLP", inicioCarga: "2024-07-19 18:45:00", finCarga: "2024-07-20 00:05:12" },
+        { flota: "Flota 7", carga: 7, energia: "19.45 kWh", tiempo: "01:32:26", costo: "7890 CLP", inicioCarga: "2024-07-18 20:00:00", finCarga: "2024-07-18 21:32:26" },
+        { flota: "Flota 8", carga: 8, energia: "20.12 kWh", tiempo: "02:17:19", costo: "8901 CLP", inicioCarga: "2024-07-17 22:15:00", finCarga: "2024-07-18 00:32:19" },
+        { flota: "Flota 9", carga: 9, energia: "21.56 kWh", tiempo: "04:44:14", costo: "9012 CLP", inicioCarga: "2024-07-16 23:30:00", finCarga: "2024-07-17 04:14:14" },
+        { flota: "Flota 10", carga: 10, energia: "22.34 kWh", tiempo: "03:58:09", costo: "10123 CLP", inicioCarga: "2024-07-15 01:00:00", finCarga: "2024-07-15 04:58:09" },
+        { flota: "Flota 11", carga: 11, energia: "23.78 kWh", tiempo: "02:54:01", costo: "11234 CLP", inicioCarga: "2024-07-14 03:15:00", finCarga: "2024-07-14 06:09:01" },
+        { flota: "Flota 12", carga: 12, energia: "24.56 kWh", tiempo: "20:10:34", costo: "12345 CLP", inicioCarga: "2024-07-13 05:30:00", finCarga: "2024-07-14 01:40:34" },
       ],
       page: 1,
       perPage: 5,

@@ -10,19 +10,24 @@
               Crear Cargador
             </router-link>
           </BButton>
-<!--          <BButton style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(45)">-->
-<!--            <router-link class="nav-link menu-link" target="" to="mantenimiento-cargador">-->
-<!--              Crear Mantenimiento-->
-<!--            </router-link>-->
-<!--          </BButton>-->
-<!--          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(46)">-->
-<!--            <router-link class="nav-link menu-link" target="" to="asignar-mantenimiento">-->
-<!--              Asignar Mantenimiento-->
-<!--            </router-link>-->
-<!--          </BButton>-->
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(72)">
+            <router-link class="nav-link menu-link" target="" to="mantenimiento-cargador">
+              Crear Mantenimiento
+            </router-link>
+          </BButton>
+          <BButton style="border: 1px solid #d8d8d8;  margin-right: 6px;"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(76)">
+            <router-link class="nav-link menu-link" target="" to="asignar-mantenimiento">
+              Asignar Mantenimiento
+            </router-link>
+          </BButton>
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(73)">
+            <router-link class="nav-link menu-link" target="" to="/company/mantenimientos">
+              Mantenimientos
+            </router-link>
+          </BButton>
         </div>
-        <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px">
-          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+        <div class="contenedor-finac" style="width: 246px; ">
+          <div class="d-flex justify-content-sm-end" style="height: 35px; margin-bottom: 10px">
             <BFormInput
               v-model="searchQuery"
               type="text"
@@ -59,7 +64,7 @@
                  <span :class="dat.estadoCargador === 'ACTIVE' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
                   {{ dat.estadoCargador === 'ACTIVE' ? 'Disponible' : 'No Disponible' }}
                 </span>
-                <BFormCheckbox
+                <BFormCheckbox  v-if="permisos.includes(63)"
                     v-model="dat.estadoCargador"
                     switch
                     :value="'ACTIVE'"
@@ -70,7 +75,13 @@
                 >
                 </BFormCheckbox>
               </td>
-              <td>POR HACER</td>
+              <td>
+                {{
+                  dat.mantenimientos && dat.mantenimientos.length > 0
+                      ? `${dat.mantenimientos[0].fechaInicial} / ${dat.mantenimientos[0].fechaFinal}`
+                      : 'No hay mantenimiento asignado'
+                }}
+              </td>
               <td>
                 <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(43)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-cargador/${dat.id}`">
@@ -80,11 +91,14 @@
                 <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(44)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
-                <BButton style="padding: 5px 10px;margin-left: 10px" variant="light" class="waves-effect waves-light" >
+                <BButton style="padding: 5px 10px;margin-left: 10px" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(77)" >
                   <router-link class="nav-link menu-link" :to="`/company/carga-inteligente`">
                     <i class="mdi mdi-cog"></i>
                   </router-link>
                 </BButton>
+<!--                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="sendHeartbeat(dat.ocppid)">-->
+<!--                  <i class="mdi mdi-heart"></i>-->
+<!--                </BButton>-->
               </td>
             </tr>
             </tbody>
@@ -189,6 +203,22 @@ export default {
   },
 
   methods: {
+    // async sendHeartbeat(ocppid) {
+    //   try {
+    //     const response = await axios.post('https://app.evolgreen.com/api/ocpp/enviar-heartbeat', null, {
+    //       params: {
+    //         ocppid: ocppid,
+    //         enableAutomatic: true  // Nuevo parámetro para habilitar el envío automático
+    //       }
+    //     });
+    //     if (response.status === 200) {
+    //       Swal.fire("Heartbeat Enviado y Envío Automático Activado!", "", "success");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error enviando el Heartbeat", error);
+    //     Swal.fire("Error al enviar el Heartbeat", "", "error");
+    //   }
+    // },
     loadUserData() {
       const userDataString = localStorage.getItem('userData');
       this.userData = JSON.parse(userDataString);
@@ -196,7 +226,7 @@ export default {
     },
     async cambiarActivoCargador(id, estadoCargador) {
       try {
-        const response = await axios.patch('https://app.evolgreen.com:8080/api/chargerStatus/change-active-status', null, {
+        const response = await axios.patch('https://app.evolgreen.com/api/chargerStatus/change-active-status', null, {
           params: {
             id: id,
             activeStatus: estadoCargador
@@ -212,7 +242,7 @@ export default {
     },
     async chargesStation() {
       try {
-        const response = await axios.get('https://app.evolgreen.com:8080/api/chargers');
+        const response = await axios.get('https://app.evolgreen.com/api/chargers');
         this.data = response.data
       } catch (error) {
         console.error("Error obteniendo las estaciones de carga:", error);
@@ -269,7 +299,7 @@ export default {
         if (result.isConfirmed) {
           try {
             // Hacer la solicitud PUT al endpoint para "eliminar" el cargador
-            const response = await axios.patch(`https://app.evolgreen.com:8080/api/companies/current/chargers/${chargerId}/delete`);
+            const response = await axios.patch(`https://app.evolgreen.com/api/companies/current/chargers/${chargerId}/delete`);
             if (response.status === 200) {
               Swal.fire(
                   "¡Eliminado!",
