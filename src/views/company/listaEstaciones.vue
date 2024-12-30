@@ -191,42 +191,6 @@ export default {
     },
   },
   methods: {
-    iniciarCarga(conector) {
-      // Si ya hay un intervalo corriendo para este conector, no hagas nada
-      if (conector.intervalId) return;
-
-      // Potencia en curso comienza a 60 kW
-      conector.potenciaEnCurso = conector.potenciaMaxima - 10;
-
-      // Carga en curso comienza en 0 y aumentará hasta el 100%
-      conector.cargaEnCurso = 0;
-
-      // Barra de progreso que incrementa cada 2 segundos
-      conector.intervalId = setInterval(() => {
-        if (conector.cargaEnCurso < 100) {
-          conector.cargaEnCurso += 1;
-        } else {
-          clearInterval(conector.intervalId); // Detener cuando llega al 100%
-          conector.intervalId = null; // Limpiar el ID del intervalo
-        }
-      }, 2000); // Incrementa 1% cada 2 segundos
-    },
-    detenerCarga(conector) {
-      // Detener la carga y la barra de progreso
-      if (conector.intervalId) {
-        clearInterval(conector.intervalId);
-        conector.intervalId = null; // Limpiar el ID del intervalo
-      }
-      conector.potenciaEnCurso = 0;
-      conector.cargaEnCurso = 0;
-    },
-    handleActionChange(conector) {
-      if (conector.selectedAction === "1") { // Iniciar Carga
-        this.iniciarCarga(conector);
-      } else if (conector.selectedAction === "2") { // Detener Carga
-        this.detenerCarga(conector);
-      }
-    },
     goToPage(pageNumber) {
       if (pageNumber === "...") return;
       this.page = pageNumber;
