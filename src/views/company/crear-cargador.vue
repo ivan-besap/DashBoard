@@ -2,6 +2,38 @@
   <Layout>
     <PageHeader title="Crear Cargador" pageTitle="Compañía" />
     <BRow>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;" class="mb-2">
+        <div class="contenedor-inic">
+          <!-- Botón para Crear Fabricante de Cargador -->
+          <BButton v-if="permisos.includes(60)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
+            <router-link class="nav-link menu-link" target="" to="/company/crear-fabricante-cargador">
+              Crear Fabricante de Cargador
+            </router-link>
+          </BButton>
+
+          <!-- Botón para Crear Modelo de Cargador -->
+          <BButton v-if="permisos.includes(61)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
+            <router-link class="nav-link menu-link" target="" to="/company/crear-modelo-cargador">
+              Crear Modelo de Cargador
+            </router-link>
+          </BButton>
+        </div>
+        <div class="contenedor-finac">
+          <!-- Input de búsqueda -->
+          <BButton v-if="permisos.includes(66)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
+            <router-link class="nav-link menu-link" target="" to="/company/charger-manufacturer">
+              Fabricantes
+            </router-link>
+          </BButton>
+          <BButton v-if="permisos.includes(67)" style="border: 1px solid #d8d8d8;" variant="light" class="waves-effect waves-light" >
+            <router-link class="nav-link menu-link" target="" to="/company/charger-models">
+              Modelos
+            </router-link>
+          </BButton>
+        </div>
+      </div>
+    </BRow>
+    <BRow>
       <BCol xxl="12">
         <BCard no-body>
           <CardHeader title="Crear Cargador" />
@@ -12,98 +44,101 @@
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="ocppId" class="form-label">OCPP ID</label>
-                      <BFormInput 
-                        v-model="charger.ocppId" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="OCPP ID" 
-                        id="ocppId" 
-                        required 
+                      <BFormInput
+                          v-model="charger.oCPPid"
+                          type="text"
+                          class="form-control"
+                          placeholder="OCPP ID"
+                          id="ocppId"
+                          required
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="name" class="form-label">Nombre</label>
-                      <BFormInput 
-                        v-model="charger.name" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Nombre del cargador" 
-                        id="name" 
-                        required 
+                      <label for="nombre" class="form-label">Nombre</label>
+                      <BFormInput
+                      v-model="charger.nombre"
+                      type="text"
+                      class="form-control"
+                      placeholder="Nombre del cargador"
+                      id="nombre"
+                      required
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="alias" class="form-label">Alias</label>
-                      <BFormInput 
-                        v-model="charger.alias" 
-                        type="text" 
-                        class="form-control" 
-                        placeholder="Alias" 
-                        id="alias" 
-                        required 
+                      <BFormInput
+                          v-model="charger.alias"
+                          type="text"
+                          class="form-control"
+                          placeholder="Alias"
+                          id="alias"
+                          required
                       />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="manufacturer" class="form-label">Fabricante</label>
-                      <BFormSelect 
-                        v-model="charger.manufacturer" 
-                        class="form-control" 
-                        id="manufacturer" 
-                        required
-                      >
-                        <option value="">Seleccionar un fabricante</option>
-                        <option value="Joint Tech">Joint Tech</option>
-                        <option value="Zhengzhou">Zhengzhou</option>
-                      </BFormSelect>
+                      <label for="manufacturerId" class="form-label">Fabricante</label>
+                      <Multiselect
+                          style="border: 1px solid black;"
+                          v-model="charger.manufacturerId"
+                          :options="manufacturers"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese un fabricante"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="model" class="form-label">Modelo</label>
-                      <BFormSelect 
-                        v-model="charger.model" 
-                        class="form-control" 
-                        id="model" 
-                        required
-                      >
-                        <option value="">Seleccionar un modelo</option>
-                        <option value="Higpowe3000">Higpowe3000</option>
-                        <option value="High Power 2000">High Power 2000</option>
-                      </BFormSelect>
+                      <label for="modelId" class="form-label">Modelo</label>
+                      <Multiselect
+                          style="border: 1px solid black;"
+                          v-model="charger.modeloId"
+                          :options="models"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese un modelo"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
-                  
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="station" class="form-label">Estaciones de carga</label>
-                      <BFormSelect 
-                        v-model="charger.station" 
-                        class="form-control" 
-                        id="station" 
-                        required
-                      >
-                        <option value="">Seleccionar una estación</option>
-                        <option value="Estacion 1">Estacion 1</option>
-                        <option value="Estacion 2">Estacion 2</option>
-                        <option value="Estacion 3">Estacion 3</option>
-                      </BFormSelect>
+                      <label for="stationId" class="form-label">Estación De Carga</label>
+                      <Multiselect
+                          style="border: 1px solid black;"
+                          v-model="charger.terminal"
+                          :options="chargingStations"
+                          label="label"
+                          track-by="label"
+                          placeholder="Selecciona o ingrese un terminal"
+                          :close-on-select="true"
+                          :searchable="true"
+                          :create-option="true"
+                      />
                     </div>
                   </BCol>
                   <BCol lg="12">
-                    <div class="text-end">
-                      <BButton style="background-color: #dfe4ea" type="submit" variant="light" @click="successmsg">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/cargadores-company')">
+                        Volver
+                      </BButton>
+                      <BButton style="" type="submit" variant="light">
                         Crear Cargador
                       </BButton>
                     </div>
                   </BCol>
                 </BRow>
-             
               </BForm>
             </div>
           </BCardBody>
@@ -121,65 +156,96 @@ import Swal from "sweetalert2";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   data() {
     return {
+      manufacturers:[],
+      permisos:[],
+      chargingStations:[],
+      models:[],
       charger: {
-        ocppId: '',
-        name: '',
+        oCPPid: '',
+        nombre: '',
         alias: '',
-        manufacturer: '',
-        model: '',
-        location: '',
-        station: ''
+        manufacturerId: '',
+        modeloId: '',
+        terminal: ''
       },
-      config: {
-        wrap: true, // set wrap to true only when using 'input-group'
-        altFormat: "M j, Y",
-        altInput: true,
-        dateFormat: "d M, Y",
-      },
-      date: null,
-      date1: null,
-      date3: null,
     };
   },
   components: {
     Layout,
     PageHeader,
-    CardHeader, 
+    CardHeader,
+    Multiselect
     
   },
   methods: {
-    successmsg() {
-      Swal.fire({
-        title: "Rol creado!",
-        text: "Redirigiendo a la página de Cargadores...",
-        icon: "success",
-        timer: 2000, // Tiempo en milisegundos antes de redirigir
-        timerProgressBar: true,
-        willClose: () => {
-          this.$router.push('/company/cargadores-company'); // Redirigir a la página de planes
-        }
-      });
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
     },
     async createCharger() {
       try {
-        await axios.post('http://localhost:8080/api/chargers', this.charger);
-       // alert('Cargador creado exitosamente');
-        this.charger.ocppId = '';
-        this.charger.name = '';
-        this.charger.alias = '';
-        this.charger.manufacturer = '';
-        this.charger.model = '';
-        this.charger.location = '';
-        this.charger.station = '';
+        const response = await axios.post('https://app.evolgreen.com/api/companies/current/chargers', this.charger);
+        if (response.status === 200 || response.status === 201) {
+          this.charger.oCPPid = '';
+          this.charger.nombre = '';
+          this.charger.alias = '';
+          this.charger.manufacturerId = null;
+          this.charger.modeloId = null;
+          this.charger.terminal = null;
+        }
+        Swal.fire("Cargador Creado Exitosamente", "", "success").then(() => {
+          this.$router.push('/company/cargadores-company');
+        });
       } catch (error) {
         console.error("Error creando el cargador:", error);
-       // alert('Error creando el cargador');
+        Swal.fire("Error al crear el cargador ", "", "error")
+      }
+    },
+    async chargerManufacturers() {
+      try {
+        const response = await axios.get('https://app.evolgreen.com/api/manufacturers');
+        this.manufacturers = response.data.map(data => ({
+          label: data.name,
+          value: data.id
+        }));
+      } catch (error) {
+        console.error("Error creando el cargador:", error);
+      }
+    },
+    async chargerModels() {
+      try {
+        const response = await axios.get('https://app.evolgreen.com/api/models');
+        this.models = response.data.map(data => ({
+          label: data.name,
+          value: data.id
+        }));
+      } catch (error) {
+        console.error("Error creando el cargador:", error);
+      }
+    },
+    async chargingStations2() {
+      try {
+        const response = await axios.get('https://app.evolgreen.com/api/chargingStations');
+        this.chargingStations = response.data.map(data => ({
+          label: data.nombreTerminal,
+          value: data.id
+        }));
+      } catch (error) {
+        console.error("Error creando el cargador:", error);
       }
     }
+  },
+  created() {
+    this.chargerManufacturers()
+    this.chargerModels()
+    this.chargingStations2()
+    this.loadUserData()
   }
 };
 </script>

@@ -2,121 +2,94 @@
   <Layout>
     <PageHeader title="Tarjetas RFID" pageTitle="Compañía" />
 
-    <!--<BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
-      <a href="/company/create-empleados-company">Detalle de Terminal</a>
-    </BButton>-->
-
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(34)">
             <router-link class="nav-link menu-link" target="" to="/company/crear-tarjeta-rfid">
               Crear Tarjeta RFID
             </router-link>
           </BButton>
+          <BButton style=" margin-left: 20px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(54)">
+            <router-link class="nav-link menu-link" target="" to="/company/asignar-RFID">Asignar RFID</router-link>
+          </BButton>
         </div>
         <div class="contenedor-finac" style="width: 246px; margin-bottom: 10px;">
           <!-- Input de búsqueda -->
-          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+          <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
-                v-model="searchQuery"
-                type="text"
-                class="form-control"
-                placeholder="Buscar por nombre de Tarjeta..."
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar Tarjeta ..."
             />
           </div>
         </div>
       </div>
     </BRow>
 
-<!--    <div class="table-responsive table-card">-->
-<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--        <thead class="table-light">-->
-<!--        <tr>-->
-<!--&lt;!&ndash;          <th scope="col">&ndash;&gt;-->
-<!--&lt;!&ndash;            <div class="form-check">&ndash;&gt;-->
-<!--&lt;!&ndash;              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">&ndash;&gt;-->
-<!--&lt;!&ndash;              <label class="form-check-label" for="cardtableCheck"></label>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </th>&ndash;&gt;-->
-<!--          <th scope="col">Nombre</th>-->
-<!--          <th scope="col">Código Tarjeta</th>-->
-<!--          <th scope="col">Fecha Expiración</th>-->
-<!--          <th style="width: 1%" scope="col">Acciones</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr v-for="tarjeta in tarjetas" :key="tarjeta.id">-->
-<!--&lt;!&ndash;          <td>&ndash;&gt;-->
-<!--&lt;!&ndash;            <div class="form-check">&ndash;&gt;-->
-<!--&lt;!&ndash;              <input class="form-check-input" type="checkbox" value="" id="cardtableCheck01">&ndash;&gt;-->
-<!--&lt;!&ndash;              <label class="form-check-label" for="cardtableCheck01"></label>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </td>&ndash;&gt;-->
-<!--          <td>{{ tarjeta.nombre }}</td>-->
-<!--          <td>{{ tarjeta.codigo }}</td>-->
-<!--          <td>{{ tarjeta.fechaExpiracion }}</td>-->
-
-<!--          <td>-->
-<!--            <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
-<!--              <router-link class="nav-link menu-link" :to="`/company/editar-conector/`">-->
-<!--                <i class="mdi mdi-pencil"></i>-->
-<!--              </router-link>-->
-<!--            </BButton>-->
-<!--            <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
-<!--              <i class="mdi mdi-delete"></i>-->
-<!--            </BButton>-->
-<!--          </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
-            <tr>
-              <th class="sort" data-sort="current_value" scope="col" @click="onSort('nombre')">Nombre</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('codigo')">Código</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('fechaExpiracion')">Fecha de expiración</th>
-              <th scope="col" style="width: 1%;">Acciones</th>
-            </tr>
+              <tr>
+                <th class="sort" @click="onSort('nombreDeIdentificador')">Nombre</th>
+                <th class="sort" @click="onSort('rfid')">Código</th>
+                <th class="sort" @click="onSort('fechaExpiracion')">Fecha de expiración</th>
+                <th class="sort" @click="onSort('patente')">Patente asociada</th>
+                <th class="sort" @click="onSort('usable')">Usable</th>
+                <th scope="col" style="width: 1%;">Acciones</th>
+              </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="(dat, index) in resultQuery" :key="index">
-              <td>{{ dat.nombre }}</td>
-              <td class="pairs">{{ dat.codigo }}</td>
-              <td class="pairs">{{ dat.fechaExpiracion }}</td>
-              <td>
-                <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
-                  <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/`">
-                    <i class="mdi mdi-pencil"></i>
-                  </router-link>
-                </BButton>
-                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
-                  <i class="mdi mdi-delete"></i>
-                </BButton>
-              </td>
-            </tr>
+              <tr v-for="(dat, index) in resultQuery" :key="index">
+                <td>{{ dat.nombreDeIdentificador }}</td>
+                <td>{{ dat.rfid }}</td>
+                <td>{{ dat.fechaExpiracion }}</td>
+                <td>{{ dat.patente || 'No asignada' }}</td>
+                <td>
+                  <BFormCheckbox
+                      v-model="dat.usable"
+                      switch
+                      :value=true
+                      :unchecked-value=false
+                      @change="cambiarActivoRfid(dat.id, dat.usable)"
+                      class="mt-1 mb-2"
+                      style="height: 19px; width: 35px"
+                  >
+                  </BFormCheckbox>
+                </td>
+                <td>
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(35)">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-tarjeta-rfid/${dat.id}`">
+                      <i class="mdi mdi-pencil"></i>
+                    </router-link>
+                  </BButton>
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(36)">
+                    <i class="mdi mdi-delete"></i>
+                  </BButton>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
-            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+            <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                  @click="goToPage(pageNumber)">
-                <BLink class="page" href="#">{{ pageNumber }}</BLink>
+                  active: pageNumber == page,
+                  disabled: pageNumber == '...',
+                          }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                  {{ pageNumber }}
+                </BLink>
               </li>
             </ul>
-            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+            <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
           </div>
@@ -130,6 +103,8 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import Swal from "sweetalert2";
+import axios from 'axios';
+
 export default {
   components: {
     Layout,
@@ -137,22 +112,13 @@ export default {
   },
   data() {
     return {
-      // tarjetas: [
-      //   { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
-      //   { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
-      //   { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
-      //   { id: 4, nombre: "Tarjeta Oficina 453", codigo: "88554796002145575", fechaExpiracion: "28-10-2024"},
-      // ],
       searchQuery: '',
-      data: [
-        { id: 1, nombre: "Tarjeta Oficina 23", codigo: "456897541287456200", fechaExpiracion: "13-08-2024"},
-        { id: 2, nombre: "Tarjeta Oficina 45", codigo: "445543541287432190", fechaExpiracion: "23-09-2024"},
-        { id: 3, nombre: "Tarjeta Oficina 004", codigo: "23324580549906948", fechaExpiracion: "31-08-2024"},
-        { id: 4, nombre: "Tarjeta Oficina 453", codigo: "88554796002145575", fechaExpiracion: "28-10-2024"},
-      ],
+      data: [],  // Aquí se almacenan los datos desde el backend
       page: 1,
       perPage: 5,
       pages: [],
+      direction: 'asc',
+      permisos:[]
     };
   },
   computed: {
@@ -170,43 +136,73 @@ export default {
       }
       return pages;
     },
-    filteredPlans() {
-      const query = this.searchQuery.toLowerCase();
-      return this.data.filter(dat => dat.nombre.toLowerCase().includes(query));
-    },
-    displayedPosts() {
-      return this.paginate(this.data);
-    },
     resultQuery() {
+      let filteredData = this.data;
+
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
-              data.nombre.toLowerCase().includes(search) ||
-              data.codigo.toLowerCase().includes(search) ||
+              data.nombreDeIdentificador.toLowerCase().includes(search) ||
+              data.rfid.toLowerCase().includes(search) ||
               data.fechaExpiracion.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
-    },
-  },
-  watch: {
-    posts() {
-      this.setPages();
+      return this.paginate(filteredData);
     },
   },
   created() {
-    this.setPages();
+    this.fetchDeviceIdentifiers();
+    this.loadUserData();
   },
-  filters: {
-    trimWords(value) {
-      return value.split(" ").splice(0, 20).join(" ") + "...";
-    },
-  },
-
   methods: {
+    async cambiarActivoRfid(id, estado) {
+      try {
+        const response = await axios.patch('https://app.evolgreen.com/api/rfidStatus/change-active-status', null, {
+          params: {
+            id: id,
+            usable: estado
+          }
+        });
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("RFID Actualizada!", "", "success");
+        }
+      } catch (error) {
+        console.error("Error Actualizando RFID", error);
+        Swal.fire("Error al actualizar la RFID", "", "error");
+      }
+    },
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
+    async fetchDeviceIdentifiers() {
+      try {
+        const response = await axios.get('https://app.evolgreen.com/api/empresa/current/deviceIdentifiers');
+        const devices = response.data;
+        
+        // Obtener los detalles del auto asociado (patente)
+        const deviceWithCarDetails = await Promise.all(
+          devices.map(async (device) => {
+            if (device.auto) {
+              const carResponse = await axios.get(`https://app.evolgreen.com/api/accounts/current/cars/${device.auto}`);
+              device.patente = carResponse.data.patente;
+            } else {
+              device.patente = 'No asignada'; 
+            }
+            return device;
+          })
+        );
+
+        this.data = deviceWithCarDetails;
+        this.setPages(); // Establecer paginación
+      } catch (error) {
+        console.error("Error al obtener los dispositivos RFID:", error);
+      }
+    },
+
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -214,28 +210,31 @@ export default {
         this.pages.push(index);
       }
     },
+
     paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
+      let from = this.page * this.perPage - this.perPage;
+      let to = this.page * this.perPage;
       return data.slice(from, to);
     },
+
     goToPage(pageNumber) {
       if (pageNumber !== '...') {
         this.page = pageNumber;
       }
     },
+
     previousPage() {
       if (this.page > 1) {
         this.page--;
       }
     },
+
     nextPage() {
       if (this.page < this.pages.length) {
         this.page++;
       }
     },
+
     onSort(column) {
       this.direction = this.direction === 'asc' ? 'desc' : 'asc';
       const sortedArray = [...this.data];
@@ -245,22 +244,57 @@ export default {
       });
       this.data = sortedArray;
     },
-    confirm() {
+
+    confirm(rfidId) {
+      if (!rfidId) {
+          console.error("El ID de la tarjeta RFID es nulo o no está definido.");
+          return;
+      }
+
       Swal.fire({
-        title: "Estas seguro de eliminar?",
-        text: "No podras revertir la accion!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#34c38f",
-        cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Si, eliminar!",
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire("Tarjeta RFID Eliminada", "", "success");
-        }
+          title: "¿Estás seguro de eliminar esta tarjeta RFID?",
+          text: "No podrás revertir esta acción",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#34c38f",
+          cancelButtonColor: "#f46a6a",
+          confirmButtonText: "Sí, eliminar!",
+      }).then(async (result) => {
+          if (result.isConfirmed) {
+              try {
+                  await axios.patch(
+                      `https://app.evolgreen.com/api/accounts/current/device-identifiers/${rfidId}/delete`
+                  );
+
+                  Swal.fire("Tarjeta RFID eliminada", "", "success");
+                  this.fetchDeviceIdentifiers(); // Refrescar la lista de tarjetas RFID
+              } catch (error) {
+                  console.error("Error al eliminar la tarjeta RFID:", error);
+                  Swal.fire("Error", "No se pudo eliminar la tarjeta RFID", "error");
+              }
+          }
       });
-    }
+    },
   },
 };
 </script>
+<style scoped>
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
 
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
+}
+</style>

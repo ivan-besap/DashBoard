@@ -4,20 +4,29 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
-            <router-link class="nav-link menu-link" target="" to="/company/crear-flota">
-              Crear Flotas
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 5px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(79)">
+            <router-link class="nav-link menu-link" to="/company/create-flota">
+              Crear Flota
+            </router-link>
+          </BButton>
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 5px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(15)">
+            <router-link class="nav-link menu-link" to="/company/vehiculos">
+              Vehículos
+            </router-link>
+          </BButton>
+          <BButton style="border: 1px solid #d8d8d8;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(82)">
+            <router-link class="nav-link menu-link" to="/company/asignar-vehiculos">
+              Asignar Vehículos
             </router-link>
           </BButton>
         </div>
-        <div class="contenedor-finac" style="margin-bottom: 10px;  width: 246px;">
-          <!-- Input de búsqueda -->
-          <div class="d-flex justify-content-sm-end" style="height: 48px;">
+        <div class="contenedor-finac" style="margin-bottom: 10px; width: 246px;">
+          <div class="d-flex justify-content-sm-end" style="height: 35px;">
             <BFormInput
-              v-model="searchQuery"
-              type="text"
-              class="form-control"
-              placeholder="Buscar por Flota..."
+                v-model="searchQuery"
+                type="text"
+                class="form-control"
+                placeholder="Buscar Flota ..."
             />
           </div>
         </div>
@@ -27,49 +36,72 @@
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
-              <tr>
-                <th class="sort" scope="col" @click="onSort('firstSurname')">Nombre</th>
-                <th class="sort" scope="col" @click="onSort('model')">Modelo</th>
-                <th class="sort" scope="col" @click="onSort('patent')">Patente</th>
-                <th scope="col" style="width: 1%;">Acciones</th>
-              </tr>
+            <tr>
+              <th class="sort" scope="col" @click="onSort('nombreFlota')">Nombre Flota</th>
+              <th class="sort" scope="col" @click="onSort('nombreFlota')">Precio Flota</th>
+              <th scope="col" style="width: 1%;">Acciones</th>
+            </tr>
             </thead>
             <tbody class="list form-check-all">
-              <tr v-for="(dat, index) in resultQuery" :key="index">
-                <td>{{ dat.firstSurname }}</td>
-                <td>{{ dat.model }}</td>
-                <td>{{ dat.patent }}</td>
+            <template v-for="(flota, index) in resultQuery" :key="index">
+              <tr>
+                <td>{{ flota.nombreFlota }}</td>
+                <td>{{ "$" + flota.precioFlota }}</td>
                 <td>
-                  <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
-                    <router-link class="nav-link menu-link" :to="`/company/editar-flota/`">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(80)">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-flota/${flota.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(flota.id)" v-if="permisos.includes(81)">
                     <i class="mdi mdi-delete"></i>
+                  </BButton>
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="toggleExpand(flota)">
+                    <i :class="flota.expanded ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'"></i>
                   </BButton>
                 </td>
               </tr>
+              <!-- Fila expandida con detalles de los autos asignados a la flota -->
+              <tr v-if="flota.expanded">
+                <td colspan="2">
+                  <div class="card-body p-0">
+                    <table class="table table-borderless mt-1 mb-0">
+                      <thead>
+                      <tr>
+                        <th>Patentes de Autos Asignados</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(auto, idx) in flota.autos" :key="idx">
+                        <td>{{ auto.patente }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </template>
             </tbody>
           </table>
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
-            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+            <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
                 active: pageNumber == page,
                 disabled: pageNumber == '...',
-              }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                  @click="goToPage(pageNumber)">
-                <BLink class="page" href="#">{{ pageNumber }}</BLink>
+              }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                  {{ pageNumber }}
+                </BLink>
               </li>
             </ul>
-            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+            <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
           </div>
@@ -82,6 +114,7 @@
 <script>
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
+import axios from 'axios';
 import Swal from "sweetalert2";
 
 export default {
@@ -92,26 +125,36 @@ export default {
   data() {
     return {
       searchQuery: '',
-      data: [
-        { id: 1, firstSurname: 'Flota 1', model: 'Modelo X', patent: 'AB123CD', createdDay: '2023-01-01', company: 'Empresa A', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-        { id: 2, firstSurname: 'Flota 2', model: 'Modelo Y', patent: 'EF456GH', createdDay: '2023-02-01', company: 'Empresa B', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-        { id: 3, firstSurname: 'Flota 3', model: 'Modelo Z', patent: 'IJ789KL', createdDay: '2023-03-01', company: 'Empresa C', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-        { id: 4, firstSurname: 'Flota 4', model: 'Modelo X', patent: 'MN012OP', createdDay: '2023-04-01', company: 'Empresa D', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-        { id: 5, firstSurname: 'Flota 5', model: 'Modelo Y', patent: 'QR345ST', createdDay: '2023-05-01', company: 'Empresa E', active: true, plan: 'PLAN B INTERMEDIO', role: 'Administrador' },
-        { id: 6, firstSurname: 'Flota 6', model: 'Modelo Z', patent: 'UV678WX', createdDay: '2023-06-01', company: 'Empresa F', active: false, plan: 'PLAN C AVANZADO', role: 'Usuario' },
-        { id: 7, firstSurname: 'Flota 7', model: 'Modelo X', patent: 'YZ901AB', createdDay: '2023-07-01', company: 'Empresa G', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-        { id: 8, firstSurname: 'Flota 8', model: 'Modelo Y', patent: 'CD234EF', createdDay: '2023-08-01', company: 'Empresa H', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-        { id: 9, firstSurname: 'Flota 9', model: 'Modelo Z', patent: 'GH567IJ', createdDay: '2023-09-01', company: 'Empresa I', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-        { id: 10, firstSurname: 'Flota 10', model: 'Modelo X', patent: 'KL890MN', createdDay: '2023-10-01', company: 'Empresa J', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-      ],
+      data: [],
       page: 1,
       perPage: 5,
       pages: [],
-      direction: 'asc'
+      permisos:[],
+      direction: 'asc',
     };
   },
 
   methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
+    async fetchFlota() {
+      try {
+        const response = await axios.get('https://app.evolgreen.com/api/flotas');
+        this.data = response.data.map(flota => ({
+          ...flota,
+          expanded: false, // Propiedad para controlar el despliegue de autos asignados
+        }));
+        this.setPages();
+      } catch (error) {
+        console.error("Error fetching flotas:", error);
+      }
+    },
+    toggleExpand(flota) {
+      flota.expanded = !flota.expanded;
+    },
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -150,7 +193,7 @@ export default {
       });
       this.data = sortedArray;
     },
-    confirm() {
+    confirm(flotaId) {
       Swal.fire({
         title: "¿Estás seguro de eliminar?",
         text: "¡No podrás revertir la acción!",
@@ -160,25 +203,45 @@ export default {
         cancelButtonColor: "#f46a6a",
         confirmButtonText: "Sí, eliminar!",
       }).then((result) => {
-        if (result.value) {
-          // Aquí va la lógica para eliminar el item
-          Swal.fire("¡Eliminado!", "El item ha sido eliminado.", "success");
+        if (result.isConfirmed) {
+          this.deleteFlota(flotaId);
         }
       });
+    },
+
+    async deleteFlota(flotaId) {
+      try {
+        const response = await axios.patch(`https://app.evolgreen.com/api/flotas/${flotaId}/delete`);
+        if (response.status === 200) {
+          Swal.fire(
+              "¡Eliminado!",
+              "La flota ha sido eliminada.",
+              "success"
+          ).then(() => {
+            this.$router.go(0); // Recargar la página actual
+          });
+        }
+      } catch (error) {
+        console.error("Error al desactivar la flota:", error);
+        Swal.fire("Error", "Hubo un problema al desactivar la flota", "error");
+      }
     },
   },
 
   computed: {
     resultQuery() {
-      let result = this.paginate(this.data);
+      let filteredData = this.data;
+
       if (this.searchQuery) {
-        result = result.filter(item => 
-          item.firstSurname.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          item.model.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          item.patent.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+        const search = this.searchQuery.toLowerCase();
+        filteredData = filteredData.filter((flota) => {
+          return (
+              flota.nombreFlota.toLowerCase().includes(search)
+          );
+        });
       }
-      return result;
+
+      return this.paginate(filteredData);
     },
     displayedPages() {
       let result = [];
@@ -200,11 +263,27 @@ export default {
   },
 
   mounted() {
-    this.setPages();
+    this.fetchFlota();
+    this.loadUserData();
   },
 };
 </script>
 
 <style scoped>
-/* Añade estilos personalizados si es necesario */
+.pagination .active .page {
+  background-color: #20dcb5;
+  border-color: #20dcb5;
+  color: white;
+}
+.pagination .page {
+  background-color: #ffffff;
+  border-color: #e8e8e8;
+  color: #303034;
+}
+.pagination-next {
+  color: #575762;
+}
+.pagination-prev {
+  color: #575762;
+}
 </style>

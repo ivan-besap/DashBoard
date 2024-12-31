@@ -41,6 +41,17 @@
     }
 }
 
+.auth-jose-bg{
+    background-image: url("~@/assets/images/background-login.jpeg");
+    background-position: center;
+    background-size: cover;
+
+    .bg-overlay{
+        background: linear-gradient(to right, darken($primary, 6%), $primary);
+        opacity: 0.9;
+    }
+}
+
 
     .shape{
         position: absolute;

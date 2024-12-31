@@ -1,185 +1,275 @@
 <template>
-    <Layout>
-      <PageHeader title="Asignar Mantenimiento" pageTitle="items" />
-  
-      <BRow>
-        <BCol xl="6">
-          <div class="table-responsive" style="background-color: white">
-            <div class="search-box">
-              <input
-                  type="text"
-                  class="form-control bg-light border-light"
-                  autocomplete="off"
-                  id="searchStations"
-                  placeholder="Buscar estación..."
-                  v-model="stationSearchQuery"
-              />
-              <i class="ri-search-line search-icon"></i>
-            </div>
-            <table class="table table-hover align-middle table-nowrap mb-0">
+  <Layout>
+    <PageHeader title="Asignar Mantenimiento" pageTitle="items" />
+
+    <BRow>
+      <BCol xl="6">
+        <div class="search-box mb-4">
+          <input
+              type="text"
+              class="form-control  border-light"
+              autocomplete="off"
+              id="searchStations"
+              placeholder="Buscar estación..."
+              v-model="cargadorSearchQuery"
+          />
+          <i class="ri-search-line search-icon"></i>
+        </div>
+        <div class="table-responsive" style="background-color: white">
+          <div style="max-height: 500px; overflow-y: auto;">
+            <table class="table table-striped table-hover align-middle table-nowrap mb-0">
               <thead class="table-light">
-                <tr>
-                  <th scope="col">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">
-                      <label class="form-check-label" for="cardtableCheck"></label>
-                    </div>
-                  </th>
-                  <th scope="col">Estación</th>
-                  <th scope="col">Cargador</th>
-                  <th scope="col">Conector</th>
-                </tr>
+              <tr>
+<!--                <th scope="col">-->
+<!--                  <div class="form-check">-->
+<!--                    <input-->
+<!--                        class="form-check-input"-->
+<!--                        type="checkbox"-->
+<!--                        @click="toggleSelectAllCargadores"-->
+<!--                        style="border-radius: 10px"-->
+<!--                    >-->
+<!--                    <label class="form-check-label"></label>-->
+<!--                  </div>-->
+<!--                </th>-->
+                <th></th>
+                <th scope="col">Estación</th>
+                <th scope="col">Cargador</th>
+                <th scope="col">Conector</th>
+                <th scope="col">Mantenimiento</th>
+              </tr>
               </thead>
               <tbody>
-                <tr v-for="station in filteredStations" :key="station.id">
-                  <td>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" :id="'check' + station.id">
-                      <label class="form-check-label" :for="'check' + station.id"></label>
-                    </div>
-                  </td>
-                  <td>{{ station.name }}</td>
-                  <td>{{ station.charger }}</td>
-                  <td>{{ station.connector }}</td>
-                </tr>
+              <tr v-for="cargador in filteredCargadores" :key="cargador.id" @click="toggleCargadorSelection(cargador)">
+                <td>
+                  <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        :id="'check' + cargador.id"
+                        v-model="selectedCargadores"
+                        :value="cargador"
+                        @click.stop
+                        style="border-radius: 10px"
+                    />
+                    <label class="form-check-label" :for="'check' + cargador.id"></label>
+                  </div>
+                </td>
+                <td>{{ cargador.terminalName }}</td>
+                <td>{{ cargador.nombre }}</td>
+                <td>{{ cargador.ocppid }}</td>
+                <td>
+                  <!-- Verifica si el cargador tiene al menos un mantenimiento asignado -->
+                  <span v-if="cargador.mantenimientos.length > 0">
+                    {{ cargador.mantenimientos[0].descripcion }}
+                  </span>
+                  <span v-else>
+                    No hay mantenimiento asignado
+                  </span>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
-        </BCol>
-        <BCol xl="6">
-          <BCardBody class="border-end" style="background-color: white">
-            <div class="search-box">
-              <input
-                  type="text"
-                  class="form-control bg-light border-light"
-                  autocomplete="off"
-                  id="searchList"
-                  placeholder="Buscar mantenimiento..."
-                  v-model="searchQuery"
-              />
-              <i class="ri-search-line search-icon"></i>
+        </div>
+      </BCol>
+      <BCol xl="6">
+        <div class="search-box mb-4">
+          <input
+              type="text"
+              class="form-control  border-light"
+              autocomplete="off"
+              id="searchList"
+              placeholder="Buscar tarifa..."
+              v-model="searchQuery"
+          />
+          <i class="ri-search-line search-icon"></i>
+        </div>
+        <BCardBody class="border-end" style="background-color: white">
+          <div style="max-height: 500px; overflow-y: auto;">
+            <table class="table table-striped table-hover align-middle table-nowrap mb-0">
+              <thead class="table-light">
+              <tr>
+                <th></th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Horario</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(mantenimiento, index) in resultQuery" :key="index" @click="selectMantenimiento(mantenimiento)">
+                <td>
+                  <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        :value="mantenimiento"
+                        v-model="selectedMantenimiento"
+                        :id="'mantenimiento' + mantenimiento.id"
+                        @click.stop
+                    />
+                    <label class="form-check-label" :for="'mantenimiento' + mantenimiento.id"></label>
+                  </div>
+                </td>
+                <td>{{ mantenimiento.descripcion }}</td>
+                <td>{{ mantenimiento.fechaInicial }} / {{ mantenimiento.fechaFinal }}</td>
+                <td>{{ mantenimiento.horarioInicio }} / {{ mantenimiento.horarioFin }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-if="selectedMantenimiento && selectedCargadores.length > 0" class="mt-3 d-flex justify-content-between align-items-center" style="margin-left: 10px">
+            <div>
+              <h5>Tarifa Seleccionada</h5>
+              <p class="mb-1"><strong>Nombre</strong> {{ selectedMantenimiento.descripcion }}</p>
+              <p><strong>Fecha Inicio</strong> {{ selectedMantenimiento.fechaInicial }} / {{ selectedMantenimiento.fechaFinal }}</p>
             </div>
-            <simplebar data-simplebar style="max-height: 190px" class="px-3 mx-n3">
-              <ul class="list-unstyled mb-0 pt-2" id="candidate-list">
-                <li v-for="(data, index) in resultQuery" :key="index" @click="selectPlan(data)">
-                  <BLink href="javascript:void(0);" class="d-flex align-items-center py-2">
-                    <div class="flex-grow-1">
-                      <h5 class="fs-13 mb-1 text-truncate">
-                        <span style="margin-left: 10px;" class="candidate-name">{{ data.description }}</span>
-                        <span class="ms-2 text-muted fw-normal">{{ data.date }}</span>
-                      </h5>
-                    </div>
-                  </BLink>
-                </li>
-              </ul>
-            </simplebar>
-            <div v-if="selectedPlan" class="mt-3 d-flex justify-content-between align-items-center" style="margin-left: 10px">
-              <div>
-                <h5>Mantenimiento Seleccionado</h5>
-                <p class="mb-1"><strong>Descripción:</strong> {{ selectedPlan.description }}</p>
-                <p><strong>Fecha:</strong> {{ selectedPlan.date }}</p>
-              </div>
-              <div class="ms-auto me-3">
-                <BButton style="" variant="light" @click="assignPlan">Asignar Mantenimiento</BButton>
-              </div>
+            <div class="ms-auto me-3">
+              <BButton variant="light" @click="assignMantenimiento">Asignar</BButton>
             </div>
-          </BCardBody>
-        </BCol>
-      </BRow>
-    </Layout>
-  </template>
-  
-  <script>
-  import Layout from "@/layouts/main.vue";
-  import PageHeader from "@/components/page-header";
-  import simplebar from "simplebar-vue";
-  import Swal from "sweetalert2";
-  
-  export default {
-    components: {
-      simplebar,
-      Layout,
-      PageHeader,
-    },
-  
-    data() {
-      return {
-        searchQuery: '',
-        stationSearchQuery: '',
-        selectedPlan: null,
-        chargingStations: [
-          { id: 1, name: 'Oficina Santiago', charger: 'STG-EMU-00009', connector: 'CCS Combo 2' },
-          { id: 2, name: 'Lima', charger: 'STG-EMU-00007', connector: 'IEC Tipo 2' },
-          { id: 3, name: 'Santiago ', charger: 'STG-EMU-00008', connector: 'Tipo 1 - J1772' },
-          { id: 4, name: 'Las Condes ', charger: 'STG-EMU-00010', connector: 'CCS Combo 2' },
-          { id: 5, name: 'San Isidro', charger: 'STG-EMU-00011', connector: 'CCS Combo 2' },
-          { id: 6, name: 'Miraflores', charger: 'STG-EMU-00012', connector: 'CCS Combo 2' },
-          { id: 7, name: 'Asia', charger: 'Cargador G', connector: 'CCS Combo 2' },
-          { id: 8, name: 'Metropolitano', charger: 'Cargador H', connector: 'CCS Combo 2' },
-        ],
-        maintenance: [
-          { id: 1, description: 'Revisión general', date: '10/08/2024' },
-          { id: 2, description: 'Cambio de filtro', date: '11/08/2024' },
-          { id: 3, description: 'Revisión eléctrica', date: '12/08/2024' },
-          { id: 4, description: 'Limpieza de cargador', date: '13/08/2024' },
-          { id: 5, description: 'Ajuste de conectores', date: '14/08/2024' },
-          { id: 6, description: 'Verificación de software', date: '15/08/2024' },
-          { id: 7, description: 'Inspección de seguridad', date: '16/08/2024' },
-          { id: 8, description: 'Cambio de batería interna', date: '17/08/2024' },
-          { id: 9, description: 'Revisión de red eléctrica', date: '18/08/2024' },
-          { id: 10, description: 'Pruebas de carga', date: '19/08/2024' }
-        ],
-      };
-    },
-  
-    computed: {
-      resultQuery() {
-        return this.maintenance.filter((item) => {
-          return item.description.toLowerCase().includes(this.searchQuery.toLowerCase());
-        });
-      },
-      filteredStations() {
-        return this.chargingStations.filter(station =>
-          station.name.toLowerCase().includes(this.stationSearchQuery.toLowerCase())
-        );
-      },
-    },
-  
-    methods: {
-      selectPlan(plan) {
-        this.selectedPlan = plan;
-      },
-      assignPlan() {
-        if (this.selectedPlan) {
-          console.log('Mantenimiento asignado:', this.selectedPlan);
+          </div>
+        </BCardBody>
+      </BCol>
+    </BRow>
+  </Layout>
+</template>
 
-           // Mostrar SweetAlert de confirmación
-      Swal.fire({
-        title: 'Mantenimiento Asignado',
-        text: `El mantenimiento  ha sido asignado exitosamente.`,
-        icon: 'success',
-        confirmButtonText: 'OK'
+<script>
+import Layout from "@/layouts/main.vue";
+import PageHeader from "@/components/page-header";
+import axios from "axios";
+import Swal from "sweetalert2";
+
+export default {
+  components: {
+    Layout,
+    PageHeader,
+  },
+
+  data() {
+    return {
+      searchQuery: '',
+      cargadorSearchQuery: '',
+      selectedMantenimiento: null,
+      selectedCargadores: [],
+      cargadores: [],
+      mantenimientos: [],
+      // allCargadoresSelected: false,
+    };
+  },
+
+  computed: {
+    resultQuery() {
+      return this.mantenimientos.filter((mantenimiento) => {
+        return mantenimiento.descripcion.toLowerCase().includes(this.searchQuery.toLowerCase());
       });
-        }
-      },
     },
-  };
-  </script>
-  
-  <style scoped>
-  .search-box {
-    position: relative;
-  }
-  
-  .search-box .form-control {
-    padding-left: 40px;
-  }
-  
-  .search-box .search-icon {
-    position: absolute;
-    top: 50%;
-    left: 15px;
-    transform: translateY(-50%);
-  }
-  </style>
-  
+    filteredCargadores() {
+      return this.cargadores.filter(cargador =>
+          cargador.terminalName.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase()) ||
+          cargador.nombre.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase()) ||
+          cargador.ocppid.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase())
+      );
+    },
+  },
+
+  methods: {
+    fetchMantenimientos() {
+      axios.get("https://app.evolgreen.com/api/mantenimientos")
+          .then(response => {
+            this.mantenimientos = response.data;
+          })
+          .catch(error => {
+            console.error("Error al obtener mantenimientos:", error);
+          });
+    },
+
+    fetchCargadores() {
+      axios.get("https://app.evolgreen.com/api/chargers")
+          .then(response => {
+            this.cargadores = response.data;
+          })
+          .catch(error => {
+            console.error("Error al obtener cargadores:", error);
+          });
+    },
+
+    toggleCargadorSelection(conector) {
+      const index = this.selectedCargadores.findIndex(c => c.id === conector.id);
+      if (index > -1) {
+        this.selectedCargadores.splice(index, 1);  // Deselect if already selected
+      } else {
+        this.selectedCargadores.push(conector);    // Select if not selected
+      }
+    },
+    selectMantenimiento(mantenimiento) {
+      this.selectedMantenimiento = mantenimiento;
+    },
+
+    // toggleSelectAllCargadores() {
+    //   if (this.allCargadoresSelected) {
+    //     this.selectedCargadores = [];
+    //   } else {
+    //     this.selectedCargadores = [...this.connectors];
+    //   }
+    //   this.selectedCargadores = !this.selectedCargadores;
+    // },
+
+    assignMantenimiento() {
+      if (this.selectedMantenimiento && this.selectedCargadores.length > 0) {
+        // Mapeamos cada cargador seleccionado y realizamos una solicitud PATCH
+        const requests = this.selectedCargadores.map(cargador => {
+          return axios.patch(`https://app.evolgreen.com/api/asignar-mantenimiento`, null, {
+            params: {
+              cargadorId: cargador.id,
+              mantenimientoId: this.selectedMantenimiento.id
+            }
+          });
+        });
+
+        // Ejecutar todas las solicitudes en paralelo
+        Promise.all(requests)
+            .then(() => {
+              Swal.fire({
+                title: "Mantenimiento asignado exitosamente!",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000, // Duración de 3 segundos
+              }).then(() => {
+                location.reload(); // Solo recarga después de cerrar el Swal o pasar el tiempo
+              });
+
+              this.selectedCargadores = []; // Resetea los cargadores seleccionados después de asignar
+            })
+            .catch(error => {
+              console.error("Error al asignar mantenimiento:", error);
+              Swal.fire("Error al asignar mantenimiento", "No se pudo asignar el mantenimiento", "error");
+            });
+      } else {
+        Swal.fire("Error", "Seleccione un mantenimiento y al menos un cargador antes de asignar", "warning");
+      }
+    }
+  },
+
+  created() {
+    this.fetchMantenimientos();
+    this.fetchCargadores();
+  },
+};
+</script>
+
+<style scoped>
+.search-box {
+  position: relative;
+}
+
+.search-box .form-control {
+  padding-left: 40px;
+}
+
+.search-box .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+}
+</style>

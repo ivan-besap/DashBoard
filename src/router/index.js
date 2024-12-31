@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import appConfig from "../../app.config";
 import axios from 'axios';
 import routes from './routes';
+
 /*import store from '@/state/store';*/
 
 const router = createRouter({
@@ -26,47 +27,60 @@ const router = createRouter({
    if (!authRequired) return next();
  
    const token = localStorage.getItem('jwt');
+
+
  
    if (!token) {
     console.log('No se encontró un token de autenticación. Redirigiendo al login');
      return next({ name: 'login', query: { redirectFrom: routeTo.fullPath } });
    }
- 
-   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
- 
-   try {
-     const response = await axios.get('http://localhost:8080/user/current');
-     const { userType, userData } = response.data;
- 
-     localStorage.setItem('userType', userType);
-     localStorage.setItem('userData', JSON.stringify(userData));
-     localStorage.setItem('active', userData.active);
 
-     /*store.commit('auth/setUser', userData);
-     store.commit('auth/setUserType', userType);*/
- 
-    console.log(`Usuario autenticado con tipo de usuario ${userType}`);
+     if (routeTo.name !== 'login') {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        try {
+            const response = await axios.get('https://app.evolgreen.com/api/user/current');
 
-     switch (userType) {
-       case 'client':
+            // Acceder directamente a response.data.userType y response.data.userData
+            const userType = response.data.userType;
+            const userData = response.data.userData;
 
-         break;
-       case 'company':
-              
-         break;
-       case 'employee':
-         // Lógica específica para empleados
-         break;
-       default:
-         // Manejo de caso por defecto
-         break;
-     }
- 
+            localStorage.setItem('userType', userType);
+            localStorage.setItem('userData', JSON.stringify(userData));
+            localStorage.setItem('active', userData.activo);
+            localStorage.setItem('role', userData.rol.nombre);
+
+
+            /*store.commit('auth/setUser', userData);
+            store.commit('auth/setUserType', userType);*/
+
+            console.log(`Usuario autenticado con tipo de usuario ${userType}`);
+
+            switch (userType) {
+                case 'CLIENT':
+
+                    break;
+                case 'COMPANY':
+
+                    break;
+                case 'EMPLOYEE':
+                    // Lógica específica para empleados
+                    break;
+                default:
+                    // Manejo de caso por defecto
+                    break;
+            }
+        } catch (error) {
+            console.error('Error durante la autenticación:', error);
+
+            next({name: 'login', query: {redirectFrom: routeTo.fullPath}});
+
+            setTimeout(() => {
+                location.reload();
+            }, 0);
+        }
+    }
      next();
-   } catch (error) {
-     console.error('Error durante la autenticación:', error);
-     next({ name: 'login', query: { redirectFrom: routeTo.fullPath } });
-   }
+
  });
  
  router.beforeResolve(async (routeTo, routeFrom, next) => {

@@ -4,73 +4,30 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light">
+          <BButton style=" border: 1px solid #d8d8d8; margin-right: 7px "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(38)">
             <router-link class="nav-link menu-link" target="" to="create-stations-company">
               Crear Estación
+            </router-link>
+          </BButton>
+          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(65)">
+            <router-link class="nav-link menu-link" target="" to="/company/stationsList-company">
+              Lista Estaciones
             </router-link>
           </BButton>
         </div>
         <div class="contenedor-finac" style="width: 246px;">
           <!-- Input de búsqueda -->
-          <div class="d-flex justify-content-sm-end" style="height: 48px; margin-bottom: 10px">
+          <div class="d-flex justify-content-sm-end" style="height: 35px; margin-bottom: 10px">
             <BFormInput
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar por nombre de Estación..."
+              placeholder="Buscar Estación ..."
             />
           </div>
         </div>
       </div>
     </BRow>
-
-<!--    <div class="table-responsive table-card">-->
-<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--        <thead class="table-light">-->
-<!--          <tr>-->
-<!--            <th scope="col">-->
-<!--              <div class="form-check">-->
-<!--                <input class="form-check-input" type="checkbox" value="" id="cardtableCheck">-->
-<!--                <label class="form-check-label" for="cardtableCheck"></label>-->
-<!--              </div>-->
-<!--            </th>-->
-<!--            <th scope="col">Id</th>-->
-<!--            <th scope="col">Nombre</th>-->
-<!--            <th scope="col">Ubicación</th>-->
-<!--            <th scope="col">Alarmas</th>-->
-<!--            <th scope="col">Creado</th>-->
-<!--            <th scope="col">Status</th>-->
-<!--            <th scope="col" style="width: 1%;">Acciones</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr v-for="station in filteredChargingStations" :key="station.id">-->
-<!--            <td>-->
-<!--              <div class="form-check">-->
-<!--                <input class="form-check-input" type="checkbox" value="" :id="'cardtableCheck' + station.id">-->
-<!--                <label class="form-check-label" :for="'cardtableCheck' + station.id"></label>-->
-<!--              </div>-->
-<!--            </td>-->
-<!--            <td><a href="#" class="fw-semibold">{{ station.id }}</a></td>-->
-<!--            <td>{{ station.name }}</td>-->
-<!--            <td>{{ station.location }}</td>-->
-<!--            <td>{{ station.alarms.join(', ') }}</td>-->
-<!--            <td>{{ station.createdDay }}</td>-->
-<!--            <td><span class="badge bg-success">Active</span></td>-->
-<!--            <td>-->
-<!--              <BButton style="padding: 5px 10px; background-color: #dfe4ea" variant="light" class="waves-effect waves-light">-->
-<!--                <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${station.id}`">-->
-<!--                  <i class="mdi mdi-pencil"></i>-->
-<!--                </router-link>-->
-<!--              </BButton>-->
-<!--              <BButton style="padding: 5px 10px; background-color: #dfe4ea; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">-->
-<!--                <i class="mdi mdi-delete"></i>-->
-<!--              </BButton>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
     <BCard no-body class="card-body">
       <BCardBody>
         <div class="table-responsive table-card">
@@ -87,18 +44,36 @@
             </thead>
             <tbody class="list form-check-all">
             <tr v-for="(dat, index) in resultQuery" :key="index">
-              <td>{{ dat.name }}</td>
-              <td class="pairs">{{ dat.location }}</td>
-              <td class="high">{{ dat.alarms.join(', ') }}</td>
-              <td class="low">{{ dat.createdDay }}</td>
-              <td><span class="badge bg-success">Active</span></td>
+              <td>{{ dat.nombreTerminal }}</td>
+              <td class="pairs">{{ dat.ubicacionTerminal.direccion }}</td>
+              <td class="high">
+                0 alarmas
+<!--                {{ dat.alarms && dat.alarms.length > 0 ? dat.alarms.join(', ') : '0 alarmas' }}-->
+              </td>
+              <td class="low">{{ dat.fechaDeCreacion }}</td>
+              <td class="d-flex align-items-center">
+                <span :class="dat.estadoTerminal === 'ACTIVE' ? 'badge bg-success' : 'badge bg-danger'"
+                      class="me-2 mt-2 mb-2" style="font-size: 14px">
+                  {{ dat.estadoTerminal === 'ACTIVE' ? 'Activo' : 'Inactivo' }}
+                </span>
+                <BFormCheckbox  v-if="permisos.includes(62)"
+                    v-model="dat.estadoTerminal"
+                    switch
+                    :value="'ACTIVE'"
+                    :unchecked-value="'INACTIVE'"
+                    @change="cambiarActivoEstacion(dat.id, dat.estadoTerminal)"
+                    class="mt-1 mb-2"
+                    style="height: 20px; width: 36px"
+                >
+                </BFormCheckbox>
+              </td>
               <td>
-                <BButton style="padding: 5px 10px; " variant="light" class="waves-effect waves-light">
-                  <router-link class="nav-link menu-link" :to="`/company/editar-estacion/`">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(39)">
+                  <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(40)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -108,19 +83,20 @@
         </div>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
-            <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+            <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
               Anterior
             </BLink>
             <ul class="pagination listjs-pagination mb-0">
               <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                  @click="goToPage(pageNumber)">
-                <BLink class="page" href="#">{{ pageNumber }}</BLink>
+                  active: pageNumber == page,
+                  disabled: pageNumber == '...',
+                          }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                  {{ pageNumber }}
+                </BLink>
               </li>
             </ul>
-            <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+            <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
               Siguiente
             </BLink>
           </div>
@@ -134,6 +110,7 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export default {
   components: {
@@ -144,27 +121,11 @@ export default {
   data() {
     return {
       searchQuery: '',
-      // chargingStations: [
-      //   { id: 1, name: "Estación 1", location: "Santiago", alarms: ["0 Alarmas"], createdDay: "2024-07-26" },
-      //   { id: 2, name: "Estación 2", location: "Lima", alarms: ["1 Alarma"], createdDay: "2024-07-25" },
-      //   { id: 3, name: "Estación 3", location: "Línea 1 T1", alarms: ["0 Alarmas"], createdDay: "2024-07-24" },
-      //   { id: 4, name: "Estación 4", location: "Línea 1 T2", alarms: ["2 Alarmas"], createdDay: "2024-07-23" },
-      //   { id: 5, name: "Estación 5", location: "Santiago", alarms: ["0 Alarmas"], createdDay: "2024-07-22" },
-      //   { id: 6, name: "Estación 6", location: "Lima", alarms: ["1 Alarma"], createdDay: "2024-07-21" },
-      //   { id: 7, name: "Estación 7", location: "Línea 1 T1", alarms: ["0 Alarmas"], createdDay: "2024-07-20" },
-      // ],
-      data: [
-        { id: 1, name: "Estación 1", location: "Santiago", alarms: ["0 Alarmas"], createdDay: "2024-07-26" },
-        { id: 2, name: "Estación 2", location: "Lima", alarms: ["1 Alarma"], createdDay: "2024-07-25" },
-        { id: 3, name: "Estación 3", location: "Línea 1 T1", alarms: ["0 Alarmas"], createdDay: "2024-07-24" },
-        { id: 4, name: "Estación 4", location: "Línea 1 T2", alarms: ["2 Alarmas"], createdDay: "2024-07-23" },
-        { id: 5, name: "Estación 5", location: "Santiago", alarms: ["0 Alarmas"], createdDay: "2024-07-22" },
-        { id: 6, name: "Estación 6", location: "Lima", alarms: ["1 Alarma"], createdDay: "2024-07-21" },
-        { id: 7, name: "Estación 7", location: "Línea 1 T1", alarms: ["0 Alarmas"], createdDay: "2024-07-20" },
-      ],
+      data: [],
       page: 1,
       perPage: 5,
       pages: [],
+      permisos:[]
     };
   },
 
@@ -183,42 +144,37 @@ export default {
       }
       return pages;
     },
-    filteredPlans() {
-      const query = this.searchQuery.toLowerCase();
-      return this.data.filter(dat => dat.name.toLowerCase().includes(query));
-    },
-    displayedPosts() {
-      return this.paginate(this.data);
-    },
+    // filteredPlans() {
+    //   const query = this.searchQuery.toLowerCase();
+    //   return this.data.filter(dat => dat.name.toLowerCase().includes(query));
+    // },
+    // displayedPosts() {
+    //   return this.paginate(this.data);
+    // },
     resultQuery() {
-      if (this.searchQuery) {
-        const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
-          return (
-              data.name.toLowerCase().includes(search) ||
-              data.location.toLowerCase().includes(search) ||
-              data.alarms.toLowerCase().includes(search) ||
-              data.createdDay.toLowerCase().includes(search)
-          );
-        });
-      } else {
-        return this.displayedPosts;
-      }
+      let filteredData = this.filteredChargingStations;
+      return this.paginate(filteredData);
     },
     filteredChargingStations() {
       const query = this.searchQuery.toLowerCase();
-      return this.chargingStations.filter(station =>
-        station.name.toLowerCase().includes(query)
+      return this.data.filter(station =>
+        station.nombreTerminal.toLowerCase().includes(query) ||
+        station.ubicacionTerminal.direccion.toLowerCase().includes(query)
       );
     }
   },
   watch: {
-    posts() {
+    data() {
       this.setPages();
     },
+    searchQuery() {
+      this.setPages();
+    }
   },
   created() {
     this.setPages();
+    this.ChargingStation();
+    this.loadUserData();
   },
   filters: {
     trimWords(value) {
@@ -227,6 +183,34 @@ export default {
   },
 
   methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
+    async ChargingStation() {
+      try {
+       const response = await axios.get('https://app.evolgreen.com/api/chargingStations');
+        this.data = response.data
+      } catch (error) {
+        console.error("Error obteniendo las estaciones de carga:", error);
+      }
+    },
+    async cambiarActivoEstacion(id, estadoTerminal) {
+      try {
+        const response = await axios.patch(`https://app.evolgreen.com/api/chargingStationsStatus/change-active-status`, null, {
+          params: {
+            id: id,
+            activeStatus: estadoTerminal
+          }
+        });
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("Estación Actualizada!", "", "success")
+        }
+      } catch (error) {
+        console.error("Error Actualizando Estación", error);
+      }
+    },
     setPages() {
       let numberOfPages = Math.ceil(this.data.length / this.perPage);
       this.pages = [];
@@ -265,7 +249,7 @@ export default {
       });
       this.data = sortedArray;
     },
-    confirm() {
+    confirm(stationId) {
       Swal.fire({
         title: "¿Estás seguro de eliminar?",
         text: "¡No podrás revertir la acción!",
@@ -274,9 +258,20 @@ export default {
         confirmButtonColor: "#34c38f",
         cancelButtonColor: "#f46a6a",
         confirmButtonText: "Sí, eliminar!",
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire("¡Estación eliminada!", "", "success");
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            // Hacer la solicitud PUT al endpoint para "eliminar" la estación
+            const response = await axios.patch(`https://app.evolgreen.com/api/companies/current/chargingStations/${stationId}/delete`);
+            if (response.status === 200 || response.status === 201){
+              Swal.fire("¡Estación eliminada!", "", "success").then(() => {
+                this.$router.go(0);
+              });
+            }
+          } catch (error) {
+            console.error("Error eliminando la estación de carga:", error);
+            Swal.fire("Error", "No se pudo eliminar la estación de carga.", "error");
+          }
         }
       });
     }
@@ -284,8 +279,26 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .flex-shrink-0 {
   display: none;
+}
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
+
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
 }
 </style>

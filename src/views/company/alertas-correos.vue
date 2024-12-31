@@ -1,324 +1,231 @@
 <template>
-    <Layout>
-      <PageHeader title="Configuracion de Correos Alertas y Errores " pageTitle="Compañía" />
-      <BRow>
-        <BCol class="my-2" xxl="3" md="6">
-                                    <div>
-                                        <label for="basiInput" class="form-label">Nombre</label>
-                                        <input type="password" class="form-control" id="basiInput">
-                                    </div>
-                                </BCol>
+  <Layout>
+    <PageHeader title="Configuración de Correos Alertas y Errores" pageTitle="Compañía" />
 
-                                <BCol class="my-2" xxl="3" md="6">
-                                    <label for="basiInput" class="form-label">Tipo</label>
-                  <BFormSelect v-model="exManualSelected" class="mb-3" aria-label="Default select example">
-                    <BFormSelectOption :value="null">Alarma Diaria</BFormSelectOption>
-                    <BFormSelectOption value="1">Errores de Conector</BFormSelectOption>
-                  
-                  </BFormSelect>
-                </BCol>
+    <BRow>
+      <BCol class="my-2" xxl="3" md="6">
+        <div>
+          <label for="basiInput" class="form-label">Buscar Usuario</label>
+          <input type="text" class="form-control" v-model="searchQuery">
+        </div>
+      </BCol>
+      <BCol class="my-2 mb-4" xxl="5" md="6">
+        <label for="ForminputState" class="form-label">Correo</label>
+        <div class="d-flex align-items-center">
+          <Multiselect
+              style="border: 1px solid black;"
+              v-model="correoSeleccionado"
+              :options="correos"
+              label="label"
+              track-by="label"
+              placeholder="Selecciona o ingresa un correo"
+              :close-on-select="true"
+              :searchable="true"
+              :create-option="true"
 
-                <BCol class="my-2" xxl="3" md="6">
-                    <div>
-                      <label for="ForminputState" class="form-label">Correo</label>
+          />
+          <BButton class="ms-2" @click="agregarUsuario" variant="primary" v-if="permisos.includes(56)">Añadir</BButton>
+        </div>
+      </BCol>
+    </BRow>
 
-                      <Multiselect style="    border: 1px solid black;" class="" v-model="value3" :close-on-select="true" :searchable="true"
-                      :create-option="true" :options="[
-                        { value: '1', label: 'afpy1994@evolgreen.com' },
-                        { value: '2', label: 'julipuga@evolgreen.com' },
-                        { value: '3', label: 'andres@evolgreen.com' },
-                        { value: '4', label: 'hugo@evolgreen.com' },
-                        { value: '5', label: 'joseluis@evolgreen.com' },
-                        { value: '6', label: 'ivan@evolgreen.com' },
+    <!-- Tablas y tabs existentes -->
+    <BCard no-body>
+      <BCardBody>
+        <BTabs nav-class="mb-3 nav-pills-justified" pills justified v-model="pestanaActiva">
+      <BTab title="Alarmas Diarias" active>
+        <!-- Tabla de alarmas diarias -->
+        <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
+          <thead class="table-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="usuario in usuariosAlarmaFiltrados" :key="usuario.id">
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>
+              <BButton v-if="permisos.includes(57)" variant="light" class="waves-effect waves-light" @click="eliminarUsuario(usuario.id, 'alarma')">
+              <i class="mdi mdi-delete"></i>
+              </BButton>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </BTab>
 
-                      ]" />
-                    </div>
-                  </BCol>
-       
-      </BRow>
-     
-  
-      <BCard no-body class="card-body">
-        <BCardBody>
-          
-          <BRow>
-        
-            <BCol xxl="12">
-               
-              
+      <BTab title="Errores de Conector">
+        <!-- Tabla de errores de conector -->
+        <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
+          <thead class="table-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="usuario in usuariosErrorFiltrados" :key="usuario.id">
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>
+              <BButton variant="light" class="waves-effect waves-light" @click="eliminarUsuario(usuario.id, 'error')">
+                <i class="mdi mdi-delete"></i>
+              </BButton>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </BTab>
+    </BTabs>
+      </BCardBody>
+    </BCard>
+  </Layout>
+</template>
 
-                        <BTabs nav-class="mb-3 nav-pills-justified" pills justified>
-                            <BTab title="Alarmas Diarias" active>
-                                <div class="text-muted">
-                                    <table class="table align-middle table-nowrap" id="customerTable">
-              <thead class="table-light text-muted">
-              <tr>
-                <th class="sort" data-sort="current_value" scope="col" @click="onSort('firstSurname')">Nombre</th>
-                <th class="sort" data-sort="pairs" scope="col" @click="onSort('email')">Email</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('createdDay')">Fecha de Creación</th>
-                
-                <th scope="col" style="width: 1%;">Acciones</th>
-              </tr>
-              </thead>
-              <tbody class="list form-check-all">
-              <tr v-for="(dat, index) in resultQuery" :key="index">
-                <td>{{ dat.firstSurname }}</td>
-                <td class="pairs">{{ dat.email }}</td>
-                <td class="high">{{ dat.createdDay }}</td>
-               
-                <td>
-                 
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
-                    <i class="mdi mdi-delete"></i>
-                  </BButton>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
-            <div class="pagination-wrap hstack gap-2">
-              <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
-                Anterior
-              </BLink>
-              <ul class="pagination listjs-pagination mb-0">
-                <li :class="{
-                active: pageNumber == page,
-                disabled: pageNumber == '...',
-              }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                    @click="goToPage(pageNumber)">
-                  <BLink class="page" href="#">{{ pageNumber }}</BLink>
-                </li>
-              </ul>
-              <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
-                Siguiente
-              </BLink>
-            </div>
-          </div>
-                                </div>
-                            </BTab>
-                            <BTab title="Errores de Conector">
-                                <div class="text-muted">
-                                    <table class="table align-middle table-nowrap" id="customerTable">
-              <thead class="table-light text-muted">
-              <tr>
-                <th class="sort" data-sort="current_value" scope="col" @click="onSort('firstSurname')">Nombre</th>
-                <th class="sort" data-sort="pairs" scope="col" @click="onSort('email')">Email</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('createdDay')">Fecha de Creación</th>
-                
-                <th scope="col" style="width: 1%;">Acciones</th>
-              </tr>
-              </thead>
-              <tbody class="list form-check-all">
-              <tr v-for="(dat, index) in resultQuery" :key="index">
-                <td>{{ dat.firstSurname }}</td>
-                <td class="pairs">{{ dat.email }}</td>
-                <td class="high">{{ dat.createdDay }}</td>
-               
-                <td>
-                 
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm">
-                    <i class="mdi mdi-delete"></i>
-                  </BButton>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
-            <div class="pagination-wrap hstack gap-2">
-              <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
-                Anterior
-              </BLink>
-              <ul class="pagination listjs-pagination mb-0">
-                <li :class="{
-                active: pageNumber == page,
-                disabled: pageNumber == '...',
-              }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                    @click="goToPage(pageNumber)">
-                  <BLink class="page" href="#">{{ pageNumber }}</BLink>
-                </li>
-              </ul>
-              <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
-                Siguiente
-              </BLink>
-            </div>
-          </div>
-                                </div>
-                            </BTab>
-                            
-                            
-                        </BTabs>
-                  
-            </BCol>
-        </BRow>
-        </BCardBody>
-      </BCard>
-    </Layout>
-  </template>
-  
-  <script>
-  import Layout from "@/layouts/main.vue";
-  import PageHeader from "@/components/page-header";
-  import Multiselect from "@vueform/multiselect";
-  import "@vueform/multiselect/themes/default.css";
-  import Swal from "sweetalert2";
-  export default {
-    components: {
-      Layout,
-      PageHeader,
-      Multiselect
+<script>
+import Layout from "@/layouts/main.vue";
+import PageHeader from "@/components/page-header";
+import axios from "axios";
+import Multiselect from "@vueform/multiselect";
+import Swal from "sweetalert2";
+
+export default {
+  components: {
+    Layout,
+    PageHeader,
+    Multiselect
+  },
+  data() {
+    return {
+      correos: [],
+      searchQuery: '',
+      correoSeleccionado: null,
+      usuariosAlarma: [],
+      usuariosError: [],
+      empresaId: null,
+      pestanaActiva: 1,
+      permisos : [],
+    };
+  },
+  computed: {
+    usuariosAlarmaFiltrados() {
+      return this.usuariosAlarma.filter(usuario =>
+          usuario.nombre && usuario.nombre.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     },
-    data() {
-      return {
-        /*employees: [
-          { id: 1, firstSurname: 'Julio Puga', email: 'gonzalez@example.com', createdDay: '2023-01-01', company: 'Empresa A', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-          { id: 2, firstSurname: 'Andres de la Jara', email: 'rodriguez@example.com', createdDay: '2023-02-01', company: 'Empresa B', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-          { id: 3, firstSurname: 'Ivan Castillo', email: 'perez@example.com', createdDay: '2023-03-01', company: 'Empresa C', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-          { id: 4, firstSurname: 'Sánchez', email: 'sanchez@example.com', createdDay: '2023-04-01', company: 'Empresa D', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-          { id: 5, firstSurname: 'López', email: 'lopez@example.com', createdDay: '2023-05-01', company: 'Empresa E', active: true, plan: 'PLAN B INTERMEDIO', role: 'Administrador' },
-          { id: 6, firstSurname: 'Martínez', email: 'martinez@example.com', createdDay: '2023-06-01', company: 'Empresa F', active: false, plan: 'PLAN C AVANZADO', role: 'Usuario' },
-          { id: 7, firstSurname: 'García', email: 'garcia@example.com', createdDay: '2023-07-01', company: 'Empresa G', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-          { id: 8, firstSurname: 'Hernández', email: 'hernandez@example.com', createdDay: '2023-08-01', company: 'Empresa H', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-          { id: 9, firstSurname: 'Ramírez', email: 'ramirez@example.com', createdDay: '2023-09-01', company: 'Empresa I', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-          { id: 10, firstSurname: 'Fernández', email: 'fernandez@example.com', createdDay: '2023-10-01', company: 'Empresa J', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-        ],*/
-        searchQuery: '',
-        data: [
-          { id: 1, firstSurname: 'Julio Puga', email: 'gonzalez@example.com', createdDay: '2023-01-01', company: 'Empresa A', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-          { id: 2, firstSurname: 'Andres de la Jara', email: 'rodriguez@example.com', createdDay: '2023-02-01', company: 'Empresa B', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-          { id: 3, firstSurname: 'Ivan Castillo', email: 'perez@example.com', createdDay: '2023-03-01', company: 'Empresa C', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-          { id: 4, firstSurname: 'Sánchez', email: 'sanchez@example.com', createdDay: '2023-04-01', company: 'Empresa D', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-          { id: 5, firstSurname: 'López', email: 'lopez@example.com', createdDay: '2023-05-01', company: 'Empresa E', active: true, plan: 'PLAN B INTERMEDIO', role: 'Administrador' },
-          { id: 6, firstSurname: 'Martínez', email: 'martinez@example.com', createdDay: '2023-06-01', company: 'Empresa F', active: false, plan: 'PLAN C AVANZADO', role: 'Usuario' },
-          { id: 7, firstSurname: 'García', email: 'garcia@example.com', createdDay: '2023-07-01', company: 'Empresa G', active: true, plan: 'PLAN A BÁSICO', role: 'Administrador' },
-          { id: 8, firstSurname: 'Hernández', email: 'hernandez@example.com', createdDay: '2023-08-01', company: 'Empresa H', active: false, plan: 'PLAN B INTERMEDIO', role: 'Usuario' },
-          { id: 9, firstSurname: 'Ramírez', email: 'ramirez@example.com', createdDay: '2023-09-01', company: 'Empresa I', active: true, plan: 'PLAN C AVANZADO', role: 'Administrador' },
-          { id: 10, firstSurname: 'Fernández', email: 'fernandez@example.com', createdDay: '2023-10-01', company: 'Empresa J', active: false, plan: 'PLAN A BÁSICO', role: 'Usuario' },
-        ],
-        page: 1,
-        perPage: 5,
-        pages: [],
-      };
+    usuariosErrorFiltrados() {
+      return this.usuariosError.filter(usuario =>
+          usuario.nombre && usuario.nombre.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
+  },
+  methods: {
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
     },
-  
-    methods: {
-      setPages() {
-        let numberOfPages = Math.ceil(this.data.length / this.perPage);
-        this.pages = [];
-        for (let index = 1; index <= numberOfPages; index++) {
-          this.pages.push(index);
-        }
-      },
-      paginate(data) {
-        let page = this.page;
-        let perPage = this.perPage;
-        let from = page * perPage - perPage;
-        let to = page * perPage;
-        return data.slice(from, to);
-      },
-      goToPage(pageNumber) {
-        if (pageNumber !== '...') {
-          this.page = pageNumber;
-        }
-      },
-      previousPage() {
-        if (this.page > 1) {
-          this.page--;
-        }
-      },
-      nextPage() {
-        if (this.page < this.pages.length) {
-          this.page++;
-        }
-      },
-      onSort(column) {
-        this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-        const sortedArray = [...this.data];
-        sortedArray.sort((a, b) => {
-          const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-          return this.direction === 'asc' ? res : -res;
-        });
-        this.data = sortedArray;
-      },
-      confirm() {
-        Swal.fire({
-          title: "Estas seguro de eliminar?",
-          text: "No podras revertir la accion!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#34c38f",
-          cancelButtonColor: "#f46a6a",
-          confirmButtonText: "Si, eliminar!",
-        }).then((result) => {
-          if (result.value) {
-            Swal.fire("Empleado Eliminado", "", "success");
-          }
-        });
+    async cargarCorreos() {
+      try {
+        const response = await axios.get(`https://app.evolgreen.com/api/usuarios/correos`);  // Quitar empresaId
+        this.correos = response.data;
+      } catch (error) {
+        console.error('Error al cargar los correos', error);
       }
     },
-    computed: {
-      displayedPages() {
-        let startPage = Math.max(this.page - 1, 1);
-        let endPage = Math.min(startPage + 2, this.pages.length);
-  
-        if (endPage - startPage < 2) {
-          startPage = Math.max(endPage - 2, 1);
+    async cargarUsuarios() {
+      try {
+        // Cargar usuarios para alarmas
+        const responseAlarma = await axios.get(`https://app.evolgreen.com/api/usuarios/alarmaCorreo`);  // Quitar empresaId
+        this.usuariosAlarma = responseAlarma.data;
+
+        // Cargar usuarios para errores
+        const responseError = await axios.get(`https://app.evolgreen.com/api/usuarios/alarmaError`);  // Quitar empresaId
+        this.usuariosError = responseError.data;
+      } catch (error) {
+        console.error('Error al cargar los usuarios', error);
+      }
+    },
+    async agregarUsuario() {
+      if (!this.correoSeleccionado) {
+        alert('Selecciona o ingresa un correo válido');
+        return;
+      }
+
+      // Busca el objeto completo en `correos` usando el `value` (que es un número)
+      const correoCompleto = this.correos.find(correo => correo.value === this.correoSeleccionado);
+
+      if (!correoCompleto || !correoCompleto.label) {
+        alert('No se pudo encontrar el correo seleccionado');
+        return;
+      }
+
+      const nuevoUsuario = { email: correoCompleto.label }; // Usar el `label` como correo
+
+      try {
+        if (this.pestanaActiva === 0) {
+          this.usuariosAlarma.push(nuevoUsuario);
+          const response = await axios.post('https://app.evolgreen.com/api/usuarios/alarmaCorreo/add', { email: nuevoUsuario.email });
+          if (response.status === 200 || response.status === 201) {
+            Swal.fire("Usuario agregado correctamente", "", "success").then(() => {
+              this.$router.go(0);
+            });
+          }
+        } else if (this.pestanaActiva === 1) {
+          this.usuariosError.push(nuevoUsuario);
+          const response = await axios.post('https://app.evolgreen.com/api/usuarios/alarmaError/add', { email: nuevoUsuario.email });
+          if (response.status === 200 || response.status === 201) {
+            Swal.fire("Usuario agregado correctamente", "", "success").then(() => {
+              this.$router.go(0);
+            });
+          }
         }
-  
-        let pages = [];
-        for (let i = startPage; i <= endPage; i++) {
-          pages.push(i);
-        }
-        return pages;
-      },
-      filteredPlans() {
-        const query = this.searchQuery.toLowerCase();
-        return this.data.filter(dat => dat.firstSurname.toLowerCase().includes(query));
-      },
-      displayedPosts() {
-        return this.paginate(this.data);
-      },
-      resultQuery() {
-        if (this.searchQuery) {
-          const search = this.searchQuery.toLowerCase();
-          return this.displayedPosts.filter((data) => {
-            return (
-                data.id.toLowerCase().includes(search) ||
-                data.firstSurname.toLowerCase().includes(search) ||
-                data.email.toLowerCase().includes(search) ||
-                data.createdDay.toLowerCase().includes(search) ||
-                data.company.toLowerCase().includes(search) ||
-                data.active.toLowerCase().includes(search) ||
-                data.plan.toLowerCase().includes(search) ||
-                data.role.toLowerCase().includes(search)
-            );
+      } catch (error) {
+        Swal.fire("Error al agregar usuario", "", "error");
+        console.error('Error al añadir el usuario', error);
+      }
+    },
+    async eliminarUsuario(id, tipo) {
+      const url = tipo === 'alarma'
+          ? `https://app.evolgreen.com/api/usuarios/alarmaCorreo/${id}/remove`
+          : `https://app.evolgreen.com/api/usuarios/alarmaError/${id}/remove`;
+
+      try {
+        const response = await axios.patch(url);
+        if (response.status === 200 || response.status === 201) {
+          // Filtrar el usuario eliminado de la lista
+          if (tipo === 'alarma') {
+            this.usuariosAlarma = this.usuariosAlarma.filter(usuario => usuario.id !== id);
+          } else {
+            this.usuariosError = this.usuariosError.filter(usuario => usuario.id !== id);
+          }
+
+          // Mostrar un mensaje de éxito
+          Swal.fire({
+            title: "Usuario eliminado correctamente",
+            icon: "success"
+          }).then(() => {
+            // Recargar la página después de cerrar el mensaje
+            window.location.reload(); // O usa this.$router.go(0);
           });
-        } else {
-          return this.displayedPosts;
         }
-      },
-    },
-    watch: {
-      posts() {
-        this.setPages();
-      },
-    },
-    created() {
-      this.setPages();
-    },
-    filters: {
-      trimWords(value) {
-        return value.split(" ").splice(0, 20).join(" ") + "...";
-      },
-    },
-  };
-  </script>
-  
-  <style>
-  .flex-shrink-0 {
-    display: none;
-  }
-  input.multiselect-search {
-    border: 1px solid #ced4da;
-}
-  </style>
-  
+      } catch (error) {
+        // Mostrar un mensaje de error en caso de fallo
+        Swal.fire("Error al eliminar el usuario", "", "error");
+        console.error('Error al eliminar el usuario', error);
+      }
+    }
+  },
+  mounted() {
+    this.cargarCorreos();  // Cargar correos dinámicamente
+    this.cargarUsuarios();
+    this.loadUserData();
+  },
+};
+</script>
+<style scoped>
+</style>

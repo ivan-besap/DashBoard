@@ -3,86 +3,83 @@
     <PageHeader title="Cargas por Terminal" pageTitle="Compañía" />
     
     <div style="margin-top:10px;" class="table-responsive table-card">
-      <div class="mb-3" style="text-align: right;">
-        <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
-        <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
+      <div class="d-flex justify-content-between mb-3 align-items-center">
+        <div class="d-flex align-items-center">
+          <!-- Input de búsqueda -->
+          <BFormInput
+              v-model="searchQuery"
+              type="text"
+              class="form-control"
+              placeholder="Buscar"
+              style="margin-right: 15px;"
+          />
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center me-3">
+            <flat-pickr
+                v-model="dateRange"
+                class="form-control"
+                style="width: auto;"
+                placeholder="Seleccionar Periodo"
+                :config="{ mode: 'range', dateFormat: 'Y-m-d' }"
+                @input="updateSearchQuery"
+            ></flat-pickr>
+            <BButton style="padding: 5px 10px; margin-left: 10px; border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" @click="clearDateRange">
+              <i class="mdi mdi-delete"></i>
+            </BButton>
+          </div>
+          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
+          <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
+        </div>
       </div>
-      
-<!--      <table class="table table-nowrap table-striped-columns mb-0">-->
-<!--        <thead class="table-light">-->
-<!--          <tr>-->
-<!--            <th scope="col">Inicio de Carga</th>-->
-<!--            <th scope="col">Usuario</th>-->
-<!--            <th scope="col">Cargador</th>-->
-<!--            <th scope="col">ID Cargador</th>-->
-<!--            <th scope="col">Conector</th>-->
-<!--            <th scope="col">Fin Carga</th>-->
-<!--            <th scope="col">Energía</th>-->
-<!--            <th scope="col">Tiempo</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr v-for="(item, index) in filteredData" :key="index">-->
-<!--            <td>{{ item.inicioCarga }}</td>-->
-<!--            <td>{{ item.usuario }}</td>-->
-<!--            <td>{{ item.cargador }}</td>-->
-<!--            <td>{{ item.idCargador }}</td>-->
-<!--            <td>{{ item.conector }}</td>-->
-<!--            <td>{{ item.finCarga }}</td>-->
-<!--            <td>{{ item.energia }}</td>-->
-<!--            <td>{{ item.tiempo }}</td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
       <BCard no-body class="card-body">
         <BCardBody>
         <div class="table-responsive table-card">
-          <table class="table align-middle table-nowrap" id="customerTable">
+          <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" data-sort="high" scope="col" @click="onSort('estacionDeCarga')">Estación De Carga</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('cargador')">Cargador</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('conector')">Conector</th>
-              <th class="sort" data-sort="current_value" scope="col" @click="onSort('inicioCarga')">Inicio de Carga</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('finCarga')">Fin Carga</th>
-              <th class="sort" data-sort="pairs" scope="col" @click="onSort('usuario')">Usuario</th>
-              <th class="sort" data-sort="low" scope="col" @click="onSort('idCargador')">ID Cargador</th>
+              <th class="sort" data-sort="high" scope="col" @click="onSort('carga')">Cargas</th>
               <th class="sort" data-sort="market_cap" scope="col" @click="onSort('energia')">Energía</th>
-              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('tiempo')">Tiempo</th>
+              <th class="sort" data-sort="current_value" scope="col" @click="onSort('tiempo')">Tiempo</th>
+              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('costo')">Costo</th>
+              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('inicioCarga')">Inicio Carga</th>
+              <th class="sort" data-sort="market_cap" scope="col" @click="onSort('finCarga')">Fin Carga</th>
+
             </tr>
             </thead>
             <tbody class="list form-check-all">
             <tr v-for="(dat, index) of resultQuery" :key="index">
               <td>{{ dat.estacionDeCarga }}</td>
-              <td class="high">{{ dat.cargador }}</td>
-              <td class="market_cap">{{ dat.conector }}</td>
-              <td>{{ dat.inicioCarga }}</td>
-              <td class="market_cap">{{ dat.finCarga }}</td>
-              <td class="pairs">{{ dat.usuario }}</td>
-              <td class="low">{{ dat.idCargador }}</td>
+              <td class="high">{{ dat.carga }}</td>
               <td class="market_cap">{{ dat.energia }}</td>
               <td class="market_cap">{{ dat.tiempo }}</td>
+              <td class="market_cap">{{ dat.costo }}</td>
+              <td class="market_cap">{{ dat.inicioCarga }}</td>
+              <td class="market_cap">{{ dat.finCarga }}</td>
             </tr>
             </tbody>
           </table>
         </div>
           <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
             <div class="pagination-wrap hstack gap-2">
-              <BLink class="page-item pagination-prev" href="#" :disabled="page <= 1" @click="previousPage">
+              <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
                 Anterior
               </BLink>
               <ul class="pagination listjs-pagination mb-0">
                 <li :class="{
-              active: pageNumber == page,
-              disabled: pageNumber == '...',
-            }" v-for="pageNumber in displayedPages" :key="pageNumber"
-                    @click="goToPage(pageNumber)">
-                  <BLink class="page" href="#">{{ pageNumber }}</BLink>
+          active: pageNumber == page,
+          disabled: pageNumber == '...',
+        }" v-for="pageNumber in displayedPages" :key="pageNumber">
+                  <BLink class="page" href="#" @click.prevent.stop="goToPage(pageNumber)">
+                    {{ pageNumber }}
+                  </BLink>
                 </li>
               </ul>
-              <BLink class="page-item pagination-next" href="#" :disabled="page >= pages.length" @click="nextPage">
+              <BLink class="page-item pagination-next" :disabled="page >= pages.length" @click.prevent.stop="nextPage">
                 Siguiente
               </BLink>
+
             </div>
           </div>
       </BCardBody>
@@ -96,43 +93,32 @@ import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import * as XLSX from 'xlsx';
 import Swal from "sweetalert2";
+import flatPickr from "vue-flatpickr-component";
 
 export default {
   components: {
+    flatPickr,
     Layout,
     PageHeader,
   },
   data() {
     return {
+      dateRange:null,
       searchQuery: '',
       filterDate: null,
-      // reportData: [
-      //   { inicioCarga: "2024-07-24 08:30:00", usuario: "Usuario1", cargador: "Cargador1", idCargador: "STG-EMU-00002", conector: "Uno", finCarga: "2024-07-24 09:35:00", energia: "15.98 kWh", tiempo: "01:05:46" },
-      //   { inicioCarga: "2024-07-23 10:20:00", usuario: "Usuario2", cargador: "Cargador2", idCargador: "STG-EMU-00003", conector: "Dos", finCarga: "2024-07-23 11:15:00", energia: "13.47 kWh", tiempo: "00:55:00" },
-      //   { inicioCarga: "2024-07-22 12:00:00", usuario: "Usuario3", cargador: "Cargador3", idCargador: "STG-EMU-00004", conector: "Tres", finCarga: "2024-07-22 13:05:00", energia: "18.76 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-21 14:15:00", usuario: "Usuario4", cargador: "Cargador4", idCargador: "STG-EMU-00005", conector: "Cuatro", finCarga: "2024-07-21 15:20:00", energia: "14.56 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-20 16:30:00", usuario: "Usuario5", cargador: "Cargador5", idCargador: "STG-EMU-00006", conector: "Cinco", finCarga: "2024-07-20 17:45:00", energia: "16.23 kWh", tiempo: "01:15:00" },
-      //   { inicioCarga: "2024-07-19 18:45:00", usuario: "Usuario6", cargador: "Cargador6", idCargador: "STG-EMU-00007", conector: "Seis", finCarga: "2024-07-19 19:50:00", energia: "17.89 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-18 20:00:00", usuario: "Usuario7", cargador: "Cargador7", idCargador: "STG-EMU-00008", conector: "Siete", finCarga: "2024-07-18 21:05:00", energia: "19.45 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-17 22:15:00", usuario: "Usuario8", cargador: "Cargador8", idCargador: "STG-EMU-00009", conector: "Ocho", finCarga: "2024-07-17 23:20:00", energia: "20.12 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-16 23:30:00", usuario: "Usuario9", cargador: "Cargador9", idCargador: "STG-EMU-00010", conector: "Nueve", finCarga: "2024-07-17 00:35:00", energia: "21.56 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-15 01:00:00", usuario: "Usuario10", cargador: "Cargador10", idCargador: "STG-EMU-00011", conector: "Diez", finCarga: "2024-07-15 02:05:00", energia: "22.34 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-14 03:15:00", usuario: "Usuario11", cargador: "Cargador11", idCargador: "STG-EMU-00012", conector: "Once", finCarga: "2024-07-14 04:20:00", energia: "23.78 kWh", tiempo: "01:05:00" },
-      //   { inicioCarga: "2024-07-13 05:30:00", usuario: "Usuario12", cargador: "Cargador12", idCargador: "STG-EMU-00013", conector: "Doce", finCarga: "2024-07-13 06:35:00", energia: "24.56 kWh", tiempo: "01:05:00" },
-      // ],
       data: [
-        { estacionDeCarga : "Estación Vitacura" , cargador: "Cargador1", conector: "Uno", inicioCarga: "2024-07-24 08:30:00", usuario: "Usuario1",  idCargador: "STG-EMU-00002",  finCarga: "2024-07-24 09:35:00", energia: "15.98 kWh", tiempo: "01:05:46" },
-        { estacionDeCarga : "Estación Las Condes" , cargador: "Cargador2", conector: "Dos", inicioCarga: "2024-07-23 10:20:00", usuario: "Usuario2", idCargador: "STG-EMU-00003", finCarga: "2024-07-23 11:15:00", energia: "13.47 kWh", tiempo: "00:55:00" },
-        { estacionDeCarga : "Estación Chorrillos" , cargador: "Cargador3", conector: "Tres", inicioCarga: "2024-07-22 12:00:00", usuario: "Usuario3",  idCargador: "STG-EMU-00004",  finCarga: "2024-07-22 13:05:00", energia: "18.76 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Viña del Mar" , cargador: "Cargador4", conector: "Cuatro", inicioCarga: "2024-07-21 14:15:00", usuario: "Usuario4",  idCargador: "STG-EMU-00005", finCarga: "2024-07-21 15:20:00", energia: "14.56 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Lima" , cargador: "Cargador5", conector: "Cinco", inicioCarga: "2024-07-20 16:30:00", usuario: "Usuario5",  idCargador: "STG-EMU-00006", finCarga: "2024-07-20 17:45:00", energia: "16.23 kWh", tiempo: "01:15:00" },
-        { estacionDeCarga : "Estación Trujillo" , cargador: "Cargador6", conector: "Seis", inicioCarga: "2024-07-19 18:45:00", usuario: "Usuario6",  idCargador: "STG-EMU-00007", finCarga: "2024-07-19 19:50:00", energia: "17.89 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Puente Alto" , cargador: "Cargador7", conector: "Siete", inicioCarga: "2024-07-18 20:00:00", usuario: "Usuario7",  idCargador: "STG-EMU-00008", finCarga: "2024-07-18 21:05:00", energia: "19.45 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Concepción" , cargador: "Cargador8", conector: "Ocho", inicioCarga: "2024-07-17 22:15:00", usuario: "Usuario8",  idCargador: "STG-EMU-00009", finCarga: "2024-07-17 23:20:00", energia: "20.12 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Providencia" , cargador: "Cargador9", conector: "Nueve", inicioCarga: "2024-07-16 23:30:00", usuario: "Usuario9", idCargador: "STG-EMU-00010", finCarga: "2024-07-17 00:35:00", energia: "21.56 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Miami" , cargador: "Cargador10",conector: "Diez", inicioCarga: "2024-07-15 01:00:00", usuario: "Usuario10",  idCargador: "STG-EMU-00011", finCarga: "2024-07-15 02:05:00", energia: "22.34 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Central" , cargador: "Cargador11",conector: "Once", inicioCarga: "2024-07-14 03:15:00", usuario: "Usuario11",  idCargador: "STG-EMU-00012", finCarga: "2024-07-14 04:20:00", energia: "23.78 kWh", tiempo: "01:05:00" },
-        { estacionDeCarga : "Estación Miramar" , cargador: "Cargador12",conector: "Doce", inicioCarga: "2024-07-13 05:30:00", usuario: "Usuario12", idCargador: "STG-EMU-00013", finCarga: "2024-07-13 06:35:00", energia: "24.56 kWh", tiempo: "01:05:00" },
+        { estacionDeCarga: "Estación Vitacura", carga: 144, energia: "15.98 kWh", tiempo: "01:05:46", costo: "1234 CLP", inicioCarga: "2024-07-24 08:30:00", finCarga: "2024-07-24 09:35:46" },
+        { estacionDeCarga: "Estación Las Condes", carga: 232, energia: "13.47 kWh", tiempo: "00:55:26", costo: "2345 CLP", inicioCarga: "2024-07-23 10:20:00", finCarga: "2024-07-23 11:15:26" },
+        { estacionDeCarga: "Estación Chorrillos", carga: 3112, energia: "18.76 kWh", tiempo: "01:05:41", costo: "3456 CLP", inicioCarga: "2024-07-22 12:00:00", finCarga: "2024-07-22 13:05:41" },
+        { estacionDeCarga: "Estación Viña del Mar", carga: 7, energia: "14.56 kWh", tiempo: "01:05:57", costo: "4567 CLP", inicioCarga: "2024-07-21 14:15:00", finCarga: "2024-07-21 15:20:57" },
+        { estacionDeCarga: "Estación Lima", carga: 87, energia: "16.23 kWh", tiempo: "12:15:00", costo: "5678 CLP", inicioCarga: "2024-07-20 16:30:00", finCarga: "2024-07-21 04:45:00" },
+        { estacionDeCarga: "Estación Trujillo", carga: 10, energia: "17.89 kWh", tiempo: "05:20:12", costo: "6789 CLP", inicioCarga: "2024-07-19 18:45:00", finCarga: "2024-07-20 00:05:12" },
+        { estacionDeCarga: "Estación Puente Alto", carga: 7, energia: "19.45 kWh", tiempo: "01:32:26", costo: "7890 CLP", inicioCarga: "2024-07-18 20:00:00", finCarga: "2024-07-18 21:32:26" },
+        { estacionDeCarga: "Estación Concepción", carga: 8, energia: "20.12 kWh", tiempo: "02:17:19", costo: "8901 CLP", inicioCarga: "2024-07-17 22:15:00", finCarga: "2024-07-18 00:32:19" },
+        { estacionDeCarga: "Estación Providencia", carga: 9, energia: "21.56 kWh", tiempo: "04:44:14", costo: "9012 CLP", inicioCarga: "2024-07-16 23:30:00", finCarga: "2024-07-17 04:14:14" },
+        { estacionDeCarga: "Estación Miami", carga: 10, energia: "22.34 kWh", tiempo: "03:58:09", costo: "10123 CLP", inicioCarga: "2024-07-15 01:00:00", finCarga: "2024-07-15 04:58:09" },
+        { estacionDeCarga: "Estación Central", carga: 11, energia: "23.78 kWh", tiempo: "02:54:01", costo: "11234 CLP", inicioCarga: "2024-07-14 03:15:00", finCarga: "2024-07-14 06:09:01" },
+        { estacionDeCarga: "Estación Miramar", carga: 12, energia: "24.56 kWh", tiempo: "20:10:34", costo: "12345 CLP", inicioCarga: "2024-07-13 05:30:00", finCarga: "2024-07-14 01:40:34" },
       ],
       page: 1,
       perPage: 5,
@@ -169,24 +155,31 @@ export default {
       return this.paginate(this.data);
     },
     resultQuery() {
+      let filteredData = this.data;
+
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
-        return this.displayedPosts.filter((data) => {
+        filteredData = filteredData.filter((data) => {
           return (
               data.estacionDeCarga.toLowerCase().includes(search) ||
-              data.cargador.toLowerCase().includes(search) ||
-              data.conector.toLowerCase().includes(search) ||
-              data.inicioCarga.toLowerCase().includes(search) ||
-              data.finCarga.toLowerCase().includes(search) ||
-              data.usuario.toLowerCase().includes(search) ||
-              data.idCargador.toLowerCase().includes(search) ||
+              data.carga.toString().toLowerCase().includes(search) ||
               data.energia.toLowerCase().includes(search) ||
-              data.tiempo.toLowerCase().includes(search)
+              data.tiempo.toLowerCase().includes(search) ||
+              data.costo.toLowerCase().includes(search)
           );
         });
-      } else {
-        return this.displayedPosts;
       }
+
+      if (this.dateRange) {
+        const [startDate, endDate] = this.dateRange.split(' to ');
+
+        filteredData = filteredData.filter((data) => {
+          return data.inicioCarga >= startDate && data.inicioCarga <= endDate;
+        });
+      }
+
+      // Ahora aplicamos la paginación a los datos filtrados
+      return this.paginate(filteredData);
     },
   },
   watch: {
@@ -203,6 +196,11 @@ export default {
     },
   },
   methods: {
+    updateSearchQuery() {
+    },
+    clearDateRange() {
+      this.dateRange = null;
+    },
     exportToCSV() {
       const headers = [
         "Estación de Carga","Cargador", "Conector", "Inicio de Carga","Fin Carga", "Usuario",  "ID Cargador",   "Energía", "Tiempo"
@@ -286,12 +284,30 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .flex-shrink-0 {
   display: none;
 }
 
 .tama-dark {
   font-size: 15px;
+}
+.pagination .active .page {
+  background-color: #20dcb5; /* Elige el color que prefieras */
+  border-color: #20dcb5; /* Elige el color del borde */
+  color: white; /* Color del texto */
+}
+.pagination .page {
+  background-color: #ffffff; /* Elige el color que prefieras */
+  border-color: #e8e8e8; /* Elige el color del borde */
+  color: #303034; /* Color del texto */
+}
+
+.pagination-next {
+  color: #575762; /* Color del texto */
+}
+
+.pagination-prev {
+  color: #575762; /* Color del texto */
 }
 </style>

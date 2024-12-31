@@ -7,7 +7,7 @@
             <CardHeader title="Crear Conector" />
             <BCardBody>
               <div class="live-preview">
-                <BForm @submit.prevent="createCharger">
+                <BForm @submit.prevent="createConnector">
                   <BRow>
                    
                     
@@ -15,7 +15,7 @@
                       <div class="mb-3">
                         <label for="alias" class="form-label">Álias (Opcional)</label>
                         <BFormInput 
-                          v-model="charger.alias" 
+                          v-model="connector.alias"
                           type="text" 
                           class="form-control" 
                           placeholder="Álias" 
@@ -23,29 +23,13 @@
                         />
                       </div>
                     </BCol>
-                    <BCol md="6">
-                      <div class="mb-3">
-                        <label for="connectorType" class="form-label">Tipo de Conector</label>
-                        <BFormSelect 
-                          v-model="charger.connectorType" 
-                          class="form-control" 
-                          id="connectorType" 
-                          required
-                        >
-                          <option value="">Seleccionar tipo de conector</option>
-                          <option value="Tipo 1">Tipo 1</option>
-                          <option value="Tipo 2">Tipo 2</option>
-                          <option value="CCS">CCS</option>
-                        </BFormSelect>
-                      </div>
-                    </BCol>
                    
                     <BCol md="6">
                       <div class="mb-3">
                         <label for="connectorNumber" class="form-label">Número de Conector</label>
                         <BFormInput 
-                          v-model="charger.connectorNumber" 
-                          type="number" 
+                          v-model="connector.nConector"
+                          type="number"
                           class="form-control" 
                           placeholder="Número de conector" 
                           id="connectorNumber" 
@@ -57,7 +41,7 @@
                       <div class="mb-3">
                         <label for="voltage" class="form-label">Voltaje Máximo (V)</label>
                         <BFormInput 
-                          v-model="charger.voltage" 
+                          v-model="connector.voltajeMaximo"
                           type="number" 
                           class="form-control" 
                           placeholder="Voltaje máximo" 
@@ -70,7 +54,7 @@
                       <div class="mb-3">
                         <label for="power" class="form-label">Potencia Máxima (W)</label>
                         <BFormInput 
-                          v-model="charger.power" 
+                          v-model="connector.potenciaMaxima"
                           type="number" 
                           class="form-control" 
                           placeholder="Potencia máxima" 
@@ -83,7 +67,7 @@
                       <div class="mb-3">
                         <label for="current" class="form-label">Corriente Máxima (A)</label>
                         <BFormInput 
-                          v-model="charger.current" 
+                          v-model="connector.corrienteMaxima"
                           type="number" 
                           class="form-control" 
                           placeholder="Corriente máxima" 
@@ -92,42 +76,61 @@
                         />
                       </div>
                     </BCol>
-                    
+
                     <BCol md="6">
                       <div class="mb-3">
-                        <label for="station" class="form-label">Estacion</label>
-                        <BFormSelect 
-                          v-model="charger.station" 
-                          class="form-control" 
-                          id="station" 
-                          required
-                        >
-                          <option value="">Seleccionar una estación</option>
-                          <option value="Estacion 1">Santiago </option>
-                          <option value="Estacion 2">Lima</option>
-                          <option value="Estacion 3">San Isidro</option>
-                        </BFormSelect>
+                        <label for="charger" class="form-label">Cargador</label>
+                        <Multiselect
+                            style="border: 1px solid black;"
+                            v-model="connector.cargador"
+                            :options="chargers"
+                            label="label"
+                            track-by="label"
+                            placeholder="Selecciona o ingrese un cargador"
+                            :close-on-select="true"
+                            :searchable="true"
+                            :create-option="true"
+                        />
                       </div>
                     </BCol>
                     <BCol md="6">
                       <div class="mb-3">
-                        <label for="station" class="form-label">Cargador</label>
-                        <BFormSelect 
-                          v-model="charger.station" 
-                          class="form-control" 
-                          id="station" 
-                          required
-                        >
-                          <option value="">Seleccionar un Cargador</option>
-                          <option value="Estacion 1">Cargador 1 </option>
-                          <option value="Estacion 2">Cargador 2</option>
-                          <option value="Estacion 3">Cargador 3</option>
-                        </BFormSelect>
+                        <label for="connectorType" class="form-label">Tipo de Conector</label>
+                        <Multiselect
+                            style="border: 1px solid black;"
+                            v-model="connector.tipoConector"
+                            :options="connectorTypes"
+                            label="label"
+                            track-by="label"
+                            placeholder="Selecciona o ingrese un tipo de conector"
+                            :close-on-select="true"
+                            :searchable="true"
+                            :create-option="true"
+                        />
+                      </div>
+                    </BCol>
+                    <BCol md="6">
+                      <div class="mb-3">
+                        <label for="charger" class="form-label">Terminal</label>
+                        <Multiselect
+                            style="border: 1px solid black;"
+                            v-model="connector.terminal"
+                            :options="chargingStations"
+                            label="label"
+                            track-by="label"
+                            placeholder="Selecciona o ingrese un cargador"
+                            :close-on-select="true"
+                            :searchable="true"
+                            :create-option="true"
+                        />
                       </div>
                     </BCol>
                     <BCol lg="12">
-                      <div class="text-end">
-                        <BButton style="" type="submit" variant="light" @click="successmsg">
+                      <div class="d-flex justify-content-between">
+                        <BButton variant="light" @click="$router.push('/company/conector')">
+                          Volver
+                        </BButton>
+                        <BButton style="" type="submit" variant="light">
                           Crear Conector
                         </BButton>
                       </div>
@@ -150,24 +153,23 @@
   import Layout from "@/layouts/main.vue";
   import PageHeader from "@/components/page-header";
   import CardHeader from "@/common/card-header";
+  import Multiselect from "@vueform/multiselect";
   
   export default {
     data() {
       return {
-        charger: {
-          ocppId: '',
-          name: '',
+        chargers:[],
+        connectorTypes: [],
+        chargingStations: [],
+        connector: {
           alias: '',
-          connectorType: '',
-          connector: '',
-          connectorNumber: '',
-          voltage: '',
-          power: '',
-          current: '',
-          manufacturer: '',
-          model: '',
-          location: '',
-          station: ''
+          voltajeMaximo:'',
+          potenciaMaxima:'',
+          corrienteMaxima:'',
+          nConector:'',
+          cargador:'',
+          tipoConector: '',
+          terminal:''
         },
         config: {
           wrap: true, // set wrap to true only when using 'input-group'
@@ -175,51 +177,72 @@
           altInput: true,
           dateFormat: "d M, Y",
         },
-        date: null,
-        date1: null,
-        date3: null,
       };
     },
     components: {
       Layout,
       PageHeader,
-      CardHeader, 
+      CardHeader,
+      Multiselect
     },
     methods: {
-      successmsg() {
-        Swal.fire({
-          title: "Conector creado!",
-          text: "Redirigiendo a la página de Conectores...",
-          icon: "success",
-          timer: 2000, // Tiempo en milisegundos antes de redirigir
-          timerProgressBar: true,
-          willClose: () => {
-            this.$router.push('/company/conector'); // Redirigir a la página de cargadores
-          }
-        });
-      },
-      async createCharger() {
+      async createConnector() {
         try {
-          await axios.post('http://localhost:8080/api/chargers', this.charger);
-          this.charger.ocppId = '';
-          this.charger.name = '';
-          this.charger.alias = '';
-          this.charger.connectorType = '';
-          this.charger.connector = '';
-          this.charger.connectorNumber = '';
-          this.charger.voltage = '';
-          this.charger.power = '';
-          this.charger.current = '';
-          this.charger.manufacturer = '';
-          this.charger.model = '';
-          this.charger.location = '';
-          this.charger.station = '';
+          const conector = {
+            ...this.connector,
+            tipoConector: { id: this.connector.tipoConector }, // Enviar el objeto con el id
+          };
+          const response = await axios.post('https://app.evolgreen.com/api/companies/current/connectors', conector);
+          if (response.status === 200 || response.status === 201) {
+            Swal.fire("Conector Creado Exitosamente", "", "success").then(() => {
+              this.$router.push('/company/conector');
+            });
+          }
         } catch (error) {
-          console.error("Error creandel cargador:", error);
-}
-}
-}
-};
+          console.error("Error creando el conector:", error);
+          Swal.fire("Error al crear el conector ", "", "error")
+        }
+      },
+      async charges() {
+        try {
+          const response = await axios.get('https://app.evolgreen.com/api/chargers');
+          this.chargers = response.data.map(data => ({
+            label: data.nombre,
+            value: data.id
+          }));
+        } catch (error) {
+          console.error("Error obteniendo las estaciones de carga:", error);
+        }
+      },
+      async loadConnectorTypes() {
+        try {
+          const response = await axios.get('https://app.evolgreen.com/api/connector-types');
+          this.connectorTypes = response.data.map(data => ({
+            label: data.nombre,
+            value: data.id
+          }));
+        } catch (error) {
+          console.error("Error obteniendo los tipos de conector:", error);
+        }
+      },
+      async chargingStation() {
+        try {
+          const response = await axios.get('https://app.evolgreen.com/api/chargingStations');
+          this.chargingStations = response.data.map(data => ({
+            label: data.nombreTerminal,
+            value: data.id
+          }));
+        } catch (error) {
+          console.error("Error obteniendo las estaciones de carga:", error);
+        }
+      },
+    },
+    created() {
+      this.charges()
+      this.loadConnectorTypes();
+      this.chargingStation();
+    }
+  };
 </script>
 
 <style>

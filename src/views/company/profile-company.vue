@@ -16,6 +16,9 @@ export default {
       date: null,
     // Añadir un campo para almacenar los datos del cliente
       company:null,
+      datosCuenta:null,
+      rol:null,
+      activo:null,
     };
   },
   components: {
@@ -33,11 +36,14 @@ export default {
     },
     async getUser() {
       try {
-        const response = await axios.get('http://52.14.116.236:8088/api/companies/current');
-         this.company = response.data;
-         // console.log("Comañia" + JSON.stringify( this.company));
-      
-
+        const userData = localStorage.getItem('userData');
+        this.rol = localStorage.getItem('role');
+        this.activo = localStorage.getItem('active');
+        if (userData) {
+           this.datosCuenta = JSON.parse(userData);
+        } else {
+          console.error('No user data found in localStorage.');
+        }
       } catch (error) {
         console.error('Error fetching client data:', error);
       }
@@ -56,19 +62,22 @@ export default {
     },
     async cambiarActivoUsuario(activeStatus) {
       try {
-        const response = await axios.put('http://52.14.116.236:8088/api/companies/change-active-status', null, {
+        const response = await axios.patch('https://app.evolgreen.com/api/update-active-status', null, {
           params: {
+            accountId : this.datosCuenta.id,
             activeStatus: activeStatus
           }
         });
-        if (response.status === 200) {
-          Swal.fire("Estado de usuario Actualizado!", "", "success");
-          if (activeStatus === true) {
-            this.$router.push('/company/dashboard-company');
-          } else {
-            this.$router.push('/company/profile-company');
-            location.reload()
-          }
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("Estado de usuario Actualizado!", "", "success").then(() => {
+            if (activeStatus === true) {
+              this.$router.push('/company/dashboard-company').then(() => {
+                  window.location.reload();
+              });
+            } else {
+              this.$router.push('/company/profile-company');
+            }
+          });
         }
       } catch (error) {
         console.error("Error Actualizando usuario activo:", error);
@@ -104,10 +113,7 @@ export default {
 </script>
 <style>
 .navbar-menu{
-  display: none !important;
-}
-.main-content {
-    margin: 0;
+  margin-top: -25px;
 }
 </style>
 
@@ -159,8 +165,8 @@ export default {
                 </div>
               </div>
              
-              <h5 class="fs-16 mb-1">{{ company ? company.businessName : 'Nombre de la Empresa' }}</h5>
-              <p class="text-muted mb-0">{{ company ? company.emailCompany : 'Correo del Usuario' }}</p>
+              <h5 class="fs-16 mb-1">{{ rol ? rol : 'Usuario' }}</h5>
+              <p class="text-muted mb-0">{{ datosCuenta ? datosCuenta.email : 'Correo del Usuario' }}</p>
             </div>
           </BCardBody>
         </BCard>
@@ -222,37 +228,31 @@ export default {
                     <BCol lg="6">
                       <div class="mb-3">
                         <label for="firstnameInput" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value="company ? company.businessName : ''" />
+                        <input type="text" class="form-control" id="firstnameInput" placeholder="Enter your firstname" :value="datosCuenta ? datosCuenta.nombre : ''" />
                       </div>
                     </BCol>
                     <BCol lg="6">
                       <div class="mb-3">
                         <label for="lastnameInput" class="form-label">RUT</label>
-                        <input type="text" class="form-control" id="lastnameInput" placeholder="Enter your lastname" :value="company ? company.rut : ''" />
+                        <input type="text" class="form-control" id="lastnameInput" placeholder="Enter your lastname" :value="datosCuenta ? datosCuenta.rut : ''" />
                       </div>
                     </BCol>
                     <BCol lg="6">
                       <div class="mb-3">
                         <label for="phonenumberInput" class="form-label">Numero de Telefono</label>
-                        <input type="text" class="form-control" id="phonenumberInput" placeholder="Enter your phone number" :value="company ? company.phoneCompany : ''" />
+                        <input type="text" class="form-control" id="phonenumberInput" placeholder="Enter your phone number" :value="datosCuenta ? datosCuenta.telefono : ''" />
                       </div>
                     </BCol>
                     <BCol lg="6">
                       <div class="mb-3">
                         <label for="emailInput" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="company ? company.emailCompany : ''" />
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter your email" :value="datosCuenta ? datosCuenta.email : ''" />
                       </div>
                     </BCol>
-                    <BCol lg="12">
+                    <BCol lg="12" v-if="activo === 'false'">
                       <div class="hstack gap-2 justify-content-end">
                         <BButton type="submit" variant="secondary" @click="cambiarActivoUsuario(true)">
-                         Guardar Datos
-                        </BButton>
-<!--                        <BButton type="submit" variant="secondary" @click="cambiarActivoUsuario(false)">-->
-<!--                          Actualizar a Inactivo-->
-<!--                        </BButton>-->
-                        <BButton type="button" variant="soft-danger">
-                          Cancelar
+                          Confirmar
                         </BButton>
                       </div>
                     </BCol>

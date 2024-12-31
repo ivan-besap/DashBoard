@@ -14,7 +14,7 @@ function login(email, password) {
         body: JSON.stringify({ email, password })
     };
 
-    return fetch(`http://localhost:8080/auth/login`, requestOptions)
+    return fetch(`https://app.evolgreen.com/auth/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // login successful if there's a jwt token in the response

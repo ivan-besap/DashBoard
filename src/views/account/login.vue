@@ -7,6 +7,7 @@ import {
   helpers
 } from "@vuelidate/validators";
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 import {
   authMethods,
@@ -25,6 +26,8 @@ export default {
       tryingToLogIn: false,
       isAuthError: false,
       processing: false,
+      showPassword: false,
+      rememberMe: false,
     };
   },
   validations: {
@@ -39,15 +42,22 @@ export default {
   computed: {
 
   },
+  created() {
+    this.deleteToken()
+    this.loadRememberedData();
+  },
   methods: {
     ...authMethods,
     ...authFackMethods,
     ...notificationMethods,
 
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
   async signinapi() {
     this.processing = true;
     try {
-      const result = await axios.post('http://localhost:8080/auth/login', {
+      const result = await axios.post('https://app.evolgreen.com/auth/login', {
         username: this.email,
         password: this.password
       });
@@ -59,18 +69,53 @@ export default {
 
       // Suponiendo que el token se encuentra en result.data.token
       localStorage.setItem('jwt', result.data.token);
-      localStorage.setItem('role', result.data.role);
+      localStorage.setItem('accountType', result.data.accountType);
       localStorage.setItem('isActive', result.data.isActive);
+
+      if (this.rememberMe) {
+        localStorage.setItem('email', this.email);
+        localStorage.setItem('password', this.password);
+      } else {
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
+      }
+
+      const accountType = localStorage.getItem('accountType');
       let isActive = localStorage.getItem('isActive') === 'true';  // Convertir a booleano
 
-      let role = result.data.role;
+      // let tipoCuenta = result.data.accountType;
   // if (role === 'CLIENT') {
   //   this.$router.push({ path: '/client/dashboard-client' });
   // }
-      if (role === 'COMPANY' && isActive) {
-        this.$router.push({ path: '/company/dashboard-company' });
-      } else if (role === 'COMPANY' && !isActive) {
-        this.$router.push({ path: '/company/profile-company' });
+      if (isActive && accountType === 'COMPANY') {
+        this.$router.push({ path: '/company/dashboard-company' }).then(() => {
+          if (!localStorage.getItem('reloadedDashboard')) {
+            localStorage.setItem('reloadedDashboard', 'true');
+            location.reload();
+          }
+        });
+      } else if (!isActive && accountType === 'COMPANY') {
+        Swal.fire({
+          title: 'Cuenta Inactiva',
+          text: 'La cuenta con la que intentas ingresar no está activada. Por favor, contacta al administrador.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+      } else if (isActive && accountType === 'EMPLOYEE') {
+        this.$router.push({ path: '/company/profile-company' }).then(() => {
+          if (!localStorage.getItem('reloadedProfile')) {
+            localStorage.setItem('reloadedProfile', 'true');
+            location.reload();
+          }
+        });
+      } else if (!isActive && accountType === 'EMPLOYEE') {
+        // Mostrar alerta si el usuario no está activado
+        Swal.fire({
+          title: 'Cuenta Inactiva',
+          text: 'La cuenta con la que intentas ingresar no está activada. Por favor, contacta al administrador.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -79,64 +124,81 @@ export default {
       this.processing = false;
     }
   },
+    loadRememberedData() {
+      const savedEmail = localStorage.getItem("email");
+      // const savedPassword = localStorage.getItem("password");
 
+      if (savedEmail) {
+        this.email = savedEmail;
+        this.rememberMe = true;
+        // if(savedPassword){
+        //   this.password = savedPassword
+        // }
+      }
+    },
+
+    deleteToken(){
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userData');
+    },
 
     // Try to log the user in with the username
     // and password they provided.
-    tryToLogIn() {
-      this.processing = true;
-      this.submitted = true;
-      // stop here if form is invalid
-      this.$touch;
-
-      if (this.$invalid) {
-        return;
-      } else {
-        if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-          this.tryingToLogIn = true;
-          // Reset the authError if it existed.
-          this.authError = null;
-          return (
-            this.logIn({
-              email: this.email,
-              password: this.password,
-            })
-              // eslint-disable-next-line no-unused-vars
-              .then((token) => {
-                this.tryingToLogIn = false;
-                this.isAuthError = false;
-                // Redirect to the originally requested page, or to the home page
-                this.$router.push({
-                  path: '/'
-                });
-              })
-              .catch((error) => {
-                this.tryingToLogIn = false;
-                this.authError = error ? error : "";
-                this.isAuthError = true;
-                this.processing = false;
-              })
-          );
-        } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-          const { email, password } = this;
-          if (email && password) {
-            this.login({
-              email,
-              password,
-            });
-          }
-        } else if (process.env.VUE_APP_DEFAULT_AUTH === "authapi") {
-          axios
-            .post("http://127.0.0.1:8000/api/login", {
-              email: this.email,
-              password: this.password,
-            })
-            .then((res) => {
-              return res;
-            });
-        }
-      }
-    },
+    // tryToLogIn() {
+    //   this.processing = true;
+    //   this.submitted = true;
+    //   // stop here if form is invalid
+    //   this.$touch;
+    //
+    //   if (this.$invalid) {
+    //     return;
+    //   } else {
+    //     if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
+    //       this.tryingToLogIn = true;
+    //       // Reset the authError if it existed.
+    //       this.authError = null;
+    //       return (
+    //         this.logIn({
+    //           email: this.email,
+    //           password: this.password,
+    //         })
+    //           // eslint-disable-next-line no-unused-vars
+    //           .then((token) => {
+    //             this.tryingToLogIn = false;
+    //             this.isAuthError = false;
+    //             // Redirect to the originally requested page, or to the home page
+    //             this.$router.push({
+    //               path: '/'
+    //             });
+    //           })
+    //           .catch((error) => {
+    //             this.tryingToLogIn = false;
+    //             this.authError = error ? error : "";
+    //             this.isAuthError = true;
+    //             this.processing = false;
+    //           })
+    //       );
+    //     } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
+    //       const { email, password } = this;
+    //       if (email && password) {
+    //         this.login({
+    //           email,
+    //           password,
+    //         });
+    //       }
+    //     } else if (process.env.VUE_APP_DEFAULT_AUTH === "authapi") {
+    //       axios
+    //         .post("http://127.0.0.1:8000/api/login", {
+    //           email: this.email,
+    //           password: this.password,
+    //         })
+    //         .then((res) => {
+    //           return res;
+    //         });
+    //     }
+    //   }
+    // },
 
   },
 };
@@ -144,8 +206,8 @@ export default {
 
 <template>
   <div class="auth-page-wrapper pt-5">
-    <div class="auth-one-bg-position" style="background-color: #222c27" id="auth-particles">
-      <div class=""></div>
+    <div class="auth-one-bg-position auth-jose-bg" id="auth-particles" >
+<!--      <div class="bg-overlay"></div>-->
 
       <div class="shape">
 
@@ -188,7 +250,7 @@ export default {
 
                   </div>
 
-                  <form @submit.prevent="tryToLogIn">
+<!--                  <form @submit.prevent="tryToLogIn">-->
                     <div class="mb-3">
                       <label for="email" class="form-label">Correo</label>
                       <input type="email" class="form-control" id="email" placeholder="Ingrese correo" v-model="email" />
@@ -197,30 +259,37 @@ export default {
                       </div>
                     </div>
 
-                    <div class="mb-3">
-                      <div class="float-end">
-                        <router-link to="/forgot-password" class="text-muted">Olvidaste
-                          tu contraseña?</router-link>
-                      </div>
-                      <label class="form-label" for="password-input">Contraseña</label>
-                      <div class="position-relative auth-pass-inputgroup mb-3">
-                        <input type="password" v-model="password" class="form-control pe-5" placeholder="Ingrese contraseña"
-                          id="password-input" />
-                        <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted"
-                          type="button" id="password-addon">
-                          <i class="ri-eye-fill align-middle"></i>
-                        </BButton>
-                        <div class="invalid-feedback">
-                          <span></span>
-                        </div>
+                  <div class="mb-3">
+                    <div class="float-end">
+                      <router-link to="/forgot-password" class="text-muted">Olvidaste tu contraseña?</router-link>
+                    </div>
+                    <label class="form-label" for="password-input">Contraseña</label>
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <!-- Cambia el tipo de input según si la contraseña es visible -->
+                      <input :type="showPassword ? 'text' : 'password'" v-model="password" class="form-control pe-5"
+                             placeholder="Ingrese contraseña" id="password-input" />
+                      <!-- Botón para mostrar/ocultar la contraseña -->
+                      <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                               id="password-addon" @click="togglePasswordVisibility">
+                        <!-- Cambia el icono según si la contraseña es visible -->
+                        <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                      </BButton>
+                      <div class="invalid-feedback">
+                        <span></span>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="auth-remember-check" />
-                      <label class="form-check-label" for="auth-remember-check">Recuerdame
-                        </label>
-                    </div>
+                  <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="auth-remember-check"
+                        v-model="rememberMe"
+                    />
+                    <label class="form-check-label" for="auth-remember-check">Recuerdame</label>
+                  </div>
 
                     <div class="mt-4">
                       <BButton variant="success" class="w-100" type="submit" @click="signinapi" :disabled="processing">
@@ -247,7 +316,7 @@ export default {
 <!--                        </BButton>-->
 <!--                      </div>-->
 <!--                    </div>-->
-                  </form>
+<!--                  </form>-->
                 </div>
               </BCardBody>
             </BCard>

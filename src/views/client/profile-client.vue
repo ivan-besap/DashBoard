@@ -82,7 +82,7 @@ export default {
     },
     async getUser() {
       try {
-        const response = await axios.get('http://localhost:8080/api/clients/current');
+        const response = await axios.get('https://app.evolgreen.com/api/clients/current');
         this.client = response.data;
       } catch (error) {
         console.error('Error fetching client data:', error);

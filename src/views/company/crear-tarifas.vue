@@ -7,94 +7,100 @@
           <CardHeader title="Crear Tarifas" />
           <BCardBody>
             <div class="live-preview">
-              <BForm @submit.prevent="createChargingStation">
-                
+              <BForm @submit.prevent="createTarifa">
                 <BRow>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="valorPlan" class="form-label">Nombre Tarifa</label>
-                      <BFormInput 
-                      
-                        type="text" 
-                        
-                        class="form-control" 
-                        placeholder="Valor Plan" 
-                        id="valorPlan" 
-                        required 
+                      <label for="nombreTarifa" class="form-label">Nombre Tarifa</label>
+                      <BFormInput
+                          v-model="tarifa.nombreTarifa"
+                          type="text"
+                          class="form-control"
+                          placeholder="Nombre Tarifa"
+                          id="nombreTarifa"
+                          required
                       />
                     </div>
                   </BCol>
-                  <BCol md="6">
-                  <div class="mb-3">
-                    <label for="StartleaveDate" class="form-label">Fecha Inicial</label>
-                    <flat-pickr v-model="date" class="form-control"></flat-pickr>
-                  </div>
-                
 
-                  </BCol>
-                  <BCol md="6">
-
-                    <div class="mb-3">
-                  <label for="EndleaveDate" class="form-label">Fecha Final</label>
-
-                  <flat-pickr v-model="date1" class="form-control"></flat-pickr>
-                </div>
-                    </BCol>
-                    <BCol md="6">
-                    <div class="mb-3">
-                      <label for="horarioInicio" class="form-label">Horario de inicio</label>
-                      <flat-pickr v-model="time3" :config="preloadingTime" class="form-control flatpickr-input">
-                      </flat-pickr>
-                    </div>
-                  </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="horarioFin" class="form-label">Horario de fin</label>
-                      <flat-pickr v-model="time3" :config="preloadingTime" class="form-control flatpickr-input">
-                      </flat-pickr>
+                      <label for="fechaInicio" class="form-label">Fecha Inicial</label>
+                      <flat-pickr v-model="tarifa.fechaInicio" class="form-control" :config="dateConfig"></flat-pickr>
                     </div>
                   </BCol>
 
                   <BCol md="6">
                     <div class="mb-3">
-                      <label class="form-label">Día de la semana</label>
-                     
-                     <div class="dias-semana" style="display: flex;">
-                      <div v-for="day in daysOfWeek" :key="day.value" class="form-check">
-                        <input class="form-check-input" type="checkbox" :value="day.value" v-model="chargingStation.dayOfWeek" :id="day.value">
-                        <label class="form-check-label" :for="day.value">{{ day.text }}</label>
+                      <label for="fechaFin" class="form-label">Fecha Final</label>
+                      <flat-pickr v-model="tarifa.fechaFin" class="form-control" :config="dateConfig"></flat-pickr>
+                    </div>
+                  </BCol>
+
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="horaInicio" class="form-label">Horario de Inicio</label>
+                      <flat-pickr v-model="tarifa.horaInicio" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>
+                    </div>
+                  </BCol>
+
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="horaFin" class="form-label">Horario de Fin</label>
+                      <flat-pickr v-model="tarifa.horaFin" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>
+                    </div>
+                  </BCol>
+
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label class="form-label">Días de la semana</label>
+                      <div class="dias-semana" style="display: flex; flex-wrap: wrap;">
+                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check me-3">
+                          <input class="form-check-input" type="checkbox" :value="day.text" v-model="tarifa.diasDeLaSemana" :id="day.value">
+                          <label class="form-check-label" :for="day.value">{{ day.text }}</label>
+                        </div>
                       </div>
                     </div>
-                  </div>
                   </BCol>
-                 
+
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="valorPlan" class="form-label">Valor Tarifa</label>
-                      <BFormInput 
-                        v-model="chargingStation.planValue" 
-                        type="number" 
-                        step="0.01" 
-                        class="form-control" 
-                        placeholder="Valor Plan" 
-                        id="valorPlan" 
-                        required 
+                      <label for="precioTarifa" class="form-label">Valor Tarifa</label>
+                      <BFormInput
+                          v-model="tarifa.precioTarifa"
+                          type="number"
+                          step="0.01"
+                          class="form-control"
+                          placeholder="Precio Tarifa"
+                          id="precioTarifa"
+                          required
                       />
                     </div>
                   </BCol>
-                 
+                  <BCol md="6">
+                    <div class="mb-3">
+                      <label for="consumoEnergiaAlarma" class="form-label">Consumo de Energía para Alarma Crítica</label>
+                      <BFormInput
+                          v-model="tarifa.consumoDeEnergiaAlarma"
+                          type="text"
+                          class="form-control"
+                          placeholder="Consumo de energía crítica"
+                          id="consumoEnergiaAlarma"
+                      />
+                    </div>
+                  </BCol>
+
                   <BCol lg="12">
-                    <div class="text-end">
-                      <BButton style="" type="submit" variant="light" @click="successmsg">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/tarifas')">
+                        Volver
+                      </BButton>
+                      <BButton style="" type="submit" variant="light">
                         Crear Tarifa
                       </BButton>
                     </div>
                   </BCol>
                 </BRow>
-              
-                
-
-               
               </BForm>
             </div>
           </BCardBody>
@@ -117,24 +123,25 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      chargingStation: {
-        dayOfWeek: [],
-        chargerType: '',
-        planValue: 0.0
+      tarifa: {
+        nombreTarifa: '',
+        fechaInicio: '',
+        fechaFin: '',
+        horaInicio: '',
+        horaFin: '',
+        diasDeLaSemana: [],
+        precioTarifa: 0.0,
+        consumoDeEnergiaAlarma: ''
       },
-
+      dateConfig: {
+        enableTime: false,
+        dateFormat: "Y-m-d",
+      },
       timeConfig: {
         enableTime: true,
         noCalendar: true,
         dateFormat: "H:i",
         time_24hr: true,
-      },
-
-      preloadingTime: {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        defaultDate: "13:00",
       },
       daysOfWeek: [
         { value: 'lunes', text: 'Lunes' },
@@ -144,10 +151,6 @@ export default {
         { value: 'viernes', text: 'Viernes' },
         { value: 'sábado', text: 'Sábado' },
         { value: 'domingo', text: 'Domingo' }
-      ],
-      chargerTypes: [
-        { value: 'AC', text: 'AC' },
-        { value: 'DC', text: 'DC' }
       ]
     };
   },
@@ -159,26 +162,38 @@ export default {
   },
   methods: {
 
-    successmsg() {
-      Swal.fire("Tarifa creada!", "", "success");
+    removeAccents(text) {
+      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     },
-    async createChargingStation() {
+    successmsg() {
+      Swal.fire({
+        title: "Tarifa creada!",
+        text: "Redirigiendo a la página de Tarifas...",
+        icon: "success",
+        timer: 2000,
+        timerProgressBar: true,
+        willClose: () => {
+          this.$router.push('/company/tarifas');
+        }
+      });
+    },
+    async createTarifa() {
+      if (this.tarifa.consumoDeEnergiaAlarma === '') {
+        this.tarifa.consumoDeEnergiaAlarma = null;
+      }
+      const diasSinTildes = this.tarifa.diasDeLaSemana.map(dia => this.removeAccents(dia));
+      const tarifaParaEnviar = {
+        ...this.tarifa,
+        diasDeLaSemana: diasSinTildes
+      };
       try {
-        await axios.post('http://localhost:8080/api/company/current/chargingStations', this.chargingStation);
-        // alert('Estación de carga creada exitosamente');
-        this.resetForm();
+        await axios.post('https://app.evolgreen.com/api/fees', tarifaParaEnviar);
+        this.successmsg();
       } catch (error) {
-        console.error("Error creando la estación de carga:", error);
-       // alert('Error creando la estación de carga');
+        console.error("Error creando la tarifa:", error);
+        Swal.fire("Error", "No se pudo crear la tarifa.", "error");
       }
     },
-    resetForm() {
-      this.chargingStation = {
-        dayOfWeek: [],
-        chargerType: '',
-        planValue: 0.0
-      };
-    }
   }
 };
 </script>

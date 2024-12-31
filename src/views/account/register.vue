@@ -13,28 +13,43 @@ export default {
   data() {
     return {
       user: {
-        businessName: "",
-        emailCompany: "",
-        phoneCompany: "",
+        nombreEmpresa: "",
         rut: "",
+        telefono: "",
+        email: "",
         password: "",
         confirm_password: "",
+        nombre: "",
+        apellidoMaterno: "",
+        apellidoPaterno: "",
       },
+      showPassword: false,
+      showConfirmPassword: false,
+      loading: false,
     };
   },
   validations: {
     user: {
-      businessName: {
+      nombreEmpresa: {
         required: helpers.withMessage("Ingrese un nombre de la compañía", required),
       },
-      emailCompany: {
+      nombre: {
+        required: helpers.withMessage("Ingrese un Nombre", required),
+      },
+      apellidoMaterno: {
+        required: helpers.withMessage("Ingrese un Apellido Materno", required),
+      },
+      apellidoPaterno: {
+        required: helpers.withMessage("Ingrese un Apellido Paterno", required),
+      },
+      email: {
         required: helpers.withMessage("Ingrese un email de la compañía", required),
         email: helpers.withMessage("Ingrese un email válido", email),
       },
       rut: {
         required: helpers.withMessage("Ingrese un rut de la compañía", required),
       },
-      phoneCompany: {
+      telefono: {
         required: helpers.withMessage("Ingrese un teléfono de la compañía", required),
       },
       password: {
@@ -52,26 +67,46 @@ export default {
     },
   },
   methods: {
+    togglePasswordVisibility(field) {
+      if (field === 'password') {
+        this.showPassword = !this.showPassword;
+      } else if (field === 'confirm_password') {
+        this.showConfirmPassword = !this.showConfirmPassword;
+      }
+    },
     async submitForm() {
       this.v$.$touch();
       if (this.v$.$invalid) {
         return;
       }
+      this.loading = true;
 
       try {
-        const response = await axios.post('http://52.14.116.236:8088/auth/registerCompany', this.user);
-        if (response.data.status === 'errors') {
-          this.authError = response.data.data;
-          return;
-        } else {
+        const response = await axios.post('https://app.evolgreen.com/auth/register', this.user);
+        if (response.status === 200 || response.status === 201) {
+          this.loading = false;
           Swal.fire("Cuenta compañía creada!", "", "success");
-          this.$router.push({ path: '/login' });
+          this.$router.push({path: '/login'});
         }
-        console.log(response.data.status)
-        console.log(response.data)
       } catch (error) {
-        console.error('Error during registration:', error);
-        this.authError = 'Registro fallido. Por favor revise sus datos e intente de nuevo.';
+        // Si hay un error, capturamos el mensaje y lo mostramos con Swal
+        if (error.response && error.response.status === 400) {
+          this.loading = false;
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response.data // Mostrar el mensaje de error del backend
+          });
+        } else {
+          this.loading = false;
+          // En caso de otro tipo de error
+          console.error('Error during registration:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: 'Registro fallido. Por favor revise sus datos e intente de nuevo.'
+          });
+        }
       }
     }
 
@@ -102,6 +137,9 @@ export default {
 
 <template>
   <div class="auth-page-wrapper pt-5">
+    <div v-if="loading" class="loader-overlay">
+      <p>Cargando, por favor espere...</p>
+    </div>
     <div class="auth-one-bg-position" style="background-color: #222c27" id="auth-particles">
       <div></div>
 
@@ -141,34 +179,66 @@ export default {
                   <p class="text-muted">Crea tu cuenta en EvolGreen</p>
                 </div>
                 <div class="p-2 mt-4">
-                  <div class="mb-3" :class="{ 'has-error': v$.user.businessName.$invalid && v$.user.businessName.$dirty }">
+                  <div class="mb-3" :class="{ 'has-error': v$.user.nombreEmpresa.$invalid && v$.user.nombreEmpresa.$dirty }">
                     <label for="businessName" class="form-label">Nombre Compañía <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" v-model="user.businessName" id="businessName" placeholder="Ingrese nombre" @blur="v$.user.businessName.$touch()">
-                    <span v-if="v$.user.businessName.$invalid && v$.user.businessName.$dirty" class="text-danger">{{ v$.user.businessName.$errors[0].$message }}</span>
+                    <input type="text" class="form-control" v-model="user.nombreEmpresa" id="businessName" placeholder="Ingrese Nombre de la Compañía" @blur="v$.user.nombreEmpresa.$touch()">
+                    <span v-if="v$.user.nombreEmpresa.$invalid && v$.user.nombreEmpresa.$dirty" class="text-danger">{{ v$.user.nombreEmpresa.$errors[0].$message }}</span>
                   </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.nombre.$invalid && v$.user.nombre.$dirty }">
+                    <label for="nombre" class="form-label">Nombre<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.nombre" id="nombre" placeholder="Ingrese Nombre" @blur="v$.user.nombre.$touch()">
+                    <span v-if="v$.user.nombre.$invalid && v$.user.nombre.$dirty" class="text-danger">{{ v$.user.nombre.$errors[0].$message }}</span>
+                  </div>
+                  <div class="mb-3" :class="{ 'has-error': v$.user.apellidoPaterno.$invalid && v$.user.apellidoPaterno.$dirty }">
+                    <label for="apellidoPaterno" class="form-label">Apellido Paterno<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.apellidoPaterno" id="apellidoPaterno" placeholder="Ingrese Apellido Paterno" @blur="v$.user.apellidoPaterno.$touch()">
+                    <span v-if="v$.user.apellidoPaterno.$invalid && v$.user.apellidoPaterno.$dirty" class="text-danger">{{ v$.user.apellidoPaterno.$errors[0].$message }}</span>
+                  </div>
+
+                  <div class="mb-3" :class="{ 'has-error': v$.user.apellidoMaterno.$invalid && v$.user.apellidoMaterno.$dirty }">
+                    <label for="apellidoMaterno" class="form-label">Apellido Materno <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" v-model="user.apellidoMaterno" id="apellidoMaterno" placeholder="Ingrese Apellido Materno" @blur="v$.user.apellidoMaterno.$touch()">
+                    <span v-if="v$.user.apellidoMaterno.$invalid && v$.user.apellidoMaterno.$dirty" class="text-danger">{{ v$.user.apellidoMaterno.$errors[0].$message }}</span>
+                  </div>
+
                   <div class="mb-3" :class="{ 'has-error': v$.user.rut.$invalid && v$.user.rut.$dirty }">
                     <label for="rut" class="form-label">Número de registro único <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Rut" @blur="v$.user.rut.$touch()">
+                    <input type="text" class="form-control" v-model="user.rut" id="rut" placeholder="Ingrese Número de registro único" @blur="v$.user.rut.$touch()">
                     <span v-if="v$.user.rut.$invalid && v$.user.rut.$dirty" class="text-danger">{{ v$.user.rut.$errors[0].$message }}</span>
                   </div>
-                  <div class="mb-3" :class="{ 'has-error': v$.user.phoneCompany.$invalid && v$.user.phoneCompany.$dirty }">
+                  <div class="mb-3" :class="{ 'has-error': v$.user.telefono.$invalid && v$.user.telefono.$dirty }">
                     <label for="phoneCompany" class="form-label">Número Teléfono <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" v-model="user.phoneCompany" id="phoneCompany" placeholder="Ingrese Teléfono" @blur="v$.user.phoneCompany.$touch()">
-                    <span v-if="v$.user.phoneCompany.$invalid && v$.user.phoneCompany.$dirty" class="text-danger">{{ v$.user.phoneCompany.$errors[0].$message }}</span>
+                    <input type="number" class="form-control" v-model="user.telefono" id="phoneCompany" placeholder="Ingrese Teléfono" @blur="v$.user.telefono.$touch()">
+                    <span v-if="v$.user.telefono.$invalid && v$.user.telefono.$dirty" class="text-danger">{{ v$.user.telefono.$errors[0].$message }}</span>
                   </div>
-                  <div class="mb-3" :class="{ 'has-error': v$.user.emailCompany.$invalid && v$.user.emailCompany.$dirty }">
+                  <div class="mb-3" :class="{ 'has-error': v$.user.email.$invalid && v$.user.email.$dirty }">
                     <label for="emailCompany" class="form-label">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" v-model="user.emailCompany" id="emailCompany" placeholder="Ingrese email" @blur="v$.user.emailCompany.$touch()">
-                    <span v-if="v$.user.emailCompany.$invalid && v$.user.emailCompany.$dirty" class="text-danger">{{ v$.user.emailCompany.$errors[0].$message }}</span>
+                    <input type="email" class="form-control" v-model="user.email" id="emailCompany" placeholder="Ingrese email" @blur="v$.user.email.$touch()">
+                    <span v-if="v$.user.email.$invalid && v$.user.email.$dirty" class="text-danger">{{ v$.user.email.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-2" :class="{ 'has-error': v$.user.password.$invalid && v$.user.password.$dirty }">
                     <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" v-model="user.password" id="password" placeholder="Ingrese contraseña" @blur="v$.user.password.$touch()">
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <input :type="showPassword ? 'text' : 'password'" class="form-control" v-model="user.password" id="password"
+                             placeholder="Ingrese contraseña" @blur="v$.user.password.$touch()">
+                      <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                               @click="togglePasswordVisibility('password')">
+                        <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                      </BButton>
+                    </div>
                     <span v-if="v$.user.password.$invalid && v$.user.password.$dirty" class="text-danger">{{ v$.user.password.$errors[0].$message }}</span>
                   </div>
+
                   <div class="mb-2" :class="{ 'has-error': v$.user.confirm_password.$invalid && v$.user.confirm_password.$dirty }">
                     <label for="confirm_password" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" v-model="user.confirm_password" id="confirm_password" placeholder="Ingrese contraseña" @blur="v$.user.confirm_password.$touch()">
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <input :type="showConfirmPassword ? 'text' : 'password'" class="form-control" v-model="user.confirm_password" id="confirm_password"
+                             placeholder="Ingrese contraseña" @blur="v$.user.confirm_password.$touch()">
+                      <BButton variant="link" class="position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                               @click="togglePasswordVisibility('confirm_password')">
+                        <i :class="showConfirmPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="align-middle"></i>
+                      </BButton>
+                    </div>
                     <span v-if="v$.user.confirm_password.$invalid && v$.user.confirm_password.$dirty" class="text-danger">{{ v$.user.confirm_password.$errors[0].$message }}</span>
                   </div>
                   <div class="mb-4">
@@ -211,5 +281,19 @@ export default {
 }
 .text-danger {
   color: red;
+}
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

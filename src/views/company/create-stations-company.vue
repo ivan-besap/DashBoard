@@ -14,7 +14,7 @@
                     <div class="mb-3">
                       <label for="nombreEstacion" class="form-label">Nombre</label>
                       <BFormInput 
-                        v-model="chargingStation.name" 
+                        v-model="chargingStation.nombreTerminal"
                         type="text" 
                         class="form-control" 
                         placeholder="Nombre de la estación" 
@@ -26,8 +26,8 @@
                   <BCol md="6">
                     <div class="mb-3">
                       <label for="ubicacion" class="form-label">Ubicación</label>
-                      <BFormInput 
-                        v-model="chargingStation.location" 
+                      <BFormInput
+                        v-model="chargingStation.ubicacionTerminal.direccion"
                         type="text" 
                         class="form-control" 
                         placeholder="Ubicación de la estación" 
@@ -36,9 +36,12 @@
                       />
                     </div>
                   </BCol>
-                  
+
                   <BCol lg="12">
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <BButton variant="light" @click="$router.push('/company/stations-company')">
+                        Volver
+                      </BButton>
                       <BButton style="" type="submit" variant="light">
                         Crear Estación
                       </BButton>
@@ -62,14 +65,16 @@ import "@vueform/multiselect/themes/default.css";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
+import Swal from "sweetalert2";
 
 export default {
   data() {
     return {
       chargingStation: {
-        name: '',
-        currentLoad: 0.0,
-        location: ''
+        nombreTerminal: '',
+        ubicacionTerminal: {
+          direccion: ''
+        }
       },
       config: {
         wrap: true, // set wrap to true only when using 'input-group'
@@ -89,16 +94,25 @@ export default {
   },
   methods: {
     async createChargingStation() {
+      // Llama a la función para remover las tildes antes de enviar los datos
+      this.chargingStation.ubicacionTerminal.direccion = this.removeAccents(this.chargingStation.ubicacionTerminal.direccion);
+
       try {
-        await axios.post('http://localhost:8080/api/company/current/chargingStations', this.chargingStation);
-        alert('Estación de carga creada exitosamente');
-        this.chargingStation.name = '';
-        this.chargingStation.currentLoad = 0.0;
-        this.chargingStation.location = '';
+        const response = await axios.post('https://app.evolgreen.com/api/companies/current/chargingStations', this.chargingStation);
+        if (response.status === 200 || response.status === 201) {
+          this.chargingStation.nombreTerminal = '';
+          this.chargingStation.ubicacionTerminal.direccion = ''; // Resetea el campo correctamente
+        }
+        Swal.fire("Estación Creada Exitosamente", "", "success").then(() => {
+          this.$router.push('/company/stations-company');
+        });
       } catch (error) {
         console.error("Error creando la estación de carga:", error);
-        alert('Error creando la estación de carga');
+        Swal.fire("Error al crear la estación de carga", "", "error");
       }
+    },
+    removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
   }
 };
