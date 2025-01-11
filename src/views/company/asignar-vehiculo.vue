@@ -144,7 +144,7 @@ export default {
   methods: {
     async fetchFlotas() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/flotas');
+        const response = await axios.get('http://localhost:8088/api/flotas');
         this.flotas = response.data;
       } catch (error) {
         console.error("Error obteniendo las flotas:", error);
@@ -152,7 +152,7 @@ export default {
     },
     async fetchAccountCars() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/accounts/current/cars');
+        const response = await axios.get('http://localhost:8088/api/accounts/current/cars');
         this.cars = response.data;
       } catch (error) {
         console.error("Error obteniendo los autos de la cuenta:", error);
@@ -172,7 +172,7 @@ export default {
       if (this.selectedFlota && this.selectedCars.length > 0) {
         try {
           const carIds = this.selectedCars.map(car => car.id); // Array de IDs de autos
-          await axios.post(`https://app.evolgreen.com/api/flotas/${this.selectedFlota.id}/assign-cars`, carIds);
+          await axios.post(`http://localhost:8088/api/flotas/${this.selectedFlota.id}/assign-cars`, carIds);
 
           Swal.fire({
             title: "Asignación Exitosa!",

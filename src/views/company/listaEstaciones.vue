@@ -230,7 +230,7 @@ export default {
     },
     async ChargingStation() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/chargingStations');
+        const response = await axios.get('http://localhost:8088/api/chargingStations');
         this.estaciones = response.data.map(station => {
           // Agregamos 'expanded' a cada estación
           station.expanded = false;

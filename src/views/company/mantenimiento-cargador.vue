@@ -133,7 +133,7 @@ export default {
   methods: {
     async createMantenimiento() {
       try {
-        await axios.post('https://app.evolgreen.com/api/create-mantenimiento', this.mantenimiento);
+        await axios.post('http://localhost:8088/api/create-mantenimiento', this.mantenimiento);
         Swal.fire("Mantenimiento creado exitosamente!", "", "success");
         this.$router.push('/company/cargadores-company');
       } catch (error) {

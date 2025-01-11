@@ -139,7 +139,7 @@ export default {
     // Cargar los datos del mantenimiento existente
     async loadMantenimientoData() {
       try {
-        const response = await axios.get(`https://app.evolgreen.com/api/mantenimiento/${this.mantenimientoId}`);
+        const response = await axios.get(`http://localhost:8088/api/mantenimiento/${this.mantenimientoId}`);
         this.mantenimiento = {
           descripcion: response.data.descripcion,
           fechaInicial: response.data.fechaInicial,
@@ -155,7 +155,7 @@ export default {
     // Actualizar el mantenimiento existente
     async updateMantenimiento() {
       try {
-        await axios.put(`https://app.evolgreen.com/api/mantenimiento/${this.mantenimientoId}`, this.mantenimiento);
+        await axios.put(`http://localhost:8088/api/mantenimiento/${this.mantenimientoId}`, this.mantenimiento);
         Swal.fire("Mantenimiento actualizado exitosamente!", "", "success");
         this.$router.push('/company/mantenimientos');
       } catch (error) {

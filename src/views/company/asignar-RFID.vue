@@ -153,7 +153,7 @@
     methods: {
       async fetchUnassignedRFIDs() {
         try {
-          const response = await axios.get('https://app.evolgreen.com/api/unassigned-device-identifiers');
+          const response = await axios.get('http://localhost:8088/api/unassigned-device-identifiers');
           this.rfids = response.data;
         } catch (error) {
           console.error("Error obteniendo los RFIDs no asignados:", error);
@@ -161,7 +161,7 @@
       },
       async fetchAccountCars() {
         try {
-          const response = await axios.get('https://app.evolgreen.com/api/accounts/current/cars');
+          const response = await axios.get('http://localhost:8088/api/accounts/current/cars');
           this.cars = response.data;
         } catch (error) {
           console.error("Error obteniendo los autos de la cuenta:", error);
@@ -177,7 +177,7 @@
         if (this.selectedRFID && this.selectedCar) {
           try {
             await axios.patch(
-              `https://app.evolgreen.com/api/accounts/current/device-identifiers/${this.selectedRFID.id}/assign-car`,
+              `http://localhost:8088/api/accounts/current/device-identifiers/${this.selectedRFID.id}/assign-car`,
               { carId: this.selectedCar.id }
             );
   

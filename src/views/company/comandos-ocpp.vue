@@ -31,7 +31,7 @@
                 <th class="sort" scope="col" @click="onSort('ubicacionTerminal')">Ubicación</th>
                 <th class="sort" scope="col" @click="onSort('estadoCargador')">Estado</th>
                 <th class="sort" scope="col">Acciones</th>
-<!--                <th class="sort pe-4" scope="col">HeartBeat</th>-->
+                <th class="sort pe-4" scope="col">Status</th>
               </tr>
               </thead>
               <tbody class="list form-check-all">
@@ -61,6 +61,15 @@
                     <BButton variant="link" class="btn-sm" @click="toggleCollapse(dat)">
                       <i :class="dat.expanded ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'"></i>
                     </BButton>
+                  </td>
+                  <td class="text-center">
+                    <span
+                        @click="verificarStatus(dat.ocppid, dat.id)"
+                        style="cursor: pointer;"
+                        title="Verificar estado"
+                    >
+                      <i class="mdi mdi-help-circle-outline mdi-24px"></i>
+                    </span>
                   </td>
                 </tr>
                 <tr v-if="dat.expanded">
@@ -227,37 +236,60 @@ export default {
       if (conector.selectedAction === "1") {
         this.iniciarCargaRemota(ocppid, conector);
       } else if (conector.selectedAction === "2") {
-        this.detenerCargaRemota(ocppid);
+        this.detenerCargaRemota(ocppid, conector);
       } else if (conector.selectedAction === "3") {
         this.desbloquearConector(ocppid, conector);
       }
     },
     async iniciarCargaRemota(ocppid, conector) {
       try {
+        // Obtener la idTag autorizada
+        const idTagResponse = await axios.get('http://localhost:8088/api/obtener-idTag', {
+          params: { chargePointId: ocppid }
+        });
+
+        const idTag = idTagResponse.data;
+        console.log("idTag obtenida:", idTag);
+
+        // Iniciar la carga remota con la idTag obtenida
         const response = await axios.post(
-            'https://app.evolgreen.com/api/iniciar-carga-remota',
+            'http://localhost:8088/api/iniciar-carga-remota',
             {
-              connectorId: conector.nconector,
-              idTag: "000000302954"
+              connectorId: conector.numeroConector,
+              idTag: idTag
             },
             {
-              params: {
-                chargePointId: ocppid
-              }
+              params: { chargePointId: ocppid }
             }
         );
+
         console.log("Carga remota iniciada exitosamente:", response.data);
       } catch (error) {
         console.error("Error al iniciar la carga remota:", error);
       }
     },
 
-    async detenerCargaRemota(ocppid) {
+    async detenerCargaRemota(ocppid, conector) {
       try {
-        const response = await axios.post(
-            'https://app.evolgreen.com/api/detener-carga-remota',
+        // 1. Llamar al endpoint para obtener el transactionId
+        const obtenerTransaccionResponse = await axios.get(
+            'http://localhost:8088/api/obtener-transaccion',
             {
-              transactionId: 12345
+              params: {
+                ocppId: ocppid,
+                numeroConector: conector.nconector
+              }
+            }
+        );
+
+        const transactionId = obtenerTransaccionResponse.data;
+        console.log("TransactionId obtenido:", transactionId);
+
+        // 2. Llamar al endpoint para detener la carga remota
+        const detenerCargaResponse = await axios.post(
+            'http://localhost:8088/api/detener-carga-remota',
+            {
+              transactionId: transactionId
             },
             {
               params: {
@@ -265,7 +297,8 @@ export default {
               }
             }
         );
-        console.log("Carga remota detenida exitosamente:", response.data);
+
+        console.log("Carga remota detenida exitosamente:", detenerCargaResponse.data);
       } catch (error) {
         console.error("Error al detener la carga remota:", error);
       }
@@ -274,7 +307,7 @@ export default {
     async desbloquearConector(ocppid, conector) {
       try {
         const response = await axios.post(
-            'https://app.evolgreen.com/api/unlock-connector',
+            'http://localhost:8088/api/unlock-connector',
             {
               connectorId: conector.nconector
             },
@@ -293,7 +326,7 @@ export default {
     async reiniciarConector(ocppid) {
       try {
         const response = await axios.post(
-            'https://app.evolgreen.com/api/reset-cargador',
+            'http://localhost:8088/api/reset-cargador',
             {
               type: "hard"
             },
@@ -306,6 +339,52 @@ export default {
         console.log("Reinicio de cargador exitoso:", response.data);
       } catch (error) {
         console.error("Error al reiniciar el cargador:", error);
+      }
+    },
+    async verificarStatus(ocppid, chargerId) {
+      try {
+        // 1. Llama al endpoint para enviar el heartbeat
+        const response = await axios.post(
+            'http://localhost:8088/api/trigger-heartbeat',
+            { requestedMessage: "Heartbeat" },
+            { params: { chargePointId: ocppid } }
+        );
+
+        console.log("Estado verificado exitosamente:", response.data);
+
+        // 2. Si el heartbeat tuvo éxito, cambia el estado a ACTIVE
+        await axios.patch(
+            'http://localhost:8088/api/chargerStatus/change-active-status',
+            null,
+            {
+              params: {
+                id: chargerId,
+                activeStatus: 'ACTIVE'
+              }
+            }
+        );
+        console.log("Estado del cargador actualizado a ACTIVE");
+
+        // 3. Actualiza la lista de cargadores
+        await this.chargesStation();
+      } catch (error) {
+        console.error("Error al verificar el estado del cargador:", error);
+
+        // 4. Si el heartbeat falla, cambia el estado a INACTIVE
+        await axios.patch(
+            'http://localhost:8088/api/chargerStatus/change-active-status',
+            null,
+            {
+              params: {
+                id: chargerId,
+                activeStatus: 'INACTIVE'
+              }
+            }
+        );
+        console.log("Estado del cargador actualizado a INACTIVE");
+
+        // 5. Actualiza la lista de cargadores
+        await this.chargesStation();
       }
     },
     goToPage(pageNumber) {
@@ -344,7 +423,7 @@ export default {
     },
     async chargesStation() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/chargers');
+        const response = await axios.get('http://localhost:8088/api/chargers');
         this.data = response.data
             .map(charger => {
           charger.conectores = charger.conectores.map(conector => {

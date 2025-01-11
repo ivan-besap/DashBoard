@@ -86,7 +86,7 @@
     methods: {
       async loadChargingStation() {
         try {
-          const response = await axios.get(`https://app.evolgreen.com/api/chargingStations/${this.stationId}`);
+          const response = await axios.get(`http://localhost:8088/api/chargingStations/${this.stationId}`);
           this.chargingStation = response.data;
         } catch (error) {
           console.error("Error cargando la estación de carga:", error);
@@ -94,7 +94,7 @@
       },
       async updateChargingStation() {
         try {
-          await axios.put(`https://app.evolgreen.com/api/companies/current/chargingStations/${this.stationId}`, this.chargingStation);
+          await axios.put(`http://localhost:8088/api/companies/current/chargingStations/${this.stationId}`, this.chargingStation);
           Swal.fire("Estacion Actualizada!", "", "success").then(() => {
             this.$router.push('/company/stations-company');
           });

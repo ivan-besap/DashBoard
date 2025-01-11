@@ -205,7 +205,7 @@ export default {
   methods: {
     // async sendHeartbeat(ocppid) {
     //   try {
-    //     const response = await axios.post('https://app.evolgreen.com/api/ocpp/enviar-heartbeat', null, {
+    //     const response = await axios.post('http://localhost:8088/api/ocpp/enviar-heartbeat', null, {
     //       params: {
     //         ocppid: ocppid,
     //         enableAutomatic: true  // Nuevo parámetro para habilitar el envío automático
@@ -226,7 +226,7 @@ export default {
     },
     async cambiarActivoCargador(id, estadoCargador) {
       try {
-        const response = await axios.patch('https://app.evolgreen.com/api/chargerStatus/change-active-status', null, {
+        const response = await axios.patch('http://localhost:8088/api/chargerStatus/change-active-status', null, {
           params: {
             id: id,
             activeStatus: estadoCargador
@@ -242,7 +242,7 @@ export default {
     },
     async chargesStation() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/chargers');
+        const response = await axios.get('http://localhost:8088/api/chargers');
         this.data = response.data
       } catch (error) {
         console.error("Error obteniendo las estaciones de carga:", error);
@@ -299,7 +299,7 @@ export default {
         if (result.isConfirmed) {
           try {
             // Hacer la solicitud PUT al endpoint para "eliminar" el cargador
-            const response = await axios.patch(`https://app.evolgreen.com/api/companies/current/chargers/${chargerId}/delete`);
+            const response = await axios.patch(`http://localhost:8088/api/companies/current/chargers/${chargerId}/delete`);
             if (response.status === 200) {
               Swal.fire(
                   "¡Eliminado!",
