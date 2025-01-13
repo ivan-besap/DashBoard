@@ -161,7 +161,7 @@
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import axios from 'axios';
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -263,9 +263,12 @@ export default {
             }
         );
 
-        console.log("Carga remota iniciada exitosamente:", response.data);
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("Carga remota iniciada exitosamente!", "", "success");
+        }
       } catch (error) {
         console.error("Error al iniciar la carga remota:", error);
+        Swal.fire("Error al iniciar la carga remota", error.message, "error");
       }
     },
 
@@ -298,9 +301,12 @@ export default {
             }
         );
 
-        console.log("Carga remota detenida exitosamente:", detenerCargaResponse.data);
+        if (detenerCargaResponse.status === 200 || detenerCargaResponse.status === 201) {
+          Swal.fire("Carga remota detenida exitosamente!", "", "success");
+        }
       } catch (error) {
         console.error("Error al detener la carga remota:", error);
+        Swal.fire("Error al detener la carga remota", error.message, "error");
       }
     },
 
@@ -317,9 +323,12 @@ export default {
               }
             }
         );
-        console.log("Conector desbloqueado exitosamente:", response.data);
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("Conector desbloqueado exitosamente!", "", "success");
+        }
       } catch (error) {
         console.error("Error al desbloquear el conector:", error);
+        Swal.fire("Error al desbloquear el conector", error.message, "error");
       }
     },
 
@@ -328,7 +337,7 @@ export default {
         const response = await axios.post(
             'http://localhost:8088/api/reset-cargador',
             {
-              type: "hard"
+              type: "Hard"
             },
             {
               params: {
@@ -336,54 +345,48 @@ export default {
               }
             }
         );
-        console.log("Reinicio de cargador exitoso:", response.data);
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("Reinicio de cargador exitoso!", "", "success");
+        }
       } catch (error) {
         console.error("Error al reiniciar el cargador:", error);
+        Swal.fire("Error al reiniciar el cargador", error.message, "error");
       }
     },
     async verificarStatus(ocppid, chargerId) {
       try {
-        // 1. Llama al endpoint para enviar el heartbeat
         const response = await axios.post(
             'http://localhost:8088/api/trigger-heartbeat',
             { requestedMessage: "Heartbeat" },
             { params: { chargePointId: ocppid } }
         );
 
-        console.log("Estado verificado exitosamente:", response.data);
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire("Heartbeat enviado con éxito!", "", "success");
 
-        // 2. Si el heartbeat tuvo éxito, cambia el estado a ACTIVE
-        await axios.patch(
-            'http://localhost:8088/api/chargerStatus/change-active-status',
-            null,
-            {
-              params: {
-                id: chargerId,
-                activeStatus: 'ACTIVE'
+          await axios.patch(
+              'http://localhost:8088/api/chargerStatus/change-active-status',
+              null,
+              {
+                params: { id: chargerId, activeStatus: 'ACTIVE' },
               }
-            }
-        );
-        console.log("Estado del cargador actualizado a ACTIVE");
+          );
 
-        // 3. Actualiza la lista de cargadores
-        await this.chargesStation();
+          Swal.fire("Estado del cargador actualizado a ACTIVE!", "", "success");
+          await this.chargesStation();
+        }
       } catch (error) {
         console.error("Error al verificar el estado del cargador:", error);
 
-        // 4. Si el heartbeat falla, cambia el estado a INACTIVE
         await axios.patch(
             'http://localhost:8088/api/chargerStatus/change-active-status',
             null,
             {
-              params: {
-                id: chargerId,
-                activeStatus: 'INACTIVE'
-              }
+              params: { id: chargerId, activeStatus: 'INACTIVE' },
             }
         );
-        console.log("Estado del cargador actualizado a INACTIVE");
 
-        // 5. Actualiza la lista de cargadores
+        Swal.fire("Estado del cargador actualizado a INACTIVE!", "", "warning");
         await this.chargesStation();
       }
     },
