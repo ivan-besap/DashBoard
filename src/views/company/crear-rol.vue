@@ -80,7 +80,7 @@ export default {
   methods: {
     fetchPermisos() {
       axios
-          .get("https://app.evolgreen.com/api/permissions")
+          .get("http://localhost:8088/api/permissions")
           .then((response) => {
             this.permisos = response.data;
           })
@@ -100,7 +100,7 @@ export default {
       };
 
       axios
-          .post("https://app.evolgreen.com/api/create-role", roleData)
+          .post("http://localhost:8088/api/create-role", roleData)
           .then(() => {
             Swal.fire({
               title: "Rol creado!",

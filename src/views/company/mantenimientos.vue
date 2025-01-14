@@ -148,7 +148,7 @@ export default {
     },
     async fetchMantenimientos() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/mantenimientos');
+        const response = await axios.get('http://localhost:8088/api/mantenimientos');
         this.data = response.data;
       } catch (error) {
         console.error("Error obteniendo los mantenimientos:", error);
@@ -211,7 +211,7 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await axios.patch(`https://app.evolgreen.com/api/mantenimiento/${mantenimientoId}`);
+            const response = await axios.patch(`http://localhost:8088/api/mantenimiento/${mantenimientoId}`);
             if (response.status === 200 || response.status === 201) {
               Swal.fire("¡Mantenimiento eliminado!", "", "success").then(() => {
                 this.$router.go(0);

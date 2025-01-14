@@ -115,7 +115,7 @@ export default {
     async fetchDeviceIdentifierData() {
       const deviceId = this.$route.params.id;
       try {
-        const response = await axios.get(`https://app.evolgreen.com/api/accounts/current/deviceIdentifiers/${deviceId}`);
+        const response = await axios.get(`http://localhost:8088/api/accounts/current/deviceIdentifiers/${deviceId}`);
         this.deviceIdentifier = response.data;
         if(response.data.auto === null){
           this.deviceIdentifier.auto = ''
@@ -127,7 +127,7 @@ export default {
     // Obtener lista de autos
     async fetchCars() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/accounts/current/cars');
+        const response = await axios.get('http://localhost:8088/api/accounts/current/cars');
         this.cars = response.data.map(car => ({
           label: car.patente,
           value: car.id
@@ -148,7 +148,7 @@ export default {
         };
 
         await axios.put(
-          `https://app.evolgreen.com/api/accounts/current/device-identifiers/${deviceId}`,
+          `http://localhost:8088/api/accounts/current/device-identifiers/${deviceId}`,
           updatedData
         );
 

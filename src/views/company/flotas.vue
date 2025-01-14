@@ -142,7 +142,7 @@ export default {
     },
     async fetchFlota() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/flotas');
+        const response = await axios.get('http://localhost:8088/api/flotas');
         this.data = response.data.map(flota => ({
           ...flota,
           expanded: false, // Propiedad para controlar el despliegue de autos asignados
@@ -211,7 +211,7 @@ export default {
 
     async deleteFlota(flotaId) {
       try {
-        const response = await axios.patch(`https://app.evolgreen.com/api/flotas/${flotaId}/delete`);
+        const response = await axios.patch(`http://localhost:8088/api/flotas/${flotaId}/delete`);
         if (response.status === 200) {
           Swal.fire(
               "¡Eliminado!",

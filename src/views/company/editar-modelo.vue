@@ -69,7 +69,7 @@ export default {
   methods: {
     async loadModel() {
       try {
-        const response = await axios.get(`https://app.evolgreen.com/api/models/${this.modelId}`);
+        const response = await axios.get(`http://localhost:8088/api/models/${this.modelId}`);
         this.model = response.data;
       } catch (error) {
         console.error("Error cargando el modelo:", error);
@@ -77,7 +77,7 @@ export default {
     },
     async updateModel() {
       try {
-        await axios.put(`https://app.evolgreen.com/api/models/${this.modelId}`, this.model);
+        await axios.put(`http://localhost:8088/api/models/${this.modelId}`, this.model);
         Swal.fire("Modelo Actualizado!", "", "success").then(() => {
           this.$router.push('/company/charger-models');
         });

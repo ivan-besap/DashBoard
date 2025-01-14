@@ -98,7 +98,7 @@ export default {
   methods: {
     async createDeviceIdentifier() {
       try {
-        const response = await axios.post('https://app.evolgreen.com/api/accounts/current/device-identifiers', this.deviceIdentifier);
+        const response = await axios.post('http://localhost:8088/api/accounts/current/device-identifiers', this.deviceIdentifier);
         if (response.status === 200 || response.status === 201){
           Swal.fire({
             title: "Tarjeta RFID Creada!",

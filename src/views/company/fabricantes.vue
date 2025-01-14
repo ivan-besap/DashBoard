@@ -154,7 +154,7 @@ export default {
     },
     async manufacturers() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/manufacturers');
+        const response = await axios.get('http://localhost:8088/api/manufacturers');
         this.data = response.data
       } catch (error) {
         console.error("Error obteniendo las estaciones de carga:", error);
@@ -211,7 +211,7 @@ export default {
         if (result.isConfirmed) {
           try {
             // Hacer la solicitud PUT al endpoint para "eliminar" la estación
-            const response = await axios.patch(`https://app.evolgreen.com/api/manufacturers/${manufacturerId}`);
+            const response = await axios.patch(`http://localhost:8088/api/manufacturers/${manufacturerId}`);
             if (response.status === 200 || response.status === 201){
               Swal.fire("¡Fabricante eliminado!", "", "success").then(() => {
                 this.$router.go(0);

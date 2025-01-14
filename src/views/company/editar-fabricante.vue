@@ -69,7 +69,7 @@ export default {
   methods: {
     async loadManufacturer() {
       try {
-        const response = await axios.get(`https://app.evolgreen.com/api/manufacturers/${this.manufacturerId}`);
+        const response = await axios.get(`http://localhost:8088/api/manufacturers/${this.manufacturerId}`);
         this.manufacturer = response.data;
       } catch (error) {
         console.error("Error cargando el fabricante:", error);
@@ -77,7 +77,7 @@ export default {
     },
     async updateManufacturer() {
       try {
-        await axios.put(`https://app.evolgreen.com/api/manufacturers/${this.manufacturerId}`, this.manufacturer);
+        await axios.put(`http://localhost:8088/api/manufacturers/${this.manufacturerId}`, this.manufacturer);
         Swal.fire("Fabricante Actualizado!", "", "success").then(() => {
           this.$router.push('/company/charger-manufacturer');
         });

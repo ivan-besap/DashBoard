@@ -190,7 +190,7 @@ export default {
     },
     async createCharger() {
       try {
-        const response = await axios.post('https://app.evolgreen.com/api/companies/current/chargers', this.charger);
+        const response = await axios.post('http://localhost:8088/api/companies/current/chargers', this.charger);
         if (response.status === 200 || response.status === 201) {
           this.charger.oCPPid = '';
           this.charger.nombre = '';
@@ -209,7 +209,7 @@ export default {
     },
     async chargerManufacturers() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/manufacturers');
+        const response = await axios.get('http://localhost:8088/api/manufacturers');
         this.manufacturers = response.data.map(data => ({
           label: data.name,
           value: data.id
@@ -220,7 +220,7 @@ export default {
     },
     async chargerModels() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/models');
+        const response = await axios.get('http://localhost:8088/api/models');
         this.models = response.data.map(data => ({
           label: data.name,
           value: data.id
@@ -231,7 +231,7 @@ export default {
     },
     async chargingStations2() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/chargingStations');
+        const response = await axios.get('http://localhost:8088/api/chargingStations');
         this.chargingStations = response.data.map(data => ({
           label: data.nombreTerminal,
           value: data.id

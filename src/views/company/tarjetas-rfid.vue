@@ -159,7 +159,7 @@ export default {
   methods: {
     async cambiarActivoRfid(id, estado) {
       try {
-        const response = await axios.patch('https://app.evolgreen.com/api/rfidStatus/change-active-status', null, {
+        const response = await axios.patch('http://localhost:8088/api/rfidStatus/change-active-status', null, {
           params: {
             id: id,
             usable: estado
@@ -180,14 +180,14 @@ export default {
     },
     async fetchDeviceIdentifiers() {
       try {
-        const response = await axios.get('https://app.evolgreen.com/api/empresa/current/deviceIdentifiers');
+        const response = await axios.get('http://localhost:8088/api/empresa/current/deviceIdentifiers');
         const devices = response.data;
         
         // Obtener los detalles del auto asociado (patente)
         const deviceWithCarDetails = await Promise.all(
           devices.map(async (device) => {
             if (device.auto) {
-              const carResponse = await axios.get(`https://app.evolgreen.com/api/accounts/current/cars/${device.auto}`);
+              const carResponse = await axios.get(`http://localhost:8088/api/accounts/current/cars/${device.auto}`);
               device.patente = carResponse.data.patente;
             } else {
               device.patente = 'No asignada'; 
@@ -263,7 +263,7 @@ export default {
           if (result.isConfirmed) {
               try {
                   await axios.patch(
-                      `https://app.evolgreen.com/api/accounts/current/device-identifiers/${rfidId}/delete`
+                      `http://localhost:8088/api/accounts/current/device-identifiers/${rfidId}/delete`
                   );
 
                   Swal.fire("Tarjeta RFID eliminada", "", "success");

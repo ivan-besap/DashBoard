@@ -187,7 +187,7 @@ export default {
         diasDeLaSemana: diasSinTildes
       };
       try {
-        await axios.post('https://app.evolgreen.com/api/fees', tarifaParaEnviar);
+        await axios.post('http://localhost:8088/api/fees', tarifaParaEnviar);
         this.successmsg();
       } catch (error) {
         console.error("Error creando la tarifa:", error);

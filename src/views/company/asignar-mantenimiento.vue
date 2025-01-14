@@ -174,7 +174,7 @@ export default {
 
   methods: {
     fetchMantenimientos() {
-      axios.get("https://app.evolgreen.com/api/mantenimientos")
+      axios.get("http://localhost:8088/api/mantenimientos")
           .then(response => {
             this.mantenimientos = response.data;
           })
@@ -184,7 +184,7 @@ export default {
     },
 
     fetchCargadores() {
-      axios.get("https://app.evolgreen.com/api/chargers")
+      axios.get("http://localhost:8088/api/chargers")
           .then(response => {
             this.cargadores = response.data;
           })
@@ -218,7 +218,7 @@ export default {
       if (this.selectedMantenimiento && this.selectedCargadores.length > 0) {
         // Mapeamos cada cargador seleccionado y realizamos una solicitud PATCH
         const requests = this.selectedCargadores.map(cargador => {
-          return axios.patch(`https://app.evolgreen.com/api/asignar-mantenimiento`, null, {
+          return axios.patch(`http://localhost:8088/api/asignar-mantenimiento`, null, {
             params: {
               cargadorId: cargador.id,
               mantenimientoId: this.selectedMantenimiento.id

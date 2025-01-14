@@ -162,7 +162,7 @@ export default {
 
   methods: {
     fetchTarifas() {
-      axios.get("https://app.evolgreen.com/api/fees")
+      axios.get("http://localhost:8088/api/fees")
           .then(response => {
             this.tarifas = response.data;
           })
@@ -172,7 +172,7 @@ export default {
     },
 
     fetchConnectors() {
-      axios.get("https://app.evolgreen.com/api/connectors")
+      axios.get("http://localhost:8088/api/connectors")
           .then(response => {
             this.connectors = response.data;
           })
@@ -206,7 +206,7 @@ export default {
       if (this.selectedTarifa && this.selectedConnectors.length > 0) {
         // Mapeamos cada conector seleccionado y realizamos una solicitud PATCH
         const requests = this.selectedConnectors.map(conector => {
-          return axios.patch(`https://app.evolgreen.com/api/connectors/${conector.id}/assign-fee`, null, {
+          return axios.patch(`http://localhost:8088/api/connectors/${conector.id}/assign-fee`, null, {
             params: {
               tarifaId: this.selectedTarifa.id
             }

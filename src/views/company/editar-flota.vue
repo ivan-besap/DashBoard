@@ -67,7 +67,7 @@ export default {
   methods: {
     async fetchFlota() {
       try {
-        const response = await axios.get(`https://app.evolgreen.com/api/flotas/${this.flotaId}`);
+        const response = await axios.get(`http://localhost:8088/api/flotas/${this.flotaId}`);
         this.flotaNombre = response.data.nombreFlota;
         this.precioFlota = response.data.precioFlota;
       } catch (error) {
@@ -89,7 +89,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.put(`https://app.evolgreen.com/api/flotas/${this.flotaId}`, {
+        const response = await axios.put(`http://localhost:8088/api/flotas/${this.flotaId}`, {
           nombreFlota: this.flotaNombre,
           precioFlota: this.precioFlota,
         });
