@@ -24,12 +24,12 @@
                   </BCol>
                   <BCol md="6">
                     <div class="mb-3">
-                      <label for="firstSurname" class="form-label">Rut</label>
+                      <label for="firstSurname" class="form-label">DNI</label>
                       <BFormInput
                           v-model="employee.rut"
                           type="text"
                           class="form-control"
-                          placeholder="Rut"
+                          placeholder="Dni"
                           id="rut"
                           required
                       />
