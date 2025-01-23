@@ -39,12 +39,13 @@
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" scope="col" @click="onSort('estacionDeCarga')">Estación de Carga</th>
-              <th class="sort" scope="col" @click="onSort('conector')">Conector</th>
+              <th class="sort pe-4" scope="col" @click="onSort('conector')">Conector</th>
               <th class="sort" scope="col" @click="onSort('inicioCarga')">Inicio de Carga</th>
               <th class="sort" scope="col" @click="onSort('finCarga')">Fin Carga</th>
               <th class="sort" scope="col" @click="onSort('usuario')">Usuario</th>
               <th class="sort" scope="col" @click="onSort('idCargador')">ID Cargador</th>
               <th class="sort" scope="col" @click="onSort('energia')">Energía</th>
+              <th class="sort pe-4" scope="col" @click="onSort('costo')">Costo</th>
               <th class="sort" scope="col" @click="onSort('tiempo')">Tiempo</th>
             </tr>
             </thead>
@@ -57,6 +58,7 @@
               <td>{{ dat.usuario }}</td>
               <td>{{ dat.idCargador }}</td>
               <td>{{ dat.energia }} kWh</td>
+              <td>${{ dat.costo }} </td>
               <td>{{ dat.tiempo }}</td>
             </tr>
             </tbody>
@@ -152,7 +154,8 @@ export default {
               data.usuario.toLowerCase().includes(search) ||
               data.idCargador.toLowerCase().includes(search) ||
               data.energia.toLowerCase().includes(search) ||
-              data.tiempo.toLowerCase().includes(search)
+              data.tiempo.toLowerCase().includes(search) ||
+              data.costo.toString().toLowerCase().includes(search)
           );
         });
       }
@@ -199,8 +202,11 @@ export default {
     },
     formatDate(value) {
       if (!value) return '';
-      const date = new Date(value);
-      return date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+
+      const [datePart, timePart] = value.split('T'); // Divide en "YYYY-MM-DD" y "HH:mm:ss.511174"
+      const time = timePart ? timePart.split('.')[0] : '00:00:00'; // Toma solo "HH:mm:ss"
+
+      return `${datePart} ${time}`; // Combina la fecha y la hora
     },
     updateSearchQuery() {
     },

@@ -53,7 +53,7 @@
                     <BButton
                         variant="link"
                         class="btn-sm"
-                        @click="reiniciarConector(dat.ocppid)"
+                        @click="confirmReiniciarConector(dat.ocppid)"
                         style="cursor: pointer;"
                     >
                       Reiniciar
@@ -329,6 +329,26 @@ export default {
       } catch (error) {
         console.error("Error al desbloquear el conector:", error);
         Swal.fire("Error al desbloquear el conector", error.message, "error");
+      }
+    },
+
+    async confirmReiniciarConector(ocppid) {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "¿Quieres reiniciar el cargador?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, reiniciar",
+        cancelButtonText: "No, cancelar",
+        reverseButtons: true,
+      });
+
+      if (result.isConfirmed) {
+        // Si el usuario confirma, ejecuta la acción de reinicio
+        this.reiniciarConector(ocppid);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // Si el usuario cancela, muestra un mensaje opcional o simplemente cierra
+        Swal.fire("Cancelado", "El reinicio fue cancelado", "info");
       }
     },
 

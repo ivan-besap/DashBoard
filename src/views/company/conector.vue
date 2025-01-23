@@ -39,6 +39,7 @@
             <table class="table align-middle table-nowrap" id="customerTable">
               <thead class="table-light text-muted">
               <tr>
+                <th class="sort" data-sort="current_value" scope="col" @click="onSort('estacion')">Estación De Carga</th>
                 <th class="sort" data-sort="current_value" scope="col" @click="onSort('alias')">Alias</th>
                 <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('tipoConector')">Tipo Conector</th>
                 <th class="sort" data-sort="high" scope="col" @click="onSort('chargerOcppId')">Cargador</th>
@@ -54,6 +55,7 @@
               </thead>
               <tbody class="list form-check-all">
               <tr v-for="(dat, index) in resultQuery" :key="index">
+                <td>{{ dat.nombreTerminal }}</td>
                 <td>{{ dat.alias }}</td>
 <!--                <td class="pairs">{{ dat.connectorType }}</td>-->
                 <td>{{ dat.tipoConector.nombre }}</td>

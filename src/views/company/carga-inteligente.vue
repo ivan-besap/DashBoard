@@ -5,21 +5,24 @@ import PageHeader from "@/components/page-header.vue";
 import Layout from "@/layouts/main.vue";
 
 const configuraciones = ref([
-  { nombre: "MeterValuesSampledData", valor: "Energy.Active.Import.Register,Current.Import,Voltage,Power.Active.Import" },
-  { nombre: "MeterValueSampleInterval", valor: "30" },
-  { nombre: "SupportedFeatureProfiles", valor: "Core,FirmwareManagement,LocalAuthListManagement,SmartCharging,RemoteTrigger" },
-  { nombre: "LocalAuthListEnabled", valor: "false" },
-  { nombre: "AuthorizeRemoteTxRequests", valor: "true" },
-  { nombre: "WebSocketPingInterval", valor: "60" },
-  { nombre: "MaxChargingProfilesInstalled", valor: "7" },
-  { nombre: "ChargingScheduleMaxPeriods", valor: "7" },
-  { nombre: "ChargeProfileMaxStackLevel", valor: "5" },
-  { nombre: "ConnectionUrl", valor: "ws://demo.ocpp.evolgreen.link/v1_6/" },
-  { nombre: "maxIntensitySocket", valor: "50" },
-  { nombre: "NumberOfConnectors", valor: "1" },
-  { nombre: "ConnectorPhaseRotation", valor: "1.NotApplicable" },
-  { nombre: "ConnectionTimeOut", valor: "30" },
-  { nombre: "HeartbeatInterval", valor: "20" }
+  { nombre: "connectorId", valor: "1" },
+  { nombre: "chargingProfileId", valor: "4" },
+  { nombre: "transactionId", valor: "223332" },
+  { nombre: "stackLevel", valor: "2" },
+  { nombre: "chargingProfilePurpose", valor: "TxProfile" },
+  { nombre: "chargingProfileKind", valor: "Absolute" },
+  { nombre: "recurrencyKind", valor: "Daily" },
+  { nombre: "validFrom", valor: "2025-01-15T00:00:00Z" },
+  { nombre: "validTo", valor: "2025-01-16T00:00:00Z" },
+  { nombre: "chargingSchedule", valor: "" },
+  { nombre: "duration", valor: "3600" },
+  { nombre: "startSchedule", valor: "2025-01-15T00:00:00Z" },
+  { nombre: "chargingRateUnit", valor: "A" },
+  { nombre: "chargingSchedulePeriod", valor: "" },
+  { nombre: "startPeriod", valor: "0" },
+  { nombre: "limit", valor: "32" },
+  { nombre: "numberPhases", valor: "3" },
+  { nombre: "minChargingRate", valor: "1" }
 ]);
 
 const guardarConfiguracion = (index) => {
@@ -33,7 +36,7 @@ const guardarConfiguracion = (index) => {
 
 <template>
   <Layout>
-    <PageHeader title="Carga Inteligente" pageTitle="Compañía" />
+    <PageHeader title="Perfil de carga" pageTitle="Compañía" />
       <div>
         <BCard no-body class="card-body">
           <BCardBody>
