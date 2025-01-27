@@ -3,6 +3,7 @@ import Layout from "@/layouts/main.vue";
 import {CountTo} from "vue3-count-to";
 import getChartColorsArray from "@/common/getChartColorsArray";
 import PageHeader from "@/components/page-header"
+import axios from 'axios';
 
 import {
   basicLineChart,
@@ -17,14 +18,34 @@ export default {
       zoomableChart: zoomableChart,
       dailyEnergy: 2213.88,
       maxPower: 188.40,
+      totalEnergyConsumed: 0, // Estado inicial
      
     };
   },
   mounted() {
+    this.fetchEnergyData();
     this.updateValues();
+
     setInterval(this.updateValues, 25000);
   },
   methods: {
+
+    async fetchEnergyData() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8088/api/transactionInfo/chargePoints",
+          {
+            params: {
+              empresaId: 1, // Parámetro enviado en la solicitud
+            },
+          }
+        );
+        // Actualiza el valor de totalEnergyConsumed con la respuesta de la API
+        this.totalEnergyConsumed = response.data.totalEnergyConsumed;
+      } catch (error) {
+        console.error("Error al obtener datos de la API:", error);
+      }
+    },
     updateValues() {
       this.dailyEnergy = (Math.random() * (2500 - 2000) + 2000).toFixed(2);
       this.maxPower = (Math.random() * (200 - 150) + 150).toFixed(2);
@@ -233,7 +254,7 @@ export default {
                  
                   <img src="../../assets/images/gas-station-fuel-svgrepo-com.svg" width="40px">
               
-                  <p class="mb-0 w-40" style="font-size: 25px;">{{ dailyEnergy }} kWh</p>
+                  <p class="mb-0 w-40" style="font-size: 25px;">{{ totalEnergyConsumed }} kWh</p>
                 </div>
               </BCardBody>
             </BCol>
