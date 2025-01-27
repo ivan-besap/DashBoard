@@ -255,7 +255,7 @@ export default {
         const response = await axios.post(
             'http://localhost:8088/api/iniciar-carga-remota',
             {
-              connectorId: conector.numeroConector,
+              connectorId: conector.nconector,
               idTag: idTag
             },
             {
