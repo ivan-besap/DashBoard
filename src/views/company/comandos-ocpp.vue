@@ -178,6 +178,7 @@ export default {
       sortBy: null,
       sortDesc: false,
       intervalId: null,
+      permisos:[]
     };
   },
   computed: {
@@ -461,9 +462,15 @@ export default {
         console.error("Error obteniendo las estaciones de carga:", error);
       }
     },
+    loadUserData() {
+      const userDataString = localStorage.getItem('userData');
+      this.userData = JSON.parse(userDataString);
+      this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
+    },
   },
   mounted() {
     this.chargesStation();
+    this.loadUserData();
     // this.intervalId = setInterval(this.fetchMeterValues, 10000);
   },
 };

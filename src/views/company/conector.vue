@@ -73,8 +73,20 @@
 <!--                <td>{{ dat.potenciaMaxima }}</td>-->
 <!--                <td>{{ dat.voltajeMaximo }}</td>-->
                 <td class="d-flex align-items-center">
-                  <span :class="dat.estadoConector === 'CONNECTED' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
-                    {{ dat.estadoConector === 'CONNECTED' ? 'Conectado' : 'Desconectado' }}
+                  <span
+                      :class="{
+                        'badge bg-success': dat.estadoConector === 'CONNECTED',
+                        'badge bg-secondary': dat.estadoConector === 'DISCONNECTED',
+                        'badge bg-primary text-white': dat.estadoConector === 'OCCUPIED'
+                      }"
+                      class="me-2 mt-2 mb-2"
+                      style="font-size: 12px"
+                  >
+                  {{
+                      dat.estadoConector === 'CONNECTED' ? 'Conectado' :
+                      dat.estadoConector === 'OCCUPIED' ? 'Cargando' :
+                      'Desconectado'
+                  }}
                   </span>
                   <BFormCheckbox  v-if="permisos.includes(64)"
                       v-model="dat.estadoConector"

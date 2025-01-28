@@ -1,121 +1,132 @@
 <script>
+import { ref, reactive, watchEffect, onMounted } from "vue";
 import Layout from "@/layouts/main.vue";
-import {CountTo} from "vue3-count-to";
+import { CountTo } from "vue3-count-to";
 import getChartColorsArray from "@/common/getChartColorsArray";
-import PageHeader from "@/components/page-header"
-import axios from 'axios';
-
-import {
-  basicLineChart,
-  zoomableChart,
-  
-} from "../charts/apex/line/data";
+import PageHeader from "@/components/page-header";
+import axios from "axios";
+import { basicLineChart, zoomableChart } from "../charts/apex/line/data";
 
 export default {
-  data() {
-    return {
-      basicLineChart: basicLineChart,
-      zoomableChart: zoomableChart,
-      dailyEnergy: 2213.88,
-      maxPower: 188.40,
-      totalEnergyConsumed: 0, // Estado inicial
-     
-    };
+  components: {
+    CountTo,
+    Layout,
+    PageHeader
   },
-  mounted() {
-    this.fetchEnergyData();
-    this.updateValues();
+  setup() {
+    // Variables reactivas
+    const empresa = ref(null);
+    const totalEnergyConsumed = ref(0);
+    const totalConnectors = ref(0);
+    const loading = ref(0);
+    const available = ref(0);
+    const disconnected = ref(0);
 
-    setInterval(this.updateValues, 25000);
-  },
-  methods: {
-
-    async fetchEnergyData() {
-      try {
-        const response = await axios.get(
-          "http://localhost:8088/api/transactionInfo/chargePoints",
-          {
-            params: {
-              empresaId: 1, // Parámetro enviado en la solicitud
+    // Estado del gráfico de dona
+    const donutChart = reactive({
+      series: [0, 0, 0], // Inicializa con valores vacíos
+      chartOptions: {
+        chart: {
+          height: 300,
+          type: "donut",
+        },
+        legend: {
+          position: "bottom",
+        },
+        dataLabels: {
+          enabled: false, // Deshabilita los porcentajes
+        },
+        labels: ["Cargando", "Disponible", "Sin conexión"],
+        colors: ["#7367F0", "#28C76F", "#EA5455"], // Azul, Verde, Rojo
+        annotations: {
+          position: "front",
+          texts: [
+            {
+              text: "Conectores",
+              x: "50%",
+              y: "45%",
+              textAnchor: "middle",
+              fontSize: "20px",
+              fontFamily: "Helvetica, Arial, sans-serif",
+              fontWeight: "bold",
+              cssClass: "apexcharts-custom-annotation",
             },
-          }
-        );
-        // Actualiza el valor de totalEnergyConsumed con la respuesta de la API
-        this.totalEnergyConsumed = response.data.totalEnergyConsumed;
+            {
+              text: "0", // Se actualizará dinámicamente
+              x: "50%",
+              y: "55%",
+              textAnchor: "middle",
+              fontSize: "20px",
+              fontFamily: "Helvetica, Arial, sans-serif",
+              fontWeight: "bold",
+              cssClass: "apexcharts-custom-annotation",
+            },
+          ],
+        },
+      },
+    });
+
+    // Método para obtener conectores
+    const fetchConectores = async () => {
+      try {
+        const response = await axios.get("http://localhost:8088/api/connectors");
+        const connectors = response.data;
+
+        // Actualizar valores reactivos
+        loading.value = connectors.filter(c => c.estadoConector === "OCCUPIED").length;
+        available.value = connectors.filter(c => c.estadoConector === "CONNECTED").length;
+        disconnected.value = connectors.filter(c => c.estadoConector === "DISCONNECTED").length;
+
+        totalConnectors.value = connectors.length;
+        console.log("Total conectores:", totalConnectors.value);
+      } catch (error) {
+        console.error("Error al obtener los conectores:", error);
+      }
+    };
+
+    // Método para obtener el consumo de energía
+    const fetchEnergyData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8088/api/transactionInfo/chargePoints", {
+          params: { empresaId: 1 }
+        });
+        totalEnergyConsumed.value = response.data.totalEnergyConsumed;
       } catch (error) {
         console.error("Error al obtener datos de la API:", error);
       }
-    },
-    updateValues() {
-      this.dailyEnergy = (Math.random() * (2500 - 2000) + 2000).toFixed(2);
-      this.maxPower = (Math.random() * (200 - 150) + 150).toFixed(2);
-    },
-  },
+    };
 
-  setup() {
+    // 🟢 **watchEffect para actualizar el gráfico dinámicamente**
+    watchEffect(() => {
+      donutChart.series = [loading.value, available.value, disconnected.value];
+      donutChart.chartOptions.annotations.texts[1].text = totalConnectors.value.toString();
+    });
+
+    // Cargar datos al iniciar
+    onMounted(() => {
+      fetchConectores();
+      fetchEnergyData();
+    });
+
     return {
-      donutChart: {
-        series: [7, 1, 1, 5],
-        chartOptions: {
-          chart: {
-            height: 300,
-            type: "donut",
-          },
-          legend: {
-            position: "bottom",
-          },
-          dataLabels: {
-            enabled: false // Disable data labels to remove percentages
-          },
-          labels: ['Cargando', 'Disponible', 'Con fallas', 'Sin conexión'],
-          colors: getChartColorsArray('["--vz-primary", "--vz-success", "--vz-danger", "--vz-info"]'),
-          annotations: {
-            position: 'front',
-            texts: [
-              {
-                text: 'Conectores',
-                x: '50%',
-                y: '45%',
-                textAnchor: 'middle',
-                fontSize: '20px',
-                fontFamily: 'Helvetica, Arial, sans-serif',
-                fontWeight: 'bold',
-                cssClass: 'apexcharts-custom-annotation'
-              },
-              {
-                text: '14',
-                x: '50%',
-                y: '55%',
-                textAnchor: 'middle',
-                fontSize: '20px',
-                fontFamily: 'Helvetica, Arial, sans-serif',
-                fontWeight: 'bold',
-                cssClass: 'apexcharts-custom-annotation'
-              }
-            ]
-          }
-        }
-      },
-      series: [{
-        name: "Potencia Cargada",
-        data: [
-          25.3, 12.5, 20.2, 18.5, 40.4, 25.4, 15.8, 22.3, 19.2, 25.3, 12.5,
-          20.2,
-        ],
-      },
+      empresa,
+      totalEnergyConsumed,
+      donutChart,
+      totalConnectors,
+      basicLineChart,
+      zoomableChart,
+      series: [
         {
-          name: "Tiempo De Carga",
-          data: [
-            36.2, 22.4, 38.2, 30.5, 26.4, 30.4, 20.2, 29.6, 10.9, 36.2, 22.4,
-            38.2,
-          ],
+          name: "Ingresos",
+          data: [25.3, 12.5, 20.2, 18.5, 40.4, 25.4, 15.8, 22.3, 19.2, 25.3, 12.5, 20.2],
         },
         {
-          name: "Costo De Carga",
-          data: [
-            36.2, 22.4, 38.2, 30.5, 26.4, 30.4, 20.2, 29.6, 10.9, 36.2, 22.4,
-            38.2,
-          ],
+          name: "Energía",
+          data: [36.2, 22.4, 38.2, 30.5, 26.4, 30.4, 20.2, 29.6, 10.9, 36.2, 22.4, 38.2],
+        },
+        {
+          name: "Tiempo",
+          data: [36.2, 22.4, 38.2, 30.5, 26.4, 30.4, 20.2, 29.6, 10.9, 36.2, 22.4, 38.2],
         },
       ],
       chartOptions: {
@@ -123,9 +134,7 @@ export default {
           type: "bar",
           height: 309,
           stacked: true,
-          toolbar: {
-            show: false,
-          },
+          toolbar: { show: false },
         },
         plotOptions: {
           bar: {
@@ -134,9 +143,7 @@ export default {
             borderRadius: 6,
           },
         },
-        dataLabels: {
-          enabled: false,
-        },
+        dataLabels: { enabled: false },
         legend: {
           show: true,
           position: "bottom",
@@ -145,101 +152,61 @@ export default {
           fontSize: "8px",
           offsetX: 0,
           offsetY: 0,
-          markers: {
-            width: 9,
-            height: 9,
-            radius: 4,
-          },
+          markers: { width: 9, height: 9, radius: 4 },
         },
-        stroke: {
-          show: true,
-          width: 2,
-          colors: ["transparent"],
-        },
-        grid: {
-          show: false,
-        },
+        stroke: { show: true, width: 2, colors: ["transparent"] },
+        grid: { show: false },
         colors: getChartColorsArray('["--vz-info", "--vz-warning", "--vz-primary"]'),
         xaxis: {
-          categories: [
-            "Ene",
-            "Feb",
-            "Mar",
-            "Abr",
-            "May",
-            "Jun",
-            "Jul",
-            "Ago",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dic",
-          ],
-          axisTicks: {
-            show: false,
-          },
-          axisBorder: {
-            show: true,
-            strokeDashArray: 1,
-            height: 1,
-            width: "100%",
-            offsetX: 0,
-            offsetY: 0,
-          },
+          categories: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+          axisTicks: { show: false },
+          axisBorder: { show: true, strokeDashArray: 1, height: 1, width: "100%", offsetX: 0, offsetY: 0 },
         },
-        yaxis: {
-          show: false,
-        },
-        fill: {
-          opacity: 1,
-        },
+        yaxis: { show: false },
+        fill: { opacity: 1 },
       },
     };
   },
-  components: {
-    CountTo,
-    Layout,
-    PageHeader
-  }
 };
 </script>
-    
+
+
 <template>
   <Layout>
     <PageHeader title="Dashboard" pageTitle="Compañía" />
     <BRow>
-      <BCol class="col-xl-4">
-        <BCard no-body>
-          <BRow class="g-0" style="    padding-bottom: 11px;" >
-            <BCol >
-              <BCardHeader>
-                <div class="text-end">
-                  <h5 class="card-title mb-0">Alarmas Diarias</h5>
-                </div>
-              </BCardHeader>
-              <BCardBody>
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                  <RouterLink :to="{ name: 'Alarmas Diarias' }">
-                    <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
-                      <i class="mdi mdi-eye"></i>
-                    </BButton>
-                  </RouterLink>
-                  <p class="mb-0 text-end w-100">2 reinicios de cargadores</p>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <RouterLink :to="{ name: 'Errores por Conector' }">
-                    <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">
-                      <i class="mdi mdi-eye"></i>
-                    </BButton>
-                  </RouterLink>
-                  <p class="mb-0 text-end w-100">0 errores de conector</p>
-                </div>
-              </BCardBody>
-            </BCol>
-            
-          </BRow>
-        </BCard>
-      </BCol>
+<!--      <BCol class="col-xl-4">-->
+<!--        <BCard no-body>-->
+<!--          <BRow class="g-0" style="    padding-bottom: 11px;" >-->
+<!--            <BCol >-->
+<!--              <BCardHeader>-->
+<!--                <div class="text-end">-->
+<!--                  <h5 class="card-title mb-0">Alarmas Diarias</h5>-->
+<!--                </div>-->
+<!--              </BCardHeader>-->
+<!--              <BCardBody>-->
+<!--                <div class="d-flex justify-content-between align-items-center mb-1">-->
+<!--                  <RouterLink :to="{ name: 'Alarmas Diarias' }">-->
+<!--                    <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">-->
+<!--                      <i class="mdi mdi-eye"></i>-->
+<!--                    </BButton>-->
+<!--                  </RouterLink>-->
+<!--                  <p class="mb-0 text-end w-100">2 reinicios de cargadores</p>-->
+<!--                </div>-->
+<!--                <div class="d-flex justify-content-between align-items-center">-->
+<!--                  <RouterLink :to="{ name: 'Errores por Conector' }">-->
+<!--                    <BButton variant="black" class="p-0" style="width: 25px; height: 25px;">-->
+<!--                      <i class="mdi mdi-eye"></i>-->
+<!--                    </BButton>-->
+<!--                  </RouterLink>-->
+<!--                  <p class="mb-0 text-end w-100">0 errores de conector</p>-->
+<!--                </div>-->
+<!--              </BCardBody>-->
+<!--            </BCol>-->
+
+<!--          </BRow>-->
+<!--        </BCard>-->
+<!--      </BCol>-->
       <BCol class="col-xl-4">
         <BCard no-body>
           <BRow class="g-0" style="    padding-bottom: 21px;">
@@ -251,46 +218,46 @@ export default {
               </BCardHeader>
               <BCardBody>
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                 
+
                   <img src="../../assets/images/gas-station-fuel-svgrepo-com.svg" width="40px">
-              
+
                   <p class="mb-0 w-40" style="font-size: 25px;">{{ totalEnergyConsumed }} kWh</p>
                 </div>
               </BCardBody>
             </BCol>
-            
+
           </BRow>
         </BCard>
       </BCol>
-      <BCol class="col-xl-4">
-        <BCard no-body>
-          <BRow class="g-0" style="    padding-bottom: 21px;">
-            <BCol >
-              <BCardHeader>
-                <div class="text-end">
-                  <h5 class="card-title mb-0">Potencia máxima diaria</h5>
-                </div>
-              </BCardHeader>
-              <BCardBody>
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                  <img src="../../assets/images/lightning-charge-fill-green.svg">
-                  
-                 
-                  <p class="mb-0 w-50" style="font-size: 25px;">{{ maxPower }} kW</p>
-                </div>
-                
-              </BCardBody>
-            </BCol>
-            
-          </BRow>
-        </BCard>
-      </BCol>
+<!--      <BCol class="col-xl-4">-->
+<!--        <BCard no-body>-->
+<!--          <BRow class="g-0" style="    padding-bottom: 21px;">-->
+<!--            <BCol >-->
+<!--              <BCardHeader>-->
+<!--                <div class="text-end">-->
+<!--                  <h5 class="card-title mb-0">Energía entregada mensual</h5>-->
+<!--                </div>-->
+<!--              </BCardHeader>-->
+<!--              <BCardBody>-->
+<!--                <div class="d-flex justify-content-between align-items-center mb-1">-->
+<!--                  <img src="../../assets/images/lightning-charge-fill-green.svg">-->
+
+
+<!--                  <p class="mb-0 w-50" style="font-size: 25px;">{{ maxPower }} kW</p>-->
+<!--                </div>-->
+
+<!--              </BCardBody>-->
+<!--            </BCol>-->
+
+<!--          </BRow>-->
+<!--        </BCard>-->
+<!--      </BCol>-->
     </BRow>
     <BRow>
       <BCol lg="6">
         <BCard no-body>
           <BCardHeader>
-            <BCardTitle class="mb-0">Energia Entregada</BCardTitle>
+            <BCardTitle class="mb-0">Energia Entregada Mensual</BCardTitle>
           </BCardHeader>
           <BCardBody>
             <apexchart class="apex-charts" height="350" dir="ltr" :series="basicLineChart.series"
@@ -311,23 +278,23 @@ export default {
         </BCard>
       </BCol>
     </BRow>
-    <BRow>
-      <BCol lg="12">
-        <BCard no-body>
-          <BCardHeader>
-            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>
-          </BCardHeader>
-          <BCardBody>
-            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"
-                       :options="zoomableChart.chartOptions"></apexchart>
-          </BCardBody>
-        </BCard>
-      </BCol>
-    </BRow>
+<!--    <BRow>-->
+<!--      <BCol lg="12">-->
+<!--        <BCard no-body>-->
+<!--          <BCardHeader>-->
+<!--            <BCardTitle class="mb-0">Potencia máxima diaria</BCardTitle>-->
+<!--          </BCardHeader>-->
+<!--          <BCardBody>-->
+<!--            <apexchart class="apex-charts" height="350" dir="ltr" :series="zoomableChart.series"-->
+<!--                       :options="zoomableChart.chartOptions"></apexchart>-->
+<!--          </BCardBody>-->
+<!--        </BCard>-->
+<!--      </BCol>-->
+<!--    </BRow>-->
     <BRow>
       <BCard no-body>
         <BCardHeader class="border-0 align-items-center d-flex">
-          <BCardTitle class="mb-0 flex-grow-1">Promedio de Cargas Mensuales</BCardTitle>
+          <BCardTitle class="mb-0 flex-grow-1">Datos Cargas Mensuales</BCardTitle>
          <!-- <div class="hstack gap-1">
             <BButton type="button" variant="soft-secondary" size="sm">ALL</BButton>
             <BButton type="button" variant="soft-secondary" size="sm">1M</BButton>
@@ -344,7 +311,7 @@ export default {
                   <count-to :startVal='0' :endVal='854' :duration='5000'></count-to>
                   <span class="text-success ms-1 fs-12"> 49%<i class="ri-arrow-right-up-line ms-1 align-middle"></i></span>
                 </h5>
-                <p class="text-muted mb-0">Costo Mensual promedio</p>
+                <p class="text-muted mb-0">Ingreso al mes actual</p>
               </div>
             </BCol>
             <BCol cols="6" sm="4">
@@ -354,7 +321,7 @@ export default {
                   <span>&nbsp;kWh</span>
                   <span class="text-success ms-1 fs-12"> 60%<i class="ri-arrow-right-up-line ms-1 align-middle"></i></span>
                 </h5>
-                <p class="text-muted mb-0">Potencia Cargada Promedio</p>
+                <p class="text-muted mb-0">Energía entregada al mes</p>
               </div>
             </BCol>
             <BCol cols="6" sm="4">
@@ -364,7 +331,7 @@ export default {
                   <count-to :startVal='0' :endVal='40' :duration='4000'></count-to>seg
                   <span class="text-success ms-1 fs-12"> 37%<i class="ri-arrow-right-up-line ms-1 align-middle"></i></span>
                 </h5>
-                <p class="text-muted mb-0">Duración Aproximada Por Carga</p>
+                <p class="text-muted mb-0">Tiempo Aproximado Por Carga</p>
               </div>
             </BCol>
           </BRow>
