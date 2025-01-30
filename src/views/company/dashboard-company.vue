@@ -15,16 +15,20 @@ export default {
   },
   setup() {
     // Variables reactivas
+    // Variables reactivas
     const empresa = ref(null);
     const totalEnergyConsumed = ref(0);
     const totalConnectors = ref(0);
+
     const loading = ref(0);
     const available = ref(0);
     const disconnected = ref(0);
+    const suspended = ref(0);
+    const finishing = ref(0);
 
-    // Estado del gráfico de dona
+    // Estado del gráfico de dona con los nuevos estados incluidos
     const donutChart = reactive({
-      series: [0, 0, 0], // Inicializa con valores vacíos
+      series: [0, 0, 0, 0, 0], // Ahora tiene 5 valores
       chartOptions: {
         chart: {
           height: 300,
@@ -36,8 +40,8 @@ export default {
         dataLabels: {
           enabled: false, // Deshabilita los porcentajes
         },
-        labels: ["Cargando", "Disponible", "Sin conexión"],
-        colors: ["#7367F0", "#28C76F", "#EA5455"], // Azul, Verde, Rojo
+        labels: ["Cargando", "Disponible", "Sin conexión", "Suspendido", "Finalizando"], // Nuevos labels
+        colors: ["#7367F0", "#28C76F", "#EA5455", "#FF9F43", "#00CFE8"], // Colores para cada estado
         annotations: {
           position: "front",
           texts: [
@@ -66,17 +70,20 @@ export default {
       },
     });
 
-    // Método para obtener conectores
+    // Método para obtener conectores y actualizar los contadores
     const fetchConectores = async () => {
       try {
         const response = await axios.get("http://localhost:8088/api/connectors");
         const connectors = response.data;
 
-        // Actualizar valores reactivos
+        // Contar cada estado
         loading.value = connectors.filter(c => c.estadoConector === "OCCUPIED").length;
         available.value = connectors.filter(c => c.estadoConector === "CONNECTED").length;
         disconnected.value = connectors.filter(c => c.estadoConector === "DISCONNECTED").length;
+        suspended.value = connectors.filter(c => c.estadoConector === "SUSPENDED").length;
+        finishing.value = connectors.filter(c => c.estadoConector === "FINISHING").length;
 
+        // Total de conectores
         totalConnectors.value = connectors.length;
         console.log("Total conectores:", totalConnectors.value);
       } catch (error) {
@@ -98,7 +105,7 @@ export default {
 
     // 🟢 **watchEffect para actualizar el gráfico dinámicamente**
     watchEffect(() => {
-      donutChart.series = [loading.value, available.value, disconnected.value];
+      donutChart.series = [loading.value, available.value, disconnected.value, suspended.value, finishing.value];
       donutChart.chartOptions.annotations.texts[1].text = totalConnectors.value.toString();
     });
 

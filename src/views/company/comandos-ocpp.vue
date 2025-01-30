@@ -98,10 +98,38 @@
                             {{ conector.cargaEnCurso }}% <!-- Carga en curso -->
                           </td>
                           <td>
-                            <BBadge v-if="conector.estadoConector === 'CONNECTED'" variant="border border-success" class="border border-success text-success">
+                            <BBadge
+                                v-if="conector.estadoConector === 'CONNECTED'"
+                                variant="border border-success"
+                                class="border border-success text-success">
                               Activo
                             </BBadge>
-                            <BBadge v-else variant="border border-danger" class="border border-danger text-danger">
+
+                            <BBadge
+                                v-else-if="conector.estadoConector === 'OCCUPIED'"
+                                variant="border border-primary"
+                                class="border border-primary text-primary">
+                              Cargando
+                            </BBadge>
+
+                            <BBadge
+                                v-else-if="conector.estadoConector === 'SUSPENDED'"
+                                variant="border border-warning"
+                                class="border border-warning text-warning">
+                              Suspendido
+                            </BBadge>
+
+                            <BBadge
+                                v-else-if="conector.estadoConector === 'FINISHING'"
+                                variant="border border-info"
+                                class="border border-info text-info">
+                              Finalizando
+                            </BBadge>
+
+                            <BBadge
+                                v-else
+                                variant="border border-danger"
+                                class="border border-danger text-danger">
                               Inactivo
                             </BBadge>
                           </td>

@@ -75,25 +75,29 @@
                 <td class="d-flex align-items-center">
                   <span
                       :class="{
-                        'badge bg-success': dat.estadoConector === 'CONNECTED',
-                        'badge bg-secondary': dat.estadoConector === 'DISCONNECTED',
-                        'badge bg-primary text-white': dat.estadoConector === 'OCCUPIED'
-                      }"
+                                'badge bg-success': dat.estadoConector === 'CONNECTED',
+                                'badge bg-danger': dat.estadoConector === 'DISCONNECTED',
+                                'badge bg-primary text-white': dat.estadoConector === 'OCCUPIED',
+                                'badge bg-secondary text-white': dat.estadoConector === 'SUSPENDED',
+                                'badge bg-info': dat.estadoConector === 'FINISHING'
+                              }"
                       class="me-2 mt-2 mb-2"
                       style="font-size: 12px"
                   >
-                  {{
+                    {{
                       dat.estadoConector === 'CONNECTED' ? 'Conectado' :
                       dat.estadoConector === 'OCCUPIED' ? 'Cargando' :
-                      'Desconectado'
-                  }}
+                      dat.estadoConector === 'DISCONNECTED' ? 'Desconectado' :
+                      dat.estadoConector === 'SUSPENDED' ? 'Suspendido' :
+                      dat.estadoConector === 'FINISHING' ? 'Finalizando' :
+                      'Estado desconocido'
+                    }}
                   </span>
-                  <BFormCheckbox  v-if="permisos.includes(64)"
-                      v-model="dat.estadoConector"
+                  <BFormCheckbox
+                      v-if="permisos.includes(64)"
                       switch
-                      :value="'CONNECTED'"
-                      :unchecked-value="'DISCONNECTED'"
-                      @change="cambiarEstadoConector(dat.id, dat.estadoConector)"
+                      :checked="dat.estadoConector !== 'DISCONNECTED'"
+                      @change="cambiarEstadoConector(dat.id, $event ? 'CONNECTED' : 'DISCONNECTED')"
                       class="mt-1 mb-2"
                       style="height: 19px; width: 35px"
                   >
@@ -236,7 +240,13 @@
             }
           });
           if (response.status === 200 || response.status === 201) {
-            Swal.fire("Estado del Conector Actualizado!", "", "success");
+            Swal.fire({
+              title: "Estado del Conector Actualizado!",
+              icon: "success",
+              confirmButtonText: "OK"
+            }).then(() => {
+              location.reload();
+            });
           }
         } catch (error) {
           console.error("Error actualizando el estado del conector", error);
