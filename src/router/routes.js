@@ -1478,7 +1478,7 @@ export default [
     component: () => import("../views/company/crear-cargador"),
   },
   {
-    path: "/company/carga-inteligente",
+    path: "/company/carga-inteligente/:chargerId",
     name: "Carga Inteligente",
     meta: { title: "Carga Inteligente", authRequired: true },
     component: () => import("../views/company/carga-inteligente.vue"),
@@ -1522,10 +1522,16 @@ export default [
     component: () => import("../views/company/crear-tarifas"),
   },
   {
-    path: "/company/cargas",
-    name: "Cargas",
-    meta: { title: "Cargas", authRequired: true },
-    component: () => import("../views/company/cargas.vue"),
+    path: "/company/cargas-app",
+    name: "Cargas App",
+    meta: { title: "Cargas App", authRequired: true },
+    component: () => import("../views/company/cargas-app"),
+  },
+  {
+    path: "/company/cargas-rfid",
+    name: "Cargas RFID",
+    meta: { title: "Cargas RFID", authRequired: true },
+    component: () => import("../views/company/cargas-rfid"),
   },
 
   {

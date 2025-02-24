@@ -5,7 +5,7 @@ import img2 from "../assets/images/products/img-2.png"
 import img3 from "../assets/images/products/img-3.png"
 import img4 from "../assets/images/products/img-6.png"
 import img5 from "../assets/images/products/img-5.png"
-import Multiselect from "@vueform/multiselect";
+// import Multiselect from "@vueform/multiselect";
 import "@vueform/multiselect/themes/default.css";
 
 import simplebar from "simplebar-vue";
@@ -114,7 +114,7 @@ export default {
   },
   components: {
     simplebar,
-    Multiselect
+    // Multiselect
   },
 
   methods: {
@@ -656,21 +656,21 @@ export default {
 
 
 
-                    <div v-if="permisos.includes(2)" class="d-flex align-items-center">
-                      <label style="margin-right: 10px !important; margin-bottom: -1px" for="ForminputState" class="form-label">Estación</label>
+<!--                    <div v-if="permisos.includes(2)" class="d-flex align-items-center">-->
+<!--                      <label style="margin-right: 10px !important; margin-bottom: -1px" for="ForminputState" class="form-label">Estación</label>-->
 
-                      <Multiselect
-                          :options="estacionesOptions"
-                          :close-on-select="true"
-                          :searchable="true"
-                          :create-option="false"
-                          label="label"
-                          track-by="value"
-                          class="w-lg"
-                          placeholder="Seleccione una estación"
-                          style="width: 250px !important"
-                      />
-                  </div>
+<!--                      <Multiselect-->
+<!--                          :options="estacionesOptions"-->
+<!--                          :close-on-select="true"-->
+<!--                          :searchable="true"-->
+<!--                          :create-option="false"-->
+<!--                          label="label"-->
+<!--                          track-by="value"-->
+<!--                          class="w-lg"-->
+<!--                          placeholder="Seleccione una estación"-->
+<!--                          style="width: 250px !important"-->
+<!--                      />-->
+<!--                  </div>-->
               
                
 
@@ -961,10 +961,10 @@ export default {
                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Perfil</span>
             </router-link>
-            <router-link class="dropdown-item" to="/client/dashboard-client"><i
-                class="mdi mdi-view-dashboard text-muted fs-16 align-middle me-1"></i>
-              <span class="align-middle"> Dashboard</span>
-            </router-link>
+<!--            <router-link class="dropdown-item" to="/client/dashboard-client"><i-->
+<!--                class="mdi mdi-view-dashboard text-muted fs-16 align-middle me-1"></i>-->
+<!--              <span class="align-middle"> Dashboard</span>-->
+<!--            </router-link>-->
 <!--            <router-link class="dropdown-item" to="/chat">
               <i class=" mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Messages</span>
@@ -982,11 +982,11 @@ export default {
                 class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Balance : <b>$5971.67</b></span>
             </router-link>-->
-            <router-link class="dropdown-item" to="">
-              <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">Beta</BBadge><i
-                class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
-              <span class="align-middle"> Ajustes</span>
-            </router-link>
+<!--            <router-link class="dropdown-item" to="">-->
+<!--              <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">Beta</BBadge><i-->
+<!--                class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>-->
+<!--              <span class="align-middle"> Ajustes</span>-->
+<!--            </router-link>-->
 <!--            <router-link class="dropdown-item" to="/auth/lockscreen-basic"><i
                 class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
               <span class="align-middle"> Lock screen</span>

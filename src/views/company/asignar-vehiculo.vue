@@ -110,6 +110,7 @@ import PageHeader from "@/components/page-header";
 import Swal from "sweetalert2";
 import axios from 'axios';
 
+
 export default {
   components: {
     Layout,
@@ -184,7 +185,7 @@ export default {
               this.fetchFlotas();
               this.selectedFlota = null;
               this.selectedCars = [];
-              location.reload();
+              this.$router.push("/company/flotas");
             }
           });
         } catch (error) {

@@ -83,13 +83,12 @@
                         <Multiselect
                             style="border: 1px solid black;"
                             v-model="connector.cargador"
-                            :options="chargers"
+                            :options="filteredChargers"
                             label="label"
-                            track-by="label"
-                            placeholder="Selecciona o ingrese un cargador"
+                            track-by="value"
+                            placeholder="Selecciona un cargador"
                             :close-on-select="true"
                             :searchable="true"
-                            :create-option="true"
                         />
                       </div>
                     </BCol>
@@ -111,17 +110,16 @@
                     </BCol>
                     <BCol md="6">
                       <div class="mb-3">
-                        <label for="charger" class="form-label">Terminal</label>
+                        <label for="station" class="form-label">Estación de Carga</label>
                         <Multiselect
                             style="border: 1px solid black;"
                             v-model="connector.terminal"
-                            :options="chargingStations"
+                            :options="filteredStations"
                             label="label"
-                            track-by="label"
-                            placeholder="Selecciona o ingrese un cargador"
+                            track-by="value"
+                            placeholder="Selecciona una estación"
                             :close-on-select="true"
                             :searchable="true"
-                            :create-option="true"
                         />
                       </div>
                     </BCol>
@@ -158,9 +156,12 @@
   export default {
     data() {
       return {
-        chargers:[],
+        chargers: [], // Lista completa de cargadores
+        filteredChargers: [], // Cargadores filtrados según la estación seleccionada
+
+        chargingStations: [], // Lista completa de estaciones
+        filteredStations: [],
         connectorTypes: [],
-        chargingStations: [],
         connector: {
           alias: '',
           voltajeMaximo:'',
@@ -208,7 +209,8 @@
           const response = await axios.get('http://localhost:8088/api/chargers');
           this.chargers = response.data.map(data => ({
             label: data.nombre,
-            value: data.id
+            value: data.id,
+            terminalId: data.terminalId
           }));
         } catch (error) {
           console.error("Error obteniendo las estaciones de carga:", error);
@@ -219,7 +221,7 @@
           const response = await axios.get('http://localhost:8088/api/connector-types');
           this.connectorTypes = response.data.map(data => ({
             label: data.nombre,
-            value: data.id
+            value: data.id,
           }));
         } catch (error) {
           console.error("Error obteniendo los tipos de conector:", error);
@@ -230,17 +232,65 @@
           const response = await axios.get('http://localhost:8088/api/chargingStations');
           this.chargingStations = response.data.map(data => ({
             label: data.nombreTerminal,
-            value: data.id
+            value: data.id,
+            cargadores: data.cargadores
           }));
         } catch (error) {
           console.error("Error obteniendo las estaciones de carga:", error);
         }
       },
+      async loadData() {
+        await this.charges(); // Cargar cargadores
+        await this.chargingStation(); // Cargar estaciones de carga
+        await this.loadConnectorTypes(); // Cargar tipos de conectores
+
+        // Ahora que los datos ya están cargados, asignamos las listas filtradas
+        this.filteredChargers = [...this.chargers];
+        this.filteredStations = [...this.chargingStations];
+      }
     },
     created() {
-      this.charges()
-      this.loadConnectorTypes();
-      this.chargingStation();
+      this.loadData();
+    },
+    watch: {
+      // Cuando cambia el cargador seleccionado
+      "connector.cargador"(newCharger) {
+        if (!newCharger) {
+          this.filteredStations = this.chargingStations; // Si no hay cargador, mostrar todas las estaciones
+          return;
+        }
+
+
+        // Extraer el objeto real si es un Proxy
+        const charger = this.chargers.find(c => c.value === (newCharger.value || newCharger));
+
+
+        if (charger && charger.terminalId) {
+          this.filteredStations = this.chargingStations.filter(station => station.value === charger.terminalId);
+        } else {
+          this.filteredStations = this.chargingStations;
+        }
+      },
+
+      // Cuando cambia la estación seleccionada
+      "connector.terminal"(newTerminal) {
+
+        if (!newTerminal) {
+          this.filteredChargers = this.chargers; // Si no hay estación, mostrar todos los cargadores
+          return;
+        }
+
+        // Extraer el objeto real si es un Proxy
+        const station = this.chargingStations.find(st => st.value === (newTerminal.value || newTerminal));
+
+
+        if (station && station.cargadores) {
+          // Filtrar cargadores que pertenezcan a la estación seleccionada
+          this.filteredChargers = this.chargers.filter(c => station.cargadores.some(sC => sC.id === c.value));
+        } else {
+          this.filteredChargers = this.chargers; // Si no se encuentra, mostrar todos
+        }
+      }
     }
   };
 </script>

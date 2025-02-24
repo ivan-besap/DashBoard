@@ -274,16 +274,16 @@ export default {
           <span data-key="t-menu"> {{ $t("t-menu") }}</span>
         </li>
         <li class="nav-item" v-if="permisos.includes(1)" >
-          <a class="nav-link menu-link" href="/company/dashboard-company" >
+          <router-link class="nav-link menu-link" target="" to="/company/dashboard-company" active-class="active" >
             <i class="ri-dashboard-2-line"></i>
             <span> Dashboard</span>
-          </a>
+          </router-link>
         </li>
         <li class="nav-item" v-if="permisos.includes(3)">
 
-          <router-link class="nav-link menu-link" target="" to="/company/comandos-ocpp">
+          <router-link class="nav-link menu-link" target="" to="/company/comandos-ocpp" active-class="active">
             <i class="mdi mdi-keyboard"></i>
-            Comandos OCPP
+            Gestiones Remotas
           </router-link>
         </li>
         <!--
@@ -296,7 +296,7 @@ export default {
         
         
         <li class="nav-item" v-if="permisos.includes(10)">
-          <router-link class="nav-link menu-link"  target="" to="/company/tarifas">
+          <router-link class="nav-link menu-link"  target="" to="/company/tarifas" active-class="active">
             <i class="ri-survey-line"></i>
             <span data-key="t-dashboards"> Tarifas</span>
           </router-link>
@@ -309,7 +309,7 @@ export default {
 <!--        </li>-->
        
         <li class="nav-item" v-if="permisos.includes(78)">
-          <router-link class="nav-link menu-link"  target="" to="/company/flotas">
+          <router-link class="nav-link menu-link"  target="" to="/company/flotas" active-class="active">
             <i class="mdi mdi-car-connected"></i>
             <span data-key="t-dashboards"> Flotas</span>
           </router-link>
@@ -323,48 +323,53 @@ export default {
           <div class="collapse menu-dropdown" id="sidebarlanding">
             <ul class="nav nav-sm flex-column">
               <li class="nav-item" v-if="permisos.includes(19)">
-                <router-link class="nav-link menu-link"  target="" to="/company/cargas">
-                  <span data-key="t-landing">Cargas</span>
+                <router-link class="nav-link menu-link"  target="" to="/company/cargas-app" active-class="active">
+                  <span data-key="t-landing">Cargas App Móvil</span>
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link menu-link"  target="" to="/company/cargas-rfid" active-class="active">
+                  <span data-key="t-landing">Cargas RFID</span>
                 </router-link>
               </li>
               <li class="nav-item" v-if="permisos.includes(20)">
-                <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga">
-                
+                <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga" active-class="active">
+
                     <span data-key="t-landing">Detalles de Cargas</span>
-                
+
                 </router-link>
               </li>
               <li class="nav-item" v-if="permisos.includes(21)">
-                <router-link class="nav-link menu-link"  target="" to="/company/cargas-por-cargador">
+                <router-link class="nav-link menu-link"  target="" to="/company/cargas-por-cargador" active-class="active">
                   <span data-key="t-landing">Cargas Por Cargador</span>
                 </router-link>
               </li>
               <li class="nav-item" v-if="permisos.includes(22)">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-terminal">
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-terminal" active-class="active">
                   <span data-key="t-landing">Cargas por Terminal</span>
                 </router-link>
               </li>
 
 
               <li class="nav-item" v-if="permisos.includes(23)">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-vehiculo">
+                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-vehiculo" active-class="active">
                   <span data-key="t-landing">Cargas por Flota</span>
                 </router-link>
               </li>
 
               <li class="nav-item" v-if="permisos.includes(24)">
-                <router-link class="nav-link menu-link" target="" to="/company/errores-por-conector">
+                <router-link class="nav-link menu-link" target="" to="/company/errores-por-conector" active-class="active">
                   <span data-key="t-landing">Errores por Conector</span>
                 </router-link>
               </li>
 
               <li class="nav-item" >
-                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias" v-if="permisos.includes(52)">
+                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias" v-if="permisos.includes(52)" active-class="active">
                   <span data-key="t-landing">Alarmas Diarias</span>
                 </router-link>
               </li>
               <li class="nav-item" >
-                <router-link class="nav-link menu-link" target="" to="/company/reporte-ventas" v-if="permisos.includes(55)">
+                <router-link class="nav-link menu-link" target="" to="/company/reporte-ventas" v-if="permisos.includes(55)" active-class="active">
                   <span data-key="t-landing">Ventas Por Estación</span>
                 </router-link>
               </li>
@@ -387,47 +392,45 @@ export default {
           <div class="collapse menu-dropdown" id="sidebarMultilevel">
             <ul class="nav nav-sm flex-column">
               <li class="nav-item" v-if="permisos.includes(26)">
-          <router-link class="nav-link menu-link"  target="" to="/company/empleados-company">
+          <router-link class="nav-link menu-link"  target="" to="/company/empleados-company" active-class="active">
            
             <span data-key="t-dashboards"> Usuarios Empresa</span>
           </router-link>
 
         </li>
-              
-              
               <li class="nav-item" v-if="permisos.includes(30)">
-                <a class="nav-link" href="/company/roles" data-key="t-level-1.1">
+                <router-link class="nav-link menu-link" target="" to="/company/roles" active-class="active">
                   Roles
-                </a>
+                </router-link>
               </li>
 
               <li class="nav-item" v-if="permisos.includes(33)">
-                <a class="nav-link" href="/company/tarjetas-rfid" data-key="t-level-1.1">
+                <router-link class="nav-link menu-link" target="" to="/company/tarjetas-rfid" active-class="active">
                   Tarjetas RFID
-                </a>
+                </router-link>
               </li>
               <li class="nav-item" v-if="permisos.includes(37)">
                 
-                <router-link class="nav-link menu-link" target="" to="/company/stations-company">
+                <router-link class="nav-link menu-link" target="" to="/company/stations-company" active-class="active">
                   Estaciones de Carga
                 </router-link>
               </li>
             
              
               <li class="nav-item" v-if="permisos.includes(41)">
-                <router-link class="nav-link menu-link" target="" to="/company/cargadores-company">
+                <router-link class="nav-link menu-link" target="" to="/company/cargadores-company" active-class="active">
                  Cargadores
                 </router-link>
               </li>
               <li class="nav-item" v-if="permisos.includes(47)">
-                <a class="nav-link" href="/company/conector" data-key="t-level-1.1">
+                <router-link class="nav-link menu-link" target="" to="/company/conector" active-class="active">
                   Conectores
-                </a>
+                </router-link>
               </li>
              
 
               <li class="nav-item" v-if="permisos.includes(51)">
-                <router-link class="nav-link" target="" to="/company/alertas-correos">
+                <router-link class="nav-link" target="" to="/company/alertas-correos" active-class="active">
                   <span data-key="t-landing">Configuracion de Correos Alertas</span>
                 </router-link>
               </li>
@@ -1794,4 +1797,7 @@ export default {
   background-color: transparent !important; /* Mantén el fondo transparente */
 }
 
+.nav-item .active {
+  color: #20dcb5 !important; /* Color verde o el que quieras */
+}
 </style>

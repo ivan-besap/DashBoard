@@ -42,8 +42,8 @@
           <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
             <thead class="table-light text-muted">
               <tr>
-                <th class="sort" scope="col" @click="onSort('patente')">Alias</th>
-                <th class="sort" scope="col" @click="onSort('patente')">Patente</th>
+                <th class="sort" scope="col" @click="onSort('alias')">Alias</th>
+                <th class="sort pe-4" scope="col" @click="onSort('patente')">Patente</th>
                 <th class="sort" scope="col" @click="onSort('modelo')">Modelo</th>
                 <th class="sort" scope="col" @click="onSort('vin')">VIN</th>
                 <th class="sort" scope="col" @click="onSort('vin')">RFID Asociada</th>

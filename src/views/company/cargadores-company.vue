@@ -91,11 +91,11 @@
                 <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(44)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
-                <BButton style="padding: 5px 10px;margin-left: 10px" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(77)" >
-                  <router-link class="nav-link menu-link" :to="`/company/carga-inteligente`">
-                    <i class="mdi mdi-cog"></i>
-                  </router-link>
-                </BButton>
+                <BButton style="padding: 5px 10px;margin-left: 10px" variant="light" class="waves-effect waves-light" v-if="permisos.includes(77)">
+                <router-link class="nav-link menu-link" :to="`/company/carga-inteligente/${dat.id}?charger=${dat.ocppid}`">
+                  <i class="mdi mdi-cog"></i>
+                </router-link>
+              </BButton>
 <!--                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="sendHeartbeat(dat.ocppid)">-->
 <!--                  <i class="mdi mdi-heart"></i>-->
 <!--                </BButton>-->
