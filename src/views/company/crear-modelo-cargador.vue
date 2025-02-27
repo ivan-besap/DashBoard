@@ -26,7 +26,7 @@
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
-                      <BButton variant="light" @click="$router.push('/company/cargadores-company')">
+                      <BButton variant="light" @click="$router.push('/company/crear-cargador')">
                         Volver
                       </BButton>
                       <BButton style="" type="submit" variant="light">

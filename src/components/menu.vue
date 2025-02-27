@@ -279,7 +279,7 @@ export default {
             <span> Dashboard</span>
           </router-link>
         </li>
-        <li class="nav-item" v-if="permisos.includes(3)">
+        <li class="nav-item" v-if="permisos.includes(2)">
 
           <router-link class="nav-link menu-link" target="" to="/company/gestiones-remotas" active-class="active">
             <i class="mdi mdi-keyboard"></i>
@@ -295,7 +295,7 @@ export default {
         </li>-->
         
         
-        <li class="nav-item" v-if="permisos.includes(10)">
+        <li class="nav-item" v-if="permisos.includes(7)">
           <router-link class="nav-link menu-link"  target="" to="/company/tarifas" active-class="active">
             <i class="ri-survey-line"></i>
             <span data-key="t-dashboards"> Tarifas</span>
@@ -308,7 +308,7 @@ export default {
 <!--          </router-link>-->
 <!--        </li>-->
        
-        <li class="nav-item" v-if="permisos.includes(78)">
+        <li class="nav-item" v-if="permisos.includes(12)">
           <router-link class="nav-link menu-link"  target="" to="/company/flotas" active-class="active">
             <i class="mdi mdi-car-connected"></i>
             <span data-key="t-dashboards"> Flotas</span>
@@ -322,12 +322,12 @@ export default {
           </a>
           <div class="collapse menu-dropdown" id="sidebarlanding">
             <ul class="nav nav-sm flex-column">
-              <li class="nav-item" v-if="permisos.includes(19)">
+              <li class="nav-item" v-if="permisos.includes(23)">
                 <router-link class="nav-link menu-link"  target="" to="/company/cargas-app" active-class="active">
                   <span data-key="t-landing">Cargas App Móvil</span>
                 </router-link>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="permisos.includes(24)">
                 <router-link class="nav-link menu-link"  target="" to="/company/cargas-rfid" active-class="active">
                   <span data-key="t-landing">Cargas RFID</span>
                 </router-link>
@@ -357,7 +357,7 @@ export default {
 <!--                </router-link>-->
 <!--              </li>-->
 
-              <li class="nav-item" v-if="permisos.includes(24)">
+              <li class="nav-item" v-if="permisos.includes(25)">
                 <router-link class="nav-link menu-link" target="" to="/company/errores-por-conector" active-class="active">
                   <span data-key="t-landing">Errores por Conector</span>
                 </router-link>
@@ -368,7 +368,7 @@ export default {
 <!--                  <span data-key="t-landing">Alarmas Diarias</span>-->
 <!--                </router-link>-->
 <!--              </li>-->
-              <li class="nav-item" >
+              <li class="nav-item" v-if="permisos.includes(26)">
                 <router-link class="nav-link menu-link" target="" to="/company/reporte-ventas" v-if="permisos.includes(55)" active-class="active">
                   <span data-key="t-landing">Ventas Por Estación</span>
                 </router-link>
@@ -391,25 +391,25 @@ export default {
           </a>
           <div class="collapse menu-dropdown" id="sidebarMultilevel">
             <ul class="nav nav-sm flex-column">
-              <li class="nav-item" v-if="permisos.includes(26)">
+              <li class="nav-item" v-if="permisos.includes(27)">
           <router-link class="nav-link menu-link"  target="" to="/company/empleados-company" active-class="active">
            
             <span data-key="t-dashboards"> Usuarios Empresa</span>
           </router-link>
 
         </li>
-              <li class="nav-item" v-if="permisos.includes(30)">
+              <li class="nav-item" v-if="permisos.includes(31)">
                 <router-link class="nav-link menu-link" target="" to="/company/roles" active-class="active">
                   Roles
                 </router-link>
               </li>
 
-              <li class="nav-item" v-if="permisos.includes(33)">
+              <li class="nav-item" v-if="permisos.includes(35)">
                 <router-link class="nav-link menu-link" target="" to="/company/tarjetas-rfid" active-class="active">
                   Tarjetas RFID
                 </router-link>
               </li>
-              <li class="nav-item" v-if="permisos.includes(37)">
+              <li class="nav-item" v-if="permisos.includes(40)">
                 
                 <router-link class="nav-link menu-link" target="" to="/company/stations-company" active-class="active">
                   Estaciones de Carga
@@ -417,12 +417,12 @@ export default {
               </li>
             
              
-              <li class="nav-item" v-if="permisos.includes(41)">
+              <li class="nav-item" v-if="permisos.includes(45)">
                 <router-link class="nav-link menu-link" target="" to="/company/cargadores-company" active-class="active">
                  Cargadores
                 </router-link>
               </li>
-              <li class="nav-item" v-if="permisos.includes(47)">
+              <li class="nav-item" v-if="permisos.includes(57)">
                 <router-link class="nav-link menu-link" target="" to="/company/conector" active-class="active">
                   Conectores
                 </router-link>

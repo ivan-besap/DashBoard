@@ -9,7 +9,7 @@
       <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(48)">
+          <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(58)">
             <router-link class="nav-link menu-link" target="" to="/company/crear-conector">
               Crear Conector
             </router-link>
@@ -104,12 +104,12 @@
 <!--                  </BFormCheckbox>-->
                 </td>
                 <td>
-                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(49)">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(59)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-conector/${dat.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(50)">
+                  <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(60)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>

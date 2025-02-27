@@ -40,12 +40,12 @@
               <td>{{ mantenimiento.horarioFin }}</td>
 <!--              <td>{{ mantenimiento.diasDeLaSemana.join(', ') }}</td>-->
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(74)">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(55)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-mantenimiento/${mantenimiento.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(mantenimiento.id)" v-if="permisos.includes(75)">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(mantenimiento.id)" v-if="permisos.includes(56)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>

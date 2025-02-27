@@ -4,21 +4,21 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(16)">
+          <BButton style=" border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(18)">
             <router-link class="nav-link menu-link" target="" to="/company/crear-vehiculo">
               Crear
             </router-link>
           </BButton>
-          <BButton v-if="permisos.includes(58)" style="border: 1px solid #d8d8d8" variant="light" class="ms-3 waves-effect waves-light" @click="downloadTemplate">
-            Descargar Plantilla Autos
+          <BButton v-if="permisos.includes(21)" style="border: 1px solid #d8d8d8" variant="light" class="ms-3 waves-effect waves-light" @click="downloadTemplate">
+            Descargar Plantilla Excel Vehículos
           </BButton>
-          <BButton v-if="permisos.includes(59)"
+          <BButton v-if="permisos.includes(22)"
               style="border: 1px solid #d8d8d8"
               variant="light"
               class="ms-3 waves-effect waves-light"
               @click="triggerFileInput"
           >
-            Subir Excel de Autos
+            Subir Excel de Vehículos
           </BButton>
           <!-- Input para seleccionar el archivo -->
           <input type="file" @change="handleFileUpload" ref="fileInput" style="display: none;" />
@@ -62,11 +62,11 @@
                 </td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light">
-                    <router-link class="nav-link menu-link" :to="`/company/editar-vehiculo/${car.id}`" v-if="permisos.includes(17)">
+                    <router-link class="nav-link menu-link" :to="`/company/editar-vehiculo/${car.id}`" v-if="permisos.includes(19)">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(car.id)" v-if="permisos.includes(18)">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(car.id)" v-if="permisos.includes(20)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>

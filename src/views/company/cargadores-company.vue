@@ -5,22 +5,22 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(42)">
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(46)">
             <router-link class="nav-link menu-link" target="" to="crear-cargador">
               Crear Cargador
             </router-link>
           </BButton>
-          <BButton style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(72)">
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(52)">
             <router-link class="nav-link menu-link" target="" to="mantenimiento-cargador">
               Crear Mantenimiento
             </router-link>
           </BButton>
-          <BButton style="border: 1px solid #d8d8d8;  margin-right: 6px;"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(76)">
+          <BButton style="border: 1px solid #d8d8d8;  margin-right: 6px;"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(53)">
             <router-link class="nav-link menu-link" target="" to="asignar-mantenimiento">
               Asignar Mantenimiento
             </router-link>
           </BButton>
-          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(73)">
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(54)">
             <router-link class="nav-link menu-link" target="" to="/company/mantenimientos">
               Mantenimientos
             </router-link>
@@ -91,15 +91,15 @@
                 }}
               </td>
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(43)">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(49)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-cargador/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(44)">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(51)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
-                <BButton style="padding: 5px 10px;margin-left: 10px" variant="light" class="waves-effect waves-light" v-if="permisos.includes(77)">
+                <BButton style="padding: 5px 10px;margin-left: 10px" variant="light" class="waves-effect waves-light" v-if="permisos.includes(50)">
                 <router-link class="nav-link menu-link" :to="`/company/carga-inteligente/${dat.id}?charger=${dat.ocppid}`">
                   <i class="mdi mdi-cog"></i>
                 </router-link>

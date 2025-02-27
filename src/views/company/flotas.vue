@@ -4,17 +4,17 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style="border: 1px solid #d8d8d8; margin-right: 5px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(79)">
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 5px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(13)">
             <router-link class="nav-link menu-link" to="/company/create-flota">
               Crear Flota
             </router-link>
           </BButton>
-          <BButton style="border: 1px solid #d8d8d8; margin-right: 5px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(15)">
+          <BButton style="border: 1px solid #d8d8d8; margin-right: 5px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(17)">
             <router-link class="nav-link menu-link" to="/company/vehiculos">
               Vehículos
             </router-link>
           </BButton>
-          <BButton style="border: 1px solid #d8d8d8;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(82)">
+          <BButton style="border: 1px solid #d8d8d8;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(16)">
             <router-link class="nav-link menu-link" to="/company/asignar-vehiculos">
               Asignar Vehículos
             </router-link>
@@ -50,12 +50,12 @@
                 <td>{{ flota.nombreFlota }}</td>
                 <td>{{ "$" + flota.precioFlota }}</td>
                 <td>
-                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(80)">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(14)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-flota/${flota.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(flota.id)" v-if="permisos.includes(81)">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(flota.id)" v-if="permisos.includes(15)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                   <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="toggleExpand(flota)">

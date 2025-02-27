@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader title="Roles" />
     <BRow>
-      <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="permisos.includes(53)">
+      <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="permisos.includes(32)">
         <div class="contenedor-inic">
           <BButton style=" border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light">
             <router-link class="nav-link menu-link" target="" to="/company/crear-rol">
@@ -48,12 +48,12 @@
                 </div>
               </td>
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(31)">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(33)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-roles/${role.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(role.id)" v-if="permisos.includes(32)">
+                <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(role.id)" v-if="permisos.includes(34)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>

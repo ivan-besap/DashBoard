@@ -5,12 +5,12 @@
     <BRow>
         <div style="display: flex;flex-direction: row;justify-content: space-between;">
           <div class="contenedor-inic">
-          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(11)">
+          <BButton style="border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" v-if="permisos.includes(8)">
             <router-link class="nav-link menu-link" target="" to="/company/crear-tarifas">
               Crear Tarifa
             </router-link>
           </BButton>
-          <BButton style=" margin-left: 20px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(14)">
+          <BButton style=" margin-left: 20px; border: 1px solid #d8d8d8"  variant="light" class="waves-effect waves-light" v-if="permisos.includes(11)">
             <router-link class="nav-link menu-link" target="" to="/company/asignar-tarifas">Asignar Tarifa</router-link>
           </BButton>
           </div>
@@ -58,12 +58,12 @@
 <!--                <td>{{ tarifa.horaFin }}</td>-->
                 <td>{{ "$" + tarifa.precioTarifa }}</td>
                 <td>
-                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(12)">
+                  <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(9)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-tarifa/${tarifa.id}`">
                       <i class="mdi mdi-pencil"></i>
                     </router-link>
                   </BButton>
-                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(tarifa.id)" v-if="permisos.includes(13)">
+                  <BButton style="padding: 5px 10px; margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(tarifa.id)" v-if="permisos.includes(10)">
                     <i class="mdi mdi-delete"></i>
                   </BButton>
                 </td>

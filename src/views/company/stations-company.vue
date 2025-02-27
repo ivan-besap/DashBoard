@@ -4,12 +4,12 @@
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
-          <BButton style=" border: 1px solid #d8d8d8; margin-right: 7px "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(38)">
+          <BButton style=" border: 1px solid #d8d8d8; margin-right: 7px "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(41)">
             <router-link class="nav-link menu-link" target="" to="create-stations-company">
               Crear Estación
             </router-link>
           </BButton>
-          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(65)">
+          <BButton style=" border: 1px solid #d8d8d8 "  variant="light" class="waves-effect waves-light" v-if="permisos.includes(44)">
             <router-link class="nav-link menu-link" target="" to="/company/stationsList-company">
               Lista Estaciones
             </router-link>
@@ -61,12 +61,12 @@
 <!--                </BFormCheckbox>-->
 <!--              </td>-->
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(39)">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(42)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(40)">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)" v-if="permisos.includes(43)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>

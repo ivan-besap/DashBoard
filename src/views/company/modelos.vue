@@ -27,15 +27,15 @@
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="(dat, index) in resultQuery" :key="index">
+            <tr v-for="(dat, index) of paginatedQuery" :key="index">
               <td>{{ dat.name }}</td>
               <td>
-                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(69)">
+                <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light"  v-if="permisos.includes(64)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-modelo/${dat.id}`">
                     <i class="mdi mdi-pencil"></i>
                   </router-link>
                 </BButton>
-                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)"  v-if="permisos.includes(71)">
+                <BButton style="padding: 5px 10px;  margin-left: 10px" variant="light" class="waves-effect waves-light" @click="confirm(dat.id)"  v-if="permisos.includes(66)">
                   <i class="mdi mdi-delete"></i>
                 </BButton>
               </td>
@@ -89,36 +89,44 @@ export default {
       data: [],
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       permisos:[]
     };
   },
 
   computed: {
-    displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
-
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
-      }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-      return pages;
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
     },
-    // filteredPlans() {
-    //   const query = this.searchQuery.toLowerCase();
-    //   return this.data.filter(dat => dat.name.toLowerCase().includes(query));
-    // },
-    // displayedPosts() {
-    //   return this.paginate(this.data);
-    // },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
+    },
+    displayedPages() {
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
+
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+      }
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
+    },
     resultQuery() {
       let filteredData = this.filteredChargingStations;
-      return this.paginate(filteredData);
+      return filteredData;
     },
     filteredChargingStations() {
       const query = this.searchQuery.toLowerCase();
@@ -128,15 +136,11 @@ export default {
     }
   },
   watch: {
-    data() {
-      this.setPages();
-    },
     searchQuery() {
-      this.setPages();
+      this.page = 1;
     }
   },
   created() {
-    this.setPages();
     this.manufacturers();
     this.loadUserData();
   },
@@ -160,23 +164,13 @@ export default {
         console.error("Error obteniendo las estaciones de carga:", error);
       }
     },
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -184,19 +178,13 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
     confirm(modelId) {
       Swal.fire({

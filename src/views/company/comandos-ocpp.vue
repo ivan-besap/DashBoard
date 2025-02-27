@@ -12,10 +12,10 @@
           />
         </div>
 
-        <div class="d-flex align-items-center">
-          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
-          <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
-        </div>
+<!--        <div class="d-flex align-items-center">-->
+<!--          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;-->
+<!--          <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>-->
+<!--        </div>-->
       </div>
     </BRow>
 
@@ -49,7 +49,7 @@
                       Sin Conexión
                     </BBadge>
                   </td>
-                  <td>
+                  <td v-if="permisos.includes(3)">
                     <BButton
                         variant="link"
                         class="btn-sm"
@@ -141,9 +141,9 @@
                                   class="form-select rounded-pill mb-3"
                               >
                                 <BFormSelectOption value="">Seleccione una acción</BFormSelectOption>
-                                <BFormSelectOption value="1">Iniciar Carga Remota</BFormSelectOption>
-                                <BFormSelectOption value="2">Detener Carga Remota</BFormSelectOption>
-                                <BFormSelectOption value="3">Desbloquear Conector</BFormSelectOption>
+                                <BFormSelectOption value="1" v-if="permisos.includes(4)">Iniciar Carga Remota</BFormSelectOption>
+                                <BFormSelectOption value="2" v-if="permisos.includes(5)">Detener Carga Remota</BFormSelectOption>
+                                <BFormSelectOption value="3" v-if="permisos.includes(6)">Desbloquear Conector</BFormSelectOption>
                               </BFormSelect>
 
                             </BCol>
@@ -159,7 +159,7 @@
               </tbody>
             </table>
           </div>
-          <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
+          <div class="d-flex justify-content-end mt-4" v-if="resultQuery.length >= 1">
             <div class="pagination-wrap hstack gap-2">
               <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
                 Anterior

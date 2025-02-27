@@ -5,14 +5,14 @@
       <div style="display: flex; flex-direction: row; justify-content: space-between;" class="mb-2">
         <div class="contenedor-inic">
           <!-- Botón para Crear Fabricante de Cargador -->
-          <BButton v-if="permisos.includes(60)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
+          <BButton v-if="permisos.includes(47)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
             <router-link class="nav-link menu-link" target="" to="/company/crear-fabricante-cargador">
               Crear Fabricante de Cargador
             </router-link>
           </BButton>
 
           <!-- Botón para Crear Modelo de Cargador -->
-          <BButton v-if="permisos.includes(61)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
+          <BButton v-if="permisos.includes(48)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
             <router-link class="nav-link menu-link" target="" to="/company/crear-modelo-cargador">
               Crear Modelo de Cargador
             </router-link>
@@ -20,12 +20,12 @@
         </div>
         <div class="contenedor-finac">
           <!-- Input de búsqueda -->
-          <BButton v-if="permisos.includes(66)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
+          <BButton v-if="permisos.includes(61)" style="border: 1px solid #d8d8d8; margin-right: 6px;" variant="light" class="waves-effect waves-light" >
             <router-link class="nav-link menu-link" target="" to="/company/charger-manufacturer">
               Fabricantes
             </router-link>
           </BButton>
-          <BButton v-if="permisos.includes(67)" style="border: 1px solid #d8d8d8;" variant="light" class="waves-effect waves-light" >
+          <BButton v-if="permisos.includes(62)" style="border: 1px solid #d8d8d8;" variant="light" class="waves-effect waves-light" >
             <router-link class="nav-link menu-link" target="" to="/company/charger-models">
               Modelos
             </router-link>
