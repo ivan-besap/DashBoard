@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Asignar Autos a Flota" pageTitle="Asignaciones" />
+    <PageHeader title="Asignar Autos a Flota" />
 
     <BRow>
       <!-- Lista de Flotas disponibles -->
@@ -99,6 +99,11 @@
             </div>
           </div>
         </BCardBody>
+        <div class="d-flex justify-content-end mt-4">
+          <BButton variant="dark" @click="$router.push('/company/flotas')" class="mb-3">
+            Volver
+          </BButton>
+        </div>
       </BCol>
     </BRow>
   </Layout>

@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Comandos OCPP" pageTitle="Estaciones de Carga" />
+    <PageHeader title="Gestiones Remotas" />
     <BRow>
       <div class="d-flex justify-content-between mb-3">
         <div class="search-container" style="flex: 0 1 250px;">
@@ -35,7 +35,7 @@
               </tr>
               </thead>
               <tbody class="list form-check-all">
-              <template v-for="(dat, index) in resultQuery" :key="index">
+              <template v-for="(dat, index) of paginatedQuery" :key="index">
                 <tr>
                   <td>{{ dat.terminalName }}</td>
                   <td>{{ dat.ocppid }}</td>
@@ -43,10 +43,10 @@
                   <td>{{ dat.ubicacionTerminal }}</td>
                   <td>
                     <BBadge v-if="dat.estadoCargador === 'ACTIVE'" variant="border border-success" class="border border-success text-success">
-                      Disponible
+                      Conectado
                     </BBadge>
                     <BBadge v-else variant="border border-danger" class="border border-danger text-danger">
-                      No Disponible
+                      Sin Conexión
                     </BBadge>
                   </td>
                   <td>
@@ -211,38 +211,42 @@ export default {
   },
   computed: {
     resultQuery() {
-      const start = (this.page - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      let sortedData = [...this.data];
+      let filteredData = [...this.data];
 
       // Filtrar por el valor ingresado en el campo de búsqueda (searchQuery)
       if (this.searchQuery) {
         const lowerSearchQuery = this.searchQuery.toLowerCase();
-        sortedData = sortedData.filter(item =>
-            item.terminalName.toLowerCase().includes(lowerSearchQuery) ||
-            item.ubicacionTerminal.toLowerCase().includes(lowerSearchQuery) ||
-            item.ocppid.toLowerCase().includes(lowerSearchQuery) ||
-            item.modelName.toLowerCase().includes(lowerSearchQuery)
+        filteredData = filteredData.filter(item =>
+            (item.terminalName?.toLowerCase().includes(lowerSearchQuery) || '') ||
+            (item.ubicacionTerminal?.toLowerCase().includes(lowerSearchQuery) || '') ||
+            (item.ocppid?.toLowerCase().includes(lowerSearchQuery) || '') ||
+            (item.modelName?.toLowerCase().includes(lowerSearchQuery) || '')
         );
       }
 
       if (this.sortBy) {
-        sortedData.sort((a, b) => {
+        filteredData.sort((a, b) => {
           const result = a[this.sortBy] < b[this.sortBy] ? -1 : a[this.sortBy] > b[this.sortBy] ? 1 : 0;
           return this.sortDesc ? -result : result;
         });
       }
 
-      return sortedData.slice(start, end);
+      return filteredData;
     },
     pages() {
-      return Math.ceil(this.data.length / this.itemsPerPage);
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
     },
     displayedPages() {
       const totalPages = this.pages;
       const currentPage = this.page;
       const delta = 2;
       const range = [];
+
       for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
         range.push(i);
       }
@@ -258,6 +262,11 @@ export default {
       }
       return range;
     },
+  },
+  watch: {
+    searchQuery() {
+      this.page = 1;
+    }
   },
   methods: {
 
@@ -370,7 +379,7 @@ export default {
         confirmButtonText: "Sí, reiniciar",
         cancelButtonText: "No, cancelar",
         reverseButtons: true,
-      });
+    });
 
       if (result.isConfirmed) {
         // Si el usuario confirma, ejecuta la acción de reinicio

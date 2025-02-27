@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Flotas" pageTitle="Compañía" />
+    <PageHeader title="Flotas" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <template v-for="(flota, index) in resultQuery" :key="index">
+            <template v-for="(flota, index) of paginatedQuery" :key="index">
               <tr>
                 <td>{{ flota.nombreFlota }}</td>
                 <td>{{ "$" + flota.precioFlota }}</td>
@@ -128,7 +128,7 @@ export default {
       data: [],
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       permisos:[],
       direction: 'asc',
     };
@@ -147,7 +147,6 @@ export default {
           ...flota,
           expanded: false, // Propiedad para controlar el despliegue de autos asignados
         }));
-        this.setPages();
       } catch (error) {
         console.error("Error fetching flotas:", error);
       }
@@ -155,23 +154,13 @@ export default {
     toggleExpand(flota) {
       flota.expanded = !flota.expanded;
     },
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -179,19 +168,13 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
     confirm(flotaId) {
       Swal.fire({
@@ -229,37 +212,62 @@ export default {
   },
 
   computed: {
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
     resultQuery() {
-      let filteredData = this.data;
+      let filteredData = [...this.data];
 
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
         filteredData = filteredData.filter((flota) => {
           return (
-              flota.nombreFlota.toLowerCase().includes(search)
+              flota.nombreFlota.toLowerCase().includes(search) ||
+              flota.precioFlota.toString().includes(search)
           );
         });
       }
 
-      return this.paginate(filteredData);
+      if (this.sortBy) {
+        filteredData.sort((a, b) => {
+          const result = a[this.sortBy] < b[this.sortBy] ? -1 : a[this.sortBy] > b[this.sortBy] ? 1 : 0;
+          return this.sortDesc ? -result : result;
+        });
+      }
+
+      return filteredData;
+    },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
     },
     displayedPages() {
-      let result = [];
-      let page = this.page;
-      let numberOfPages = this.pages.length;
-      if (numberOfPages <= 5) {
-        result = this.pages;
-      } else {
-        let start = Math.max(1, page - 2);
-        let end = Math.min(numberOfPages, page + 2);
-        if (start > 1) result.push(1);
-        if (start > 2) result.push('...');
-        result.push(...this.pages.slice(start - 1, end));
-        if (end < numberOfPages) result.push('...');
-        if (end < numberOfPages) result.push(numberOfPages);
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
+
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
       }
-      return result;
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
     },
+  },
+  watch: {
+    searchQuery() {
+      this.page = 1;
+    }
   },
 
   mounted() {

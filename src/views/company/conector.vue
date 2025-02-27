@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <PageHeader title="Conectores" pageTitle="Compañía" />
+      <PageHeader title="Conectores" />
     
       <!--<BButton style="margin-bottom: 45px;" pill variant="success" class="waves-effect waves-light">
         <a href="/company/create-empleados-company">Detalle de Terminal</a>
@@ -27,7 +27,7 @@
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar por nombre de Cargador..."
+              placeholder="Buscar Conector ..."
             />
           </div>
         </div>
@@ -54,7 +54,7 @@
               </tr>
               </thead>
               <tbody class="list form-check-all">
-              <tr v-for="(dat, index) in resultQuery" :key="index">
+              <tr v-for="(dat, index) of paginatedQuery" :key="index">
                 <td>{{ dat.nombreTerminal }}</td>
                 <td>{{ dat.alias }}</td>
 <!--                <td class="pairs">{{ dat.connectorType }}</td>-->
@@ -93,15 +93,15 @@
                       'Estado desconocido'
                     }}
                   </span>
-                  <BFormCheckbox
-                      v-if="permisos.includes(64)"
-                      switch
-                      :checked="dat.estadoConector !== 'DISCONNECTED'"
-                      @change="cambiarEstadoConector(dat.id, $event ? 'CONNECTED' : 'DISCONNECTED')"
-                      class="mt-1 mb-2"
-                      style="height: 19px; width: 35px"
-                  >
-                  </BFormCheckbox>
+<!--                  <BFormCheckbox-->
+<!--                      v-if="permisos.includes(64)"-->
+<!--                      switch-->
+<!--                      :checked="dat.estadoConector !== 'DISCONNECTED'"-->
+<!--                      @change="cambiarEstadoConector(dat.id, $event ? 'CONNECTED' : 'DISCONNECTED')"-->
+<!--                      class="mt-1 mb-2"-->
+<!--                      style="height: 19px; width: 35px"-->
+<!--                  >-->
+<!--                  </BFormCheckbox>-->
                 </td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(49)">
@@ -158,56 +158,80 @@
         data: [],
         page: 1,
         perPage: 5,
-        pages: [],
+        itemsPerPage: 5,
         permisos:[]
       };
     },
     computed: {
-      displayedPages() {
-        let startPage = Math.max(this.page - 1, 1);
-        let endPage = Math.min(startPage + 2, this.pages.length);
-
-        if (endPage - startPage < 2) {
-          startPage = Math.max(endPage - 2, 1);
-        }
-
-        let pages = [];
-        for (let i = startPage; i <= endPage; i++) {
-          pages.push(i);
-        }
-        return pages;
+      pages() {
+        return Math.ceil(this.resultQuery.length / this.itemsPerPage);
       },
-      // filteredPlans() {
-      //   const query = this.searchQuery.toLowerCase();
-      //   return this.data.filter(dat => dat.alias.toLowerCase().includes(query));
-      // },
-      // displayedPosts() {
-      //   return this.paginate(this.data);
-      // },
+      paginatedQuery() {
+        const start = (this.page - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.resultQuery.slice(start, end);
+      },
+      displayedPages() {
+        const totalPages = this.pages;
+        const currentPage = this.page;
+        const delta = 2;
+        const range = [];
+
+        for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+          range.push(i);
+        }
+        if (currentPage - delta > 2) {
+          range.unshift("...");
+        }
+        if (currentPage + delta < totalPages - 1) {
+          range.push("...");
+        }
+        range.unshift(1);
+        if (totalPages > 1) {
+          range.push(totalPages);
+        }
+        return range;
+      },
       resultQuery() {
         let filteredData = this.filteredConnector;
-        return this.paginate(filteredData);
+        return filteredData;
       },
       filteredConnector() {
         const query = this.searchQuery.toLowerCase();
-        return this.data.filter(connector =>
-            connector.alias.toLowerCase().includes(query) ||
-            connector.tipoConector.nombre.toLowerCase().includes(query) ||
-            connector.idCargador.toLowerCase().includes(query) ||
-            connector.tarifa.nombreTarifa.toLowerCase().includes(query)
-        );
+
+        // Mapa de traducciones para el estado del conector
+        const estadoConectorMap = {
+          'CONNECTED': 'conectado',
+          'OCCUPIED': 'cargando',
+          'DISCONNECTED': 'desconectado',
+          'SUSPENDED': 'suspendido',
+          'FINISHING': 'finalizando'
+        };
+
+        return this.data.filter(connector => {
+          // Obtener el estado traducido o el original en minúscula
+          const estadoEnEspanol = estadoConectorMap[connector.estadoConector] || connector.estadoConector.toLowerCase();
+
+          // Realizar la búsqueda considerando el estado traducido
+          return (
+              connector.alias.toLowerCase().includes(query) ||
+              connector.nombreTerminal.toLowerCase().includes(query) ||
+              connector.tipoConector.nombre.toLowerCase().includes(query) ||
+              connector.idCargador.toLowerCase().includes(query) ||
+              connector.tarifa.nombreTarifa.toLowerCase().includes(query) ||
+              connector.tarifa.precioTarifa.toString().toLowerCase().includes(query) ||
+              estadoEnEspanol.includes(query)  // Búsqueda en el estado traducido
+          );
+        });
       }
-   },
+
+    },
     watch: {
-      data() {
-        this.setPages();
-      },
       searchQuery() {
-        this.setPages();
+        this.page = 1;
       }
     },
     created() {
-      this.setPages();
       this.connectors();
       this.loadUserData();
     },
@@ -253,23 +277,13 @@
           Swal.fire("Error al actualizar el estado del conector", "", "error");
         }
       },
-      setPages() {
-        let numberOfPages = Math.ceil(this.data.length / this.perPage);
-        this.pages = [];
-        for (let index = 1; index <= numberOfPages; index++) {
-          this.pages.push(index);
-        }
-      },
-      paginate(data) {
-        let page = this.page;
-        let perPage = this.perPage;
-        let from = page * perPage - perPage;
-        let to = page * perPage;
-        return data.slice(from, to);
-      },
       goToPage(pageNumber) {
-        if (pageNumber !== '...') {
-          this.page = pageNumber;
+        if (pageNumber === "...") return;
+        this.page = pageNumber;
+      },
+      nextPage() {
+        if (this.page < this.pages) {
+          this.page++;
         }
       },
       previousPage() {
@@ -277,19 +291,13 @@
           this.page--;
         }
       },
-      nextPage() {
-        if (this.page < this.pages.length) {
-          this.page++;
+      onSort(sortKey) {
+        if (this.sortBy === sortKey) {
+          this.sortDesc = !this.sortDesc;
+        } else {
+          this.sortBy = sortKey;
+          this.sortDesc = false;
         }
-      },
-      onSort(column) {
-        this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-        const sortedArray = [...this.data];
-        sortedArray.sort((a, b) => {
-          const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-          return this.direction === 'asc' ? res : -res;
-        });
-        this.data = sortedArray;
       },
       confirm(connectorId) {
         Swal.fire({

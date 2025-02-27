@@ -281,7 +281,7 @@ export default {
         </li>
         <li class="nav-item" v-if="permisos.includes(3)">
 
-          <router-link class="nav-link menu-link" target="" to="/company/comandos-ocpp" active-class="active">
+          <router-link class="nav-link menu-link" target="" to="/company/gestiones-remotas" active-class="active">
             <i class="mdi mdi-keyboard"></i>
             Gestiones Remotas
           </router-link>
@@ -332,30 +332,30 @@ export default {
                   <span data-key="t-landing">Cargas RFID</span>
                 </router-link>
               </li>
-              <li class="nav-item" v-if="permisos.includes(20)">
-                <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga" active-class="active">
+<!--              <li class="nav-item" v-if="permisos.includes(20)">-->
+<!--                <router-link class="nav-link menu-link" target="" to="/company/detalles-de-carga" active-class="active">-->
 
-                    <span data-key="t-landing">Detalles de Cargas</span>
+<!--                    <span data-key="t-landing">Detalles de Cargas</span>-->
 
-                </router-link>
-              </li>
-              <li class="nav-item" v-if="permisos.includes(21)">
-                <router-link class="nav-link menu-link"  target="" to="/company/cargas-por-cargador" active-class="active">
-                  <span data-key="t-landing">Cargas Por Cargador</span>
-                </router-link>
-              </li>
-              <li class="nav-item" v-if="permisos.includes(22)">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-terminal" active-class="active">
-                  <span data-key="t-landing">Cargas por Terminal</span>
-                </router-link>
-              </li>
+<!--                </router-link>-->
+<!--              </li>-->
+<!--              <li class="nav-item" v-if="permisos.includes(21)">-->
+<!--                <router-link class="nav-link menu-link"  target="" to="/company/cargas-por-cargador" active-class="active">-->
+<!--                  <span data-key="t-landing">Cargas Por Cargador</span>-->
+<!--                </router-link>-->
+<!--              </li>-->
+<!--              <li class="nav-item" v-if="permisos.includes(22)">-->
+<!--                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-terminal" active-class="active">-->
+<!--                  <span data-key="t-landing">Cargas por Terminal</span>-->
+<!--                </router-link>-->
+<!--              </li>-->
 
 
-              <li class="nav-item" v-if="permisos.includes(23)">
-                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-vehiculo" active-class="active">
-                  <span data-key="t-landing">Cargas por Flota</span>
-                </router-link>
-              </li>
+<!--              <li class="nav-item" v-if="permisos.includes(23)">-->
+<!--                <router-link class="nav-link menu-link" target="" to="/company/cargas-por-vehiculo" active-class="active">-->
+<!--                  <span data-key="t-landing">Cargas por Flota</span>-->
+<!--                </router-link>-->
+<!--              </li>-->
 
               <li class="nav-item" v-if="permisos.includes(24)">
                 <router-link class="nav-link menu-link" target="" to="/company/errores-por-conector" active-class="active">
@@ -363,11 +363,11 @@ export default {
                 </router-link>
               </li>
 
-              <li class="nav-item" >
-                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias" v-if="permisos.includes(52)" active-class="active">
-                  <span data-key="t-landing">Alarmas Diarias</span>
-                </router-link>
-              </li>
+<!--              <li class="nav-item" >-->
+<!--                <router-link class="nav-link menu-link" target="" to="/company/alarmas-diarias" v-if="permisos.includes(52)" active-class="active">-->
+<!--                  <span data-key="t-landing">Alarmas Diarias</span>-->
+<!--                </router-link>-->
+<!--              </li>-->
               <li class="nav-item" >
                 <router-link class="nav-link menu-link" target="" to="/company/reporte-ventas" v-if="permisos.includes(55)" active-class="active">
                   <span data-key="t-landing">Ventas Por Estación</span>
@@ -429,11 +429,11 @@ export default {
               </li>
              
 
-              <li class="nav-item" v-if="permisos.includes(51)">
-                <router-link class="nav-link" target="" to="/company/alertas-correos" active-class="active">
-                  <span data-key="t-landing">Configuracion de Correos Alertas</span>
-                </router-link>
-              </li>
+<!--              <li class="nav-item" v-if="permisos.includes(51)">-->
+<!--                <router-link class="nav-link" target="" to="/company/alertas-correos" active-class="active">-->
+<!--                  <span data-key="t-landing">Configuracion de Correos Alertas</span>-->
+<!--                </router-link>-->
+<!--              </li>-->
           </ul>
         </div>
       </li>

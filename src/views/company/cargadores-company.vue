@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Cargadores" pageTitle="Compañía" />
+    <PageHeader title="Cargadores"/>
 
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
@@ -32,7 +32,7 @@
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar por nombre de Cargador..."
+              placeholder="Buscar Cargador ... "
             />
           </div>
         </div>
@@ -55,25 +55,33 @@
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="(dat, index) in resultQuery" :key="index">
+            <tr v-for="(dat, index) of paginatedQuery" :key="index">
               <td>{{ dat.terminalName }}</td>
               <td>{{ dat.ocppid }}</td>
               <td class="pairs">{{ dat.alias }}</td>
               <td class="pairs">{{ dat.modelName }}</td>
               <td class="d-flex align-items-center">
-                 <span :class="dat.estadoCargador === 'ACTIVE' ? 'badge bg-success' : 'badge bg-secondary'" class="me-2 mt-2 mb-2" style="font-size: 12px">
-                  {{ dat.estadoCargador === 'ACTIVE' ? 'Disponible' : 'No Disponible' }}
+                 <span
+                     :class="{
+                        'badge bg-success': dat.estadoCargador === 'ACTIVE',
+                        'badge bg-secondary': dat.estadoCargador === 'INACTIVE',
+                        'badge bg-primary': dat.estadoCargador === 'CONSTRUCTION'
+                      }"
+                     class="me-2 mt-2 mb-2"
+                     style="font-size: 12px"
+                 >
+                  {{dat.estadoCargador === 'ACTIVE' ? 'Conectado' : dat.estadoCargador === 'INACTIVE' ? 'Sin conexión' : dat.estadoCargador === 'CONSTRUCTION' ? 'En mantenimiento' : dat.estadoCargador }}
                 </span>
-                <BFormCheckbox  v-if="permisos.includes(63)"
-                    v-model="dat.estadoCargador"
-                    switch
-                    :value="'ACTIVE'"
-                    :unchecked-value="'INACTIVE'"
-                    @change="cambiarActivoCargador(dat.id, dat.estadoCargador)"
-                    class="mt-1 mb-2"
-                    style="height: 19px; width: 35px"
-                >
-                </BFormCheckbox>
+<!--                <BFormCheckbox  v-if="permisos.includes(63)"-->
+<!--                    v-model="dat.estadoCargador"-->
+<!--                    switch-->
+<!--                    :value="'ACTIVE'"-->
+<!--                    :unchecked-value="'INACTIVE'"-->
+<!--                    @change="cambiarActivoCargador(dat.id, dat.estadoCargador)"-->
+<!--                    class="mt-1 mb-2"-->
+<!--                    style="height: 19px; width: 35px"-->
+<!--                >-->
+<!--                </BFormCheckbox>-->
               </td>
               <td>
                 {{
@@ -147,57 +155,75 @@ export default {
       data: [],
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       permisos:[]
     };
   },
 
   computed: {
-    displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
-
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
-      }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-      return pages;
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
     },
-    // filteredPlans() {
-    //   const query = this.searchQuery.toLowerCase();
-    //   return this.data.filter(dat => dat.name.toLowerCase().includes(query));
-    // },
-    // displayedPosts() {
-    //   return this.paginate(this.data);
-    // },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
+    },
+    displayedPages() {
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
+
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+      }
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
+    },
     resultQuery() {
       let filteredData = this.filteredCharger;
-      return this.paginate(filteredData);
+      return filteredData;
     },
     filteredCharger() {
       const query = this.searchQuery.toLowerCase();
-      return this.data.filter(charger =>
-          charger.terminalName.toLowerCase().includes(query) ||
-          charger.ocppid.toLowerCase().includes(query) ||
-          charger.alias.toLowerCase().includes(query) ||
-          charger.modelName.toLowerCase().includes(query)
-      );
+      return this.data.filter(charger => {
+        // Convertir estadoCargador a español para la búsqueda
+        const estadoMap = {
+          'ACTIVE': 'conectado',
+          'INACTIVE': 'sin conexión',
+          'CONSTRUCTION': 'en mantenimiento'
+        };
+
+        // Obtener el estado traducido o el original en minúscula
+        const estadoEnEspanol = estadoMap[charger.estadoCargador] || charger.estadoCargador.toLowerCase();
+
+        // Realizar la búsqueda considerando el estado en español
+        return (
+            charger.terminalName.toLowerCase().includes(query) ||
+            charger.ocppid.toLowerCase().includes(query) ||
+            charger.alias.toLowerCase().includes(query) ||
+            charger.modelName.toLowerCase().includes(query) ||
+            estadoEnEspanol.includes(query)  // Búsqueda en el estado traducido
+        );
+      });
     }
   },
   watch: {
-    data() {
-      this.setPages();
-    },
     searchQuery() {
-      this.setPages();
+      this.page = 1;
     }
   },
   created() {
-    this.setPages();
     this.chargesStation();
     this.loadUserData();
   },
@@ -248,23 +274,13 @@ export default {
         console.error("Error obteniendo las estaciones de carga:", error);
       }
     },
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -272,19 +288,13 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
     confirm(chargerId) {
       Swal.fire({

@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Fabricante de Cargador" pageTitle="Compañía" />
+    <PageHeader title="Crear Fabricante de Cargador" />
 
     <BRow>
       <BCol xxl="12">

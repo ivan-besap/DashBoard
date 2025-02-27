@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Asignar Mantenimiento" pageTitle="items" />
+    <PageHeader title="Asignar Mantenimiento" />
 
     <BRow>
       <BCol xl="6">
@@ -128,6 +128,11 @@
             </div>
           </div>
         </BCardBody>
+        <div class="d-flex justify-content-end mt-4">
+          <BButton variant="dark" @click="$router.push('/company/cargadores-company')" class="mb-3">
+            Volver
+          </BButton>
+        </div>
       </BCol>
     </BRow>
   </Layout>

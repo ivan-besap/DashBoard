@@ -44,7 +44,7 @@
                         class="form-control" 
                         placeholder="Apellido Paterno" 
                         id="firstSurname" 
-                        required 
+
                       />
                     </div>
                   </BCol>
@@ -57,7 +57,7 @@
                         class="form-control" 
                         placeholder="Apellido Materno" 
                         id="lastSurname" 
-                        required 
+
                       />
                     </div>
                   </BCol>
@@ -102,7 +102,7 @@
                           class="form-control"
                           placeholder="Telefono"
                           id="telefono"
-                          required
+
                       />
                     </div>
                   </BCol>
@@ -119,6 +119,7 @@
                           :close-on-select="true"
                           :searchable="true"
                           :create-option="true"
+                          required
                       />
                     </div>
                   </BCol>

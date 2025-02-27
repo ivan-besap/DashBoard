@@ -260,9 +260,8 @@ export default {
     // Método para obtener el consumo de energía
     const fetchEnergyData = async () => {
       try {
-        const response = await axios.get("http://localhost:8088/api/transactionInfo/chargePoints", {
-          params: { empresaId: 1 },
-        });
+        const response = await axios.get("http://localhost:8088/api/reporte-energia");
+        console.log(response.data)
 
         totalEnergyConsumed.value = response.data.totalEnergyConsumed;
         dailyEnergyConsumed.value = response.data.dailyEnergyConsumed;
@@ -308,14 +307,14 @@ export default {
         porcentajeIngresoDiario.value = response.data.porcentajeIngresoDiario;
         porcentajeIngresoMensual.value = response.data.porcentajeIngresoMensual;
         promedioDiario.value = convertirTiempoASegundos(response.data.promedioDiario);
-        promedioAnual.value = convertirTiempoASegundos(response.data.promedioAnual);
+        promedioAnual.value = response.data.promedioAnualNuevo;
 
         porcentajeTiempoDiario.value = response.data.porcentajeTiempoDiario;
         porcentajeTiempoMensual.value = response.data.porcentajeTiempoMensual;
         porcentajeTiempoAnual.value = response.data.porcentajeTiempoAnual;
 
         const costosMensualesData = response.data.costosMensuales;
-        const promedioMensualPorMesData = response.data.promedioMensualPorMes;
+        const promedioMensualPorMesData = response.data.tiemposPromediosMesNuevo;
 
 
         // Definir los meses en formato esperado
@@ -555,8 +554,8 @@ export default {
             <BCol cols="6" sm="4">
               <div class="p-3 border border-dashed border-start-0">
                 <h5 class="mb-1">
+                  $
                   <count-to :startVal="0" :endVal="ingresoDiario" :duration="3000"></count-to>
-                  <span>&nbsp;kWh</span>
                   <span :class="{
                       'text-success': porcentajeIngresoDiario > 0,
                       'text-danger': porcentajeIngresoDiario < 0,
@@ -691,7 +690,7 @@ export default {
             <BCol cols="6" sm="4">
               <div class="p-3 border border-dashed border-start-0 border-end-0">
                 <h5 class="mb-1">
-                  {{ formatoTiempo(promedioAnual) }}
+                  {{promedioAnual}}
                   <span
                       :class="{
                   'text-success': porcentajeTiempoAnual < 0,

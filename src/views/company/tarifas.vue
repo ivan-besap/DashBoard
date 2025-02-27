@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Tarifas" pageTitle="Compañía" />
+    <PageHeader title="Tarifas" />
 
     <BRow>
         <div style="display: flex;flex-direction: row;justify-content: space-between;">
@@ -37,25 +37,25 @@
               <th class="sort pe-4" data-sort="current_value" scope="col" @click="onSort('name')">Tarifa</th>
               <th class="sort pe-4" data-sort="current_value" scope="col" @click="onSort('name')">Conector Asociado</th>
               <th class="sort pe-4" data-sort="current_value" scope="col" @click="onSort('name')">Cargador del Conector</th>
-              <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Inicio</th>
-              <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Fin</th>
-              <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('weekDays')">Días de la semana</th>
-              <th class="sort pe-4" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Inicio</th>
-              <th class="sort pe-4" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Fin</th>
+<!--              <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Inicio</th>-->
+<!--              <th class="sort pe-4" data-sort="pairs" scope="col" @click="onSort('period')">Fecha Fin</th>-->
+<!--              <th class="sort pe-4" data-sort="high" scope="col" @click="onSort('weekDays')">Días de la semana</th>-->
+<!--              <th class="sort pe-4" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Inicio</th>-->
+<!--              <th class="sort pe-4" data-sort="low" scope="col" @click="onSort('chargerType')">Hora Fin</th>-->
               <th class="sort pe-4" data-sort="market_cap" scope="col" @click="onSort('location')">Valor</th>
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
             <tbody class="list form-check-all">
-              <tr v-for="(tarifa, index) in resultQuery" :key="index">
+              <tr v-for="(tarifa, index) of paginatedQuery" :key="index">
                 <td>{{ tarifa.nombreTarifa }}</td>
                 <td>{{ tarifa.nombreConector ? tarifa.nombreConector : "No tiene Conector Asociado" }}</td>
                 <td>{{ tarifa.nombreCargador ? tarifa.nombreCargador : "No tiene Conector Asociado" }}</td>
-                <td>{{ tarifa.fechaInicio }}</td>
-                <td>{{ tarifa.fechaFin }}</td>
-                <td>{{ tarifa.diasDeLaSemana.join(', ') }}</td>
-                <td>{{ tarifa.horaInicio }}</td>
-                <td>{{ tarifa.horaFin }}</td>
+<!--                <td>{{ tarifa.fechaInicio }}</td>-->
+<!--                <td>{{ tarifa.fechaFin }}</td>-->
+<!--                <td>{{ tarifa.diasDeLaSemana.join(', ') }}</td>-->
+<!--                <td>{{ tarifa.horaInicio }}</td>-->
+<!--                <td>{{ tarifa.horaFin }}</td>-->
                 <td>{{ "$" + tarifa.precioTarifa }}</td>
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(12)">
@@ -120,7 +120,6 @@ export default {
           .get("http://localhost:8088/api/fees")
           .then((response) => {
             this.tarifas = response.data;
-            this.setPages();
           })
           .catch((error) => {
             console.error("Error fetching employees:", error);
@@ -131,32 +130,13 @@ export default {
             );
           });
     },
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.tarifas];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.tarifas = sortedArray;
-    },
-    setPages() {
-      let numberOfPages = Math.ceil(this.tarifas.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -164,9 +144,12 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
     },
     confirm(tarifaId) {
@@ -205,48 +188,66 @@ export default {
       searchQuery: '',
       page: 1,
       perPage: 5,
-      pages: [],
       userData: null,
       permisos:[],
       tarifas:[]
     };
   },
   computed: {
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.perPage);
+    },
+
+    paginatedQuery() {
+      const start = (this.page - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.resultQuery.slice(start, end);
+    },
+
     displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
 
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
       }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
+      if (currentPage - delta > 2) {
+        range.unshift("...");
       }
-      return pages;
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
     },
     filteredTarifas() {
       const query = this.searchQuery.toLowerCase();
       return this.tarifas.filter(tarifa =>
-          tarifa.nombreTarifa.toLowerCase().includes(query)
+          tarifa.nombreTarifa?.toLowerCase().includes(query) ||
+          (tarifa.nombreConector?.toLowerCase() || '').includes(query) ||
+          (tarifa.nombreCargador?.toLowerCase() || '').includes(query) ||
+          tarifa.precioTarifa?.toString().toLowerCase().includes(query)
       );
     },
     resultQuery() {
       let filteredData = this.filteredTarifas;
-      return this.paginate(filteredData);
-    }
+      return filteredData;
+    },
   },
   watch: {
-    tarifas() {
-      this.setPages();
-    },
     searchQuery() {
-      this.setPages();
+      this.page = 1;
+    },
+    tarifas() {
+      this.page = 1;
     }
   },
   created() {
-    this.setPages();
     this.loadUserData();
     this.fetchTarifas();
   },

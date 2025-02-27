@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Tarjetas RFID" pageTitle="Compañía" />
+    <PageHeader title="Tarjetas RFID" />
 
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
@@ -43,7 +43,7 @@
               </tr>
             </thead>
             <tbody class="list form-check-all">
-              <tr v-for="(dat, index) in resultQuery" :key="index">
+              <tr v-for="(dat, index) of paginatedQuery" :key="index">
                 <td>{{ dat.nombreDeIdentificador }}</td>
                 <td>{{ dat.rfid }}</td>
                 <td>{{ dat.fechaExpiracion }}</td>
@@ -116,28 +116,43 @@ export default {
       data: [],  // Aquí se almacenan los datos desde el backend
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       direction: 'asc',
       permisos:[]
     };
   },
   computed: {
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
+    },
     displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
 
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
       }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
+      if (currentPage - delta > 2) {
+        range.unshift("...");
       }
-      return pages;
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
     },
     resultQuery() {
-      let filteredData = this.data;
+      let filteredData = [...this.data];
 
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
@@ -149,8 +164,20 @@ export default {
           );
         });
       }
-      return this.paginate(filteredData);
+      if (this.sortBy) {
+        filteredData.sort((a, b) => {
+          const result = a[this.sortBy] < b[this.sortBy] ? -1 : a[this.sortBy] > b[this.sortBy] ? 1 : 0;
+          return this.sortDesc ? -result : result;
+        });
+      }
+
+      return filteredData;
     },
+  },
+  watch: {
+    searchQuery() {
+      this.page = 1;
+    }
   },
   created() {
     this.fetchDeviceIdentifiers();
@@ -203,46 +230,27 @@ export default {
       }
     },
 
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-
-    paginate(data) {
-      let from = this.page * this.perPage - this.perPage;
-      let to = this.page * this.perPage;
-      return data.slice(from, to);
-    },
-
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
-
     previousPage() {
       if (this.page > 1) {
         this.page--;
       }
     },
-
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
 
     confirm(rfidId) {

@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Lista Estaciones" pageTitle="Estaciones de Carga" />
+    <PageHeader title="Lista Estaciones"/>
     <BRow>
       <div class="d-flex justify-content-between mb-3">
         <div class="search-container" style="flex: 0 1 250px;">
@@ -13,8 +13,8 @@
         </div>
 
         <div class="d-flex align-items-center">
-          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
-          <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
+<!--          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;-->
+<!--          <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>-->
         </div>
       </div>
     </BRow>
@@ -31,7 +31,7 @@
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <template v-for="(dat, index) in resultQuery" :key="index">
+            <template v-for="(dat, index) of paginatedQuery" :key="index">
               <tr>
                 <td>{{ dat.nombreTerminal }}</td>
                 <td>{{ dat.ubicacionTerminal.direccion }}</td>
@@ -94,6 +94,9 @@
             </tbody>
           </table>
         </div>
+          <BButton style="margin-top: 10px;" variant="light" @click="$router.push('/company/stations-company')">
+            Volver
+          </BButton>
         <div class="d-flex justify-content-end mt-3" v-if="resultQuery.length >= 1">
           <div class="pagination-wrap hstack gap-2">
             <BLink class="page-item pagination-prev" :disabled="page <= 1" @click.prevent.stop="previousPage">
@@ -144,8 +147,6 @@ export default {
   },
   computed: {
     resultQuery() {
-      const start = (this.page - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
       let sortedData = [...this.estaciones];
 
       // Filtrar por el valor ingresado en el campo de búsqueda (searchQuery)
@@ -164,16 +165,22 @@ export default {
         });
       }
 
-      return sortedData.slice(start, end);
+      return sortedData;
     },
     pages() {
-      return Math.ceil(this.estaciones.length / this.itemsPerPage);
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
     },
     displayedPages() {
       const totalPages = this.pages;
       const currentPage = this.page;
       const delta = 2;
       const range = [];
+
       for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
         range.push(i);
       }
@@ -219,12 +226,12 @@ export default {
     toggleCollapseCharger(item) {
       item.expanded2 = !item.expanded2;
     },
-    exportToCSV() {
-      // Lógica para exportar a CSV
-    },
-    exportToExcel() {
-      // Lógica para exportar a Excel
-    },
+    // exportToCSV() {
+    //   // Lógica para exportar a CSV
+    // },
+    // exportToExcel() {
+    //   // Lógica para exportar a Excel
+    // },
     getRandomNumber(max) {
       return Math.floor(Math.random() * max);
     },
@@ -246,6 +253,11 @@ export default {
         console.error("Error obteniendo las estaciones de carga:", error);
       }
     },
+  },
+  watch: {
+    searchQuery() {
+      this.page = 1;
+    }
   },
   mounted() {
     this.ChargingStation();

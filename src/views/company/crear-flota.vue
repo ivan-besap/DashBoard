@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Flota" pageTitle="Compañía" />
+    <PageHeader title="Crear Flota" />
     <BRow>
       <BCard no-body class="card-body">
         <BCardBody>
@@ -32,7 +32,10 @@
               </div>
             </BCol>
           </BRow>
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-between">
+            <BButton variant="light" @click="$router.push('/company/flotas')">
+              Volver
+            </BButton>
             <BButton style="" type="submit" variant="light" @click="createFlota">
               Crear
             </BButton>

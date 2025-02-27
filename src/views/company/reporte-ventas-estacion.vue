@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Reportes de Ventas Por Estación" pageTitle="Compañía" />
+    <PageHeader title="Reportes de Ventas Por Estación" />
 
     <div style="margin-top:10px;" class="table-responsive table-card">
       <div class="d-flex justify-content-between mb-3 align-items-center">
@@ -10,25 +10,42 @@
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar"
+              placeholder="Buscar ventas ..."
               style="margin-right: 15px;"
           />
         </div>
-        <div class="d-flex align-items-center">
-          <div class="d-flex align-items-center me-3">
-            <flat-pickr
-                v-model="dateRange"
-                class="form-control"
-                style="width: auto;"
-                placeholder="Seleccionar Periodo"
-                :config="{ mode: 'range', dateFormat: 'Y-m-d' }"
-                @input="updateSearchQuery"
-            ></flat-pickr>
-            <BButton style="padding: 5px 10px; margin-left: 10px; border: 1px solid #d8d8d8" variant="light" class="waves-effect waves-light" @click="clearDateRange">
-              <i class="mdi mdi-delete"></i>
-            </BButton>
+        <div class="d-flex align-items-center" style="gap: 15px;">
+          <!-- Año -->
+          <div class="d-flex align-items-center" style="gap: 5px;">
+            <label for="selectedAno" class="form-label" style="margin-bottom: 0; font-weight: bold;">Año:</label>
+            <Multiselect
+                v-model="selectedAno"
+                :options="anosDisponibles"
+                label="label"
+                track-by="value"
+                placeholder="Selecciona un año"
+                :close-on-select="true"
+                :searchable="true"
+                style="min-width: 130px; max-width: 200px; min-height: 45px; font-size: 16px;"
+            />
           </div>
-          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;
+
+          <!-- Mes -->
+          <div class="d-flex align-items-center" style="gap: 5px;">
+            <label for="selectedMes" class="form-label" style="margin-bottom: 0; font-weight: bold;">Mes:</label>
+            <Multiselect
+                v-model="selectedMes"
+                :options="mesesDisponibles"
+                label="label"
+                track-by="value"
+                placeholder="Selecciona un mes"
+                :close-on-select="true"
+                :searchable="true"
+                style="min-width: 170px; max-width: 200px; min-height: 45px; font-size: 16px;"
+            />
+          </div>
+
+<!--          <b-button style="background-color: white" @click="exportToCSV" variant="light">Exportar a CSV</b-button>&nbsp;&nbsp;-->
           <b-button style="background-color: white" @click="exportToExcel" variant="light">Exportar a Excel</b-button>
         </div>
       </div>
@@ -38,24 +55,26 @@
             <table class="table align-middle table-nowrap table-striped table-hover" id="customerTable">
               <thead class="table-light text-muted">
               <tr>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('fecha')">Fecha</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('estacionDeCarga')">Estación De Carga</th>
-                <th class="sort" data-sort="high" scope="col" @click="onSort('ventas')">Ventas</th>
+                <th scope="col">Estación De Carga</th>
+                <th scope="col">Año</th>
+                <th scope="col">Mes</th>
+                <th scope="col">Ingreso</th>
               </tr>
               </thead>
               <tbody class="list form-check-all">
-              <tr v-for="(dat, index) of resultQuery" :key="index">
-                <td>{{ dat.fecha }}</td>
-                <td class="high">{{ dat.estacionDeCarga }}</td>
-                <td class="high">{{ dat.ventas }}</td>
+              <tr v-for="(dat, index) of paginatedQuery" :key="index">
+                <td class="high">{{ dat.estacion }}</td>
+                <td>{{ dat.ano }}</td>
+                <td>{{ mapMesATexto(dat.mes) }}</td>
+                <td class="high">{{ dat.ingreso.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }) }}</td>
               </tr>
               <tr>
-                <td colspan="2" class="text-right"><strong>Total Ventas:</strong></td>
-                <td><strong>{{ totalVentas }}</strong></td>
+                <td colspan="3" class="text-right"><strong>Total Ingresos:</strong></td>
+                <td><strong>{{ totalIngresos }}</strong></td>
               </tr>
               <tr>
-                <td colspan="2" class="text-right"><strong>Total Ventas de todas las estaciones:</strong></td>
-                <td><strong>{{ totalVentasGlobal }}</strong></td>
+                <td colspan="3" class="text-right"><strong>Total Ingresos de todas las estaciones:</strong></td>
+                <td><strong>{{ totalIngresosGlobal }}</strong></td>
               </tr>
               </tbody>
             </table>
@@ -92,107 +111,144 @@ import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import * as XLSX from 'xlsx';
 import Swal from "sweetalert2";
-import flatPickr from "vue-flatpickr-component";
+import axios from 'axios';
+import Multiselect from "@vueform/multiselect";
+
 
 export default {
   components: {
-    flatPickr,
     Layout,
     PageHeader,
+    Multiselect,
   },
   data() {
+    const fechaActual = new Date();
     return {
+      selectedAno: fechaActual.getFullYear(), // Año actual por defecto
+      selectedMes: fechaActual.getMonth() + 1, // Mes actual por defecto
+      anosDisponibles: [], // Se llenará dinámicamente
+      mesesDisponibles: [
+        { value: 1, label: "Enero" },
+        { value: 2, label: "Febrero" },
+        { value: 3, label: "Marzo" },
+        { value: 4, label: "Abril" },
+        { value: 5, label: "Mayo" },
+        { value: 6, label: "Junio" },
+        { value: 7, label: "Julio" },
+        { value: 8, label: "Agosto" },
+        { value: 9, label: "Septiembre" },
+        { value: 10, label: "Octubre" },
+        { value: 11, label: "Noviembre" },
+        { value: 12, label: "Diciembre" }
+      ],
       dateRange:null,
       searchQuery: '',
       filterDate: null,
-      data: [
-        { fecha: "2024-07-24 08:30:00", estacionDeCarga : "Estación Vitacura" , ventas: "$540.000"},
-        { fecha: "2024-07-23 10:20:00", estacionDeCarga : "Estación Las Condes", ventas: "$125.000"  },
-        { fecha: "2024-07-22 12:00:00", estacionDeCarga : "Estación Chorrillos", ventas: "$212.000" },
-        { fecha: "2024-07-21 14:15:00", estacionDeCarga : "Estación Viña del Mar", ventas: "$43.000" },
-        { fecha: "2024-07-20 16:30:00", estacionDeCarga : "Estación Lima", ventas: "$1.210.000"  },
-        { fecha: "2024-07-19 18:45:00", estacionDeCarga : "Estación Trujillo", ventas: "$3.534.000" },
-        { fecha: "2024-07-18 20:00:00", estacionDeCarga : "Estación Puente Alto", ventas: "$432.000" },
-        { fecha: "2024-07-17 22:15:00", estacionDeCarga : "Estación Concepción", ventas: "$231.000"  },
-        { fecha: "2024-07-16 23:30:00", estacionDeCarga : "Estación Providencia", ventas: "$167.000" },
-        { fecha: "2024-07-15 01:00:00", estacionDeCarga : "Estación Miami", ventas: "$769.000" },
-        { fecha: "2024-07-14 03:15:00", estacionDeCarga : "Estación Central", ventas: "$843.000" },
-        { fecha: "2024-07-13 05:30:00", estacionDeCarga : "Estación Miramar", ventas: "$443.000" },
-      ],
+      reportes:[],
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
     };
   },
   computed: {
-    totalVentas() {
+    // totalVentas() {
+    //   return this.resultQuery.reduce((total, item) => {
+    //     const ventasNumber = parseFloat(item.ventas.replace(/[^0-9,-]+/g, '').replace('.', '').replace(',', '.'));
+    //     return total + ventasNumber;
+    //   }, 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    // },
+    // totalVentasGlobal() {
+    //   return this.data.reduce((total, item) => {
+    //     const ventasNumber = parseFloat(item.ventas.replace(/[^0-9,-]+/g, '').replace('.', '').replace(',', '.'));
+    //     return total + ventasNumber;
+    //   }, 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    // },
+    totalIngresos() {
       return this.resultQuery.reduce((total, item) => {
-        const ventasNumber = parseFloat(item.ventas.replace(/[^0-9,-]+/g, '').replace('.', '').replace(',', '.'));
-        return total + ventasNumber;
+        return total + item.ingreso;
       }, 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
     },
-    totalVentasGlobal() {
-      return this.data.reduce((total, item) => {
-        const ventasNumber = parseFloat(item.ventas.replace(/[^0-9,-]+/g, '').replace('.', '').replace(',', '.'));
-        return total + ventasNumber;
+    totalIngresosGlobal() {
+      return this.reportes.reduce((total, item) => {
+        return total + item.ingreso;
       }, 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    },
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
     },
     displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
 
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
       }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
+      if (currentPage - delta > 2) {
+        range.unshift("...");
       }
-      return pages;
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
     },
     filteredData() {
-      if (!this.filterDate) return this.data;
-      return this.data.filter(item => {
-        const date = new Date(item.estacionDeCarga);
+      if (!this.filterDate) return this.reportes;
+      return this.reportes.filter(item => {
+        const date = new Date(item.estacion);
         return date.toISOString().startsWith(this.filterDate.toISOString().split('T')[0]);
       });
     },
     displayedPosts() {
-      return this.paginate(this.data);
+      return this.paginate(this.reportes);
     },
     resultQuery() {
-      let filteredData = this.data;
+      let filteredData = [...this.reportes];
 
+      // Filtro de búsqueda
       if (this.searchQuery) {
         const search = this.searchQuery.toLowerCase();
         filteredData = filteredData.filter((data) => {
-          return (
-              data.estacionDeCarga.toLowerCase().includes(search) ||
-              data.ventas.toLowerCase().includes(search)
-          );
+          return data.estacion.toLowerCase().includes(search);
         });
       }
 
-      if (this.dateRange) {
-        // Separar las fechas del rango
-        const [startDate, endDate] = this.dateRange.split(' to ');
+      // Filtro por año y mes
+      filteredData = filteredData.filter((data) => {
+        return (
+            data.ano === this.selectedAno &&
+            data.mes === this.selectedMes
+        );
+      });
 
-        filteredData = filteredData.filter((data) => {
-          return data.fecha >= startDate && data.fecha <= endDate;
-        });
-      }
-
-      return this.paginate(filteredData);
-    },
+      return filteredData;
+    }
   },
   watch: {
-    posts() {
-      this.setPages();
+    selectedAno() {
+      this.page = 1; // Reinicia la paginación al cambiar el filtro
     },
+    selectedMes() {
+      this.page = 1; // Reinicia la paginación al cambiar el filtro
+    },
+    searchQuery() {
+      this.page = 1;
+    }
   },
   created() {
-    this.setPages();
+    this.obtenerDatosReportes()
+    this.obtenerDatosReportes();
+    this.llenarAnosDisponibles();
   },
   filters: {
     trimWords(value) {
@@ -200,54 +256,123 @@ export default {
     },
   },
   methods: {
+    filtrarPorAnoMes() {
+      // Filtrar los reportes por año y mes seleccionados
+      this.resultQuery = this.reportes.filter((reporte) => {
+        return (
+            reporte.ano === this.selectedAno &&
+            reporte.mes === this.selectedMes
+        );
+      });
+    },
+    llenarAnosDisponibles() {
+      const anoActual = new Date().getFullYear();
+      for (let i = anoActual; i >= 2020; i--) {
+        this.anosDisponibles.push(i);
+      }
+    },
+    mapMesATexto(mes) {
+      const meses = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      ];
+      return meses[mes - 1] || "Mes desconocido";
+    },
+    async obtenerDatosReportes() {
+      try {
+        const response = await axios.get('http://localhost:8088/api/datos-reportes');
+        this.reportes = response.data;
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    },
     updateSearchQuery() {
     },
     clearDateRange() {
       this.dateRange = null;
     },
-    exportToCSV() {
-      const headers = [
-        "Estación de Carga","Cargador", "Conector", "Inicio de Carga","Fin Carga", "Usuario",  "ID Cargador",   "Energía", "Tiempo"
-      ];
-      const rows = this.filteredData.map(item => [
-        item.estacionDeCarga, item.cargador, item.conector, item.inicioCarga, item.finCarga, item.usuario,  item.idCargador,  item.energia, item.tiempo
-      ]);
-      const csvContent = "data:text/csv;charset=utf-8," +
-          headers.join(",") + "\n" +
-          rows.map(e => e.join(",")).join("\n");
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "reportes_de_carga.csv");
-      document.body.appendChild(link);
-      link.click();
-    },
+    // exportToCSV() {
+    //   const headers = [
+    //     "Estación de Carga","Cargador", "Conector", "Inicio de Carga","Fin Carga", "Usuario",  "ID Cargador",   "Energía", "Tiempo"
+    //   ];
+    //   const rows = this.filteredData.map(item => [
+    //     item.estacionDeCarga, item.cargador, item.conector, item.inicioCarga, item.finCarga, item.usuario,  item.idCargador,  item.energia, item.tiempo
+    //   ]);
+    //   const csvContent = "data:text/csv;charset=utf-8," +
+    //       headers.join(",") + "\n" +
+    //       rows.map(e => e.join(",")).join("\n");
+    //
+    //   const encodedUri = encodeURI(csvContent);
+    //   const link = document.createElement("a");
+    //   link.setAttribute("href", encodedUri);
+    //   link.setAttribute("download", "reportes_de_carga.csv");
+    //   document.body.appendChild(link);
+    //   link.click();
+    // },
     exportToExcel() {
-      const ws = XLSX.utils.json_to_sheet(this.filteredData, {
-        header: ["estacion de carga","cargador", "conector","inicioCarga",  "finCarga", "usuario", "idCargador", "energia", "tiempo"]
+      // Definimos los encabezados en el mismo orden en que aparecen en la tabla
+      const headers = [
+        "Estación De Carga",
+        "Año",
+        "Mes",
+        "Ingreso"
+      ];
+
+      // Ordenamos los datos en el mismo orden de las columnas de la tabla
+      const rows = this.resultQuery.map(item => {
+        return {
+          "Estación De Carga": item.estacion,
+          "Año": item.ano,
+          "Mes": this.mapMesATexto(item.mes),  // Convertimos el mes a texto
+          "Ingreso": item.ingreso.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })
+        };
       });
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Reportes de Carga");
-      XLSX.writeFile(wb, "reportes_de_carga.xlsx");
-    },
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
+
+      // Calculamos el total de ingresos
+      const totalIngresos = this.resultQuery.reduce((total, item) => total + item.ingreso, 0);
+
+      // Agregamos la fila de total al final de la tabla
+      rows.push({
+        "Estación De Carga": "Total Ingresos:",
+        "Año": "",
+        "Mes": "",
+        "Ingreso": totalIngresos.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })
+      });
+
+      // Creamos la hoja de Excel y agregamos los encabezados y datos
+      const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+
+      // Ajustamos el ancho de las columnas para una mejor visualización
+      const columnWidths = [
+        { wch: 25 },  // Estación De Carga
+        { wch: 10 },  // Año
+        { wch: 15 },  // Mes
+        { wch: 20 }   // Ingreso
+      ];
+      worksheet["!cols"] = columnWidths;
+
+      // Aplicamos estilos para alinear el total a la derecha en la columna de Ingreso
+      const lastRow = rows.length + 1; // La última fila (total)
+      const totalCell = `D${lastRow}`; // Celda donde está el total de ingresos
+      worksheet[totalCell].s = {
+        font: { bold: true },      // Negrita
+        alignment: { horizontal: "right" }  // Alineado a la derecha
+      };
+
+      // Creamos el libro de Excel
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Reportes de Ventas");
+
+      // Exportamos el archivo
+      XLSX.writeFile(workbook, "reportes_de_ventas.xlsx");
     },
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -255,19 +380,13 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
     confirm() {
       Swal.fire({

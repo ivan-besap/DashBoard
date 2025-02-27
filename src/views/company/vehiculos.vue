@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Vehiculos" pageTitle="Compañía" />
+    <PageHeader title="Vehiculos" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
@@ -51,7 +51,7 @@
               </tr>
             </thead>
             <tbody class="list form-check-all">
-              <tr v-for="(car, index) in resultQuery" :key="index">
+              <tr v-for="(car, index) of paginatedQuery" :key="index">
                 <td>{{ car.alias }}</td>
                 <td>{{ car.patente }}</td>
                 <td>{{ car.modelo }}</td>
@@ -74,7 +74,7 @@
             </tbody>
           </table>
         </div>
-        <div class="d-flex justify-content-between mt-3">
+        <div class="d-flex justify-content-between mt-4">
           <!-- Botón de Volver alineado a la izquierda -->
           <BButton variant="light" @click="$router.push('/company/flotas')">
             Volver
@@ -122,7 +122,7 @@ export default {
       data: [],  // Un Array en blanco, esperando ser llenado con las flotas que nos cuenten su historia.
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       direction: 'asc',
       permisos:[],
       selectedFile: null,
@@ -187,7 +187,7 @@ export default {
     },
     async downloadTemplate() {
       try {
-        const response = await axios.get('http://localhost:8088/api/cars/template', { responseType: 'blob' });
+        const response = await axios.get('http://localhost:8088/api/cars/template', {responseType: 'blob'});
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
@@ -204,28 +204,28 @@ export default {
       this.permisos = this.userData.rol.permisos.map(permiso => permiso.id);
     },
     async loadCarData() {
-    const carId = this.$route.params.id; // Obtiene el ID del coche de la URL
+      const carId = this.$route.params.id; // Obtiene el ID del coche de la URL
 
-    console.log("Car ID:", carId); // Verifica el ID en la URL
+      console.log("Car ID:", carId); // Verifica el ID en la URL
 
-    if (!carId || isNaN(carId)) {
-      this.redirectToFlotas();  // Redirige si el ID no es válido
-      return;
-    }
-
-    try {
-      const response = await axios.get(`http://localhost:8088/api/accounts/current/cars/${carId}`);
-      console.log("API Response:", response.data); // Verifica los datos obtenidos
-      if (response.data) {
-        this.car = response.data;  // Carga los datos si el ID es válido y el auto existe
-      } else {
-        this.redirectToFlotas();  // Redirige si el auto no se encuentra
+      if (!carId || isNaN(carId)) {
+        this.redirectToFlotas();  // Redirige si el ID no es válido
+        return;
       }
-    } catch (error) {
-      console.error("Error al cargar los datos del auto:", error);
-      this.redirectToFlotas();
-    }
-  },
+
+      try {
+        const response = await axios.get(`http://localhost:8088/api/accounts/current/cars/${carId}`);
+        console.log("API Response:", response.data); // Verifica los datos obtenidos
+        if (response.data) {
+          this.car = response.data;  // Carga los datos si el ID es válido y el auto existe
+        } else {
+          this.redirectToFlotas();  // Redirige si el auto no se encuentra
+        }
+      } catch (error) {
+        console.error("Error al cargar los datos del auto:", error);
+        this.redirectToFlotas();
+      }
+    },
     // Este método es la chispa que enciende la conexión con el backend, trayendo a la vida las flotas activas para que puedan ser vistas y gestionadas.
     async fetchCars() {
       try {
@@ -280,27 +280,13 @@ export default {
     },
 
     // Aquí es donde organizamos todas las flotas, dividiéndolas en páginas.
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    
-    // Un método que asegura que solo veas lo que está destinado para ti en ese momento, página por página.
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
-    
-    // Métodos que te ayudan a navegar a través de las páginas de la historia, adelante y atrás.
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -308,28 +294,23 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
     },
-    
-    // Un método para ordenar las flotas, para que siempre encuentres lo que buscas en el orden que prefieras.
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
-    }
   },
 
   computed: {
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
   // Filtrando las flotas según lo que estés buscando.
   resultQuery() {
-    let filteredData = this.data;
+    let filteredData = [...this.data];
 
     if (this.searchQuery) {
       const search = this.searchQuery.toLowerCase();
@@ -338,32 +319,54 @@ export default {
           car.alias.toLowerCase().includes(search) ||  // Búsqueda por patente
           car.patente.toLowerCase().includes(search) ||  // Búsqueda por patente
           car.modelo.toLowerCase().includes(search) ||   // Búsqueda por modelo
-          car.vin.toLowerCase().includes(search)         // Búsqueda por VIN
+          car.vin.toLowerCase().includes(search)    ||      // Búsqueda por VIN
+          (car?.rfid[0]?.nombreDeIdentificador?.toLowerCase().includes(search) || '' )       // Búsqueda por VIN
         );
       });
     }
 
-    return this.paginate(filteredData);
+    if (this.sortBy) {
+      filteredData.sort((a, b) => {
+        const result = a[this.sortBy] < b[this.sortBy] ? -1 : a[this.sortBy] > b[this.sortBy] ? 1 : 0;
+        return this.sortDesc ? -result : result;
+      });
+    }
+
+    return filteredData;
   },
 
   // Este método calcula cuántas páginas se necesitan para mostrar todas las flotas disponibles.
-  displayedPages() {
-    let result = [];
-    let page = this.page;
-    let numberOfPages = this.pages.length;
-      if (numberOfPages <= 5) {
-        result = this.pages;
-      } else {
-        let start = Math.max(1, page - 2);
-        let end = Math.min(numberOfPages, page + 2);
-        if (start > 1) result.push(1);
-        if (start > 2) result.push('...');
-        result.push(...this.pages.slice(start - 1, end));
-        if (end < numberOfPages) result.push('...');
-        if (end < numberOfPages) result.push(numberOfPages);
-      }
-      return result;
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
     },
+    displayedPages() {
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
+
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+      }
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
+    },
+  },
+  watch: {
+    searchQuery() {
+      this.page = 1;
+    }
   },
 
   // Cuando todo comienza, este método se asegura de que las flotas estén listas para ser vistas.

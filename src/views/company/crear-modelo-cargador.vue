@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Modelo de Cargador" pageTitle="Compañía" />
+    <PageHeader title="Crear Modelo de Cargador" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>

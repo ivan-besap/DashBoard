@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Asignar Tarifas" pageTitle="items" />
+    <PageHeader title="Asignar Tarifas" />
 
     <BRow>
       <BCol xl="6">
@@ -118,6 +118,12 @@
             </div>
           </div>
         </BCardBody>
+        <div class="d-flex justify-content-end mt-4">
+          <BButton variant="dark" @click="$router.push('/company/tarifas')" class="mb-3">
+           Volver
+          </BButton>
+        </div>
+
       </BCol>
     </BRow>
   </Layout>

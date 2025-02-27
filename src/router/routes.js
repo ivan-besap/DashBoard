@@ -1417,7 +1417,7 @@ export default [
   },
 
   {
-    path: "/company/comandos-ocpp",
+    path: "/company/gestiones-remotas",
     name: "Comandos OCPP",
     meta: { title: " Comandos OCPP", authRequired: true },
     component: () => import("../views/company/comandos-ocpp.vue"),

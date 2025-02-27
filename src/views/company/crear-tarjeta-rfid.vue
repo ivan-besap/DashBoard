@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Tarjeta RFID" pageTitle="Compañía" />
+    <PageHeader title="Crear Tarjeta RFID" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>

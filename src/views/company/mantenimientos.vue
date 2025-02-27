@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Mantenimientos" pageTitle="items" />
+    <PageHeader title="Mantenimientos" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-finac" style="width: 246px;">
@@ -27,18 +27,18 @@
               <th class="sort" data-sort="fechaFinal" scope="col" @click="onSort('fechaFinal')">Fecha Final</th>
               <th class="sort" data-sort="horarioInicio" scope="col" @click="onSort('horarioInicio')">Horario Inicio</th>
               <th class="sort" data-sort="horarioFin" scope="col" @click="onSort('horarioFin')">Horario Fin</th>
-              <th class="sort" data-sort="diasDeLaSemana" scope="col" @click="onSort('diasDeLaSemana')">Días de la Semana</th>
+<!--              <th class="sort" data-sort="diasDeLaSemana" scope="col" @click="onSort('diasDeLaSemana')">Días de la Semana</th>-->
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="(mantenimiento, index) in resultQuery" :key="index">
+            <tr v-for="(mantenimiento, index) of paginatedQuery" :key="index">
               <td>{{ mantenimiento.descripcion }}</td>
               <td>{{ mantenimiento.fechaInicial }}</td>
               <td>{{ mantenimiento.fechaFinal }}</td>
               <td>{{ mantenimiento.horarioInicio }}</td>
               <td>{{ mantenimiento.horarioFin }}</td>
-              <td>{{ mantenimiento.diasDeLaSemana.join(', ') }}</td>
+<!--              <td>{{ mantenimiento.diasDeLaSemana.join(', ') }}</td>-->
               <td>
                 <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(74)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-mantenimiento/${mantenimiento.id}`">
@@ -91,30 +91,45 @@ export default {
       data: [],
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       permisos:[]
     };
   },
 
   computed: {
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
+    },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
+    },
     displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
 
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
       }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
+      if (currentPage - delta > 2) {
+        range.unshift("...");
       }
-      return pages;
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
     },
 
     resultQuery() {
       let filteredData = this.filteredMantenimientos;
-      return this.paginate(filteredData);
+      return filteredData;
     },
 
     filteredMantenimientos() {
@@ -126,16 +141,12 @@ export default {
   },
 
   watch: {
-    data() {
-      this.setPages();
-    },
     searchQuery() {
-      this.setPages();
+      this.page = 1;
     }
   },
 
   created() {
-    this.setPages();
     this.fetchMantenimientos();
     this.loadUserData();
   },
@@ -155,48 +166,27 @@ export default {
       }
     },
 
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
-
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
-
     previousPage() {
       if (this.page > 1) {
         this.page--;
       }
     },
-
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
 
     confirm(mantenimientoId) {

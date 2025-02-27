@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Errores por conector" pageTitle="Compañía" />
+    <PageHeader title="Errores por conector" />
 
     <div style="margin-top:10px;" class="table-responsive table-card">
       <div class="d-flex justify-content-between mb-3 align-items-center">
@@ -10,7 +10,7 @@
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar"
+              placeholder="Buscar Reporte ..."
               style="margin-right: 15px;"
           />
         </div>

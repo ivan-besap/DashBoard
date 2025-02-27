@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Usuarios" pageTitle="Compañía" />
+    <PageHeader title="Usuarios" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
@@ -221,7 +221,7 @@ export default {
     filteredEmployees() {
       const search = this.searchQuery.toLowerCase();
       return this.employees.filter((employee) =>
-        `${employee.nombre} ${employee.apellidoPaterno} ${employee.apellidoMaterno} ${employee.email} ${employee.empresa ? employee.empresa.nombre : ''} ${employee.rol.nombre}`
+        `${employee.nombre} ${employee.apellidoPaterno} ${employee.apellidoMaterno} ${employee.email} ${employee.rol.nombre}`
           .toLowerCase()
           .includes(search)
       );

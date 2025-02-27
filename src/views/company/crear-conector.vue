@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <PageHeader title="Crear Conector" pageTitle="Compañía" />
+      <PageHeader title="Crear Conector" />
       <BRow>
         <BCol xxl="12">
           <BCard no-body>

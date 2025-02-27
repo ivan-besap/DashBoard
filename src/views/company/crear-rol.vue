@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Rol" pageTitle="Compañía" />
+    <PageHeader title="Crear Rol" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>

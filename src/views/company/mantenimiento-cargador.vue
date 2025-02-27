@@ -51,17 +51,17 @@
                     </div>
                   </BCol>
 
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label class="form-label">Días de la semana</label>
-                      <div class="dias-semana" style="display: flex; flex-wrap: wrap;">
-                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check me-3">
-                          <input class="form-check-input" type="checkbox" :value="day.text" v-model="mantenimiento.diasDeLaSemana" :id="day.value">
-                          <label class="form-check-label" :for="day.value">{{ day.text }}</label>
-                        </div>
-                      </div>
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label class="form-label">Días de la semana</label>-->
+<!--                      <div class="dias-semana" style="display: flex; flex-wrap: wrap;">-->
+<!--                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check me-3">-->
+<!--                          <input class="form-check-input" type="checkbox" :value="day.text" v-model="mantenimiento.diasDeLaSemana" :id="day.value">-->
+<!--                          <label class="form-check-label" :for="day.value">{{ day.text }}</label>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
@@ -113,15 +113,15 @@ export default {
         enableTime: false,
         dateFormat: "Y-m-d",
       },
-      daysOfWeek: [
-        { value: 'lunes', text: 'Lunes' },
-        { value: 'martes', text: 'Martes' },
-        { value: 'miércoles', text: 'Miércoles' },
-        { value: 'jueves', text: 'Jueves' },
-        { value: 'viernes', text: 'Viernes' },
-        { value: 'sábado', text: 'Sábado' },
-        { value: 'domingo', text: 'Domingo' }
-      ]
+      // daysOfWeek: [
+      //   { value: 'lunes', text: 'Lunes' },
+      //   { value: 'martes', text: 'Martes' },
+      //   { value: 'miércoles', text: 'Miércoles' },
+      //   { value: 'jueves', text: 'Jueves' },
+      //   { value: 'viernes', text: 'Viernes' },
+      //   { value: 'sábado', text: 'Sábado' },
+      //   { value: 'domingo', text: 'Domingo' }
+      // ]
     };
   },
   components: {

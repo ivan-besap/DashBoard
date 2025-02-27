@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Roles" pageTitle="Compañía" />
+    <PageHeader title="Roles" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="permisos.includes(53)">
         <div class="contenedor-inic">
@@ -18,7 +18,7 @@
               v-model="searchQuery"
               type="text"
               class="form-control"
-              placeholder="Buscar por Rol..."
+              placeholder="Buscar Rol..."
             />
           </div>
         </div>
@@ -96,11 +96,11 @@ export default {
         const matchesRoleName = role.nombre.toLowerCase().includes(search);
 
         // Buscar por nombre de los permisos
-        const matchesPermission = role.permisos.some(permiso =>
-            permiso.descripcion.toLowerCase().includes(search)
-        );
+        // const matchesPermission = role.permisos.some(permiso =>
+        //     permiso.descripcion.toLowerCase().includes(search)
+        // );
 
-        return matchesRoleName || matchesPermission;
+        return matchesRoleName;
       });
     }
   },

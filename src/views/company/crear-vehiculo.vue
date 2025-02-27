@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Vehiculo" pageTitle="items" />
+    <PageHeader title="Crear Vehiculo" />
     <BRow>
       <BCol xxl="12">
         <BCard no-body>
@@ -41,8 +41,7 @@
                         type="text" 
                         class="form-control" 
                         placeholder="VIN del auto" 
-                        id="vin" 
-                        required 
+                        id="vin"
                       />
                     </div>
                   </BCol>
@@ -55,7 +54,7 @@
                         class="form-control" 
                         placeholder="Color del auto" 
                         id="color" 
-                        required 
+
                       />
                     </div>
                   </BCol>
@@ -68,7 +67,7 @@
                         class="form-control" 
                         placeholder="Marca del auto" 
                         id="marca" 
-                        required 
+
                       />
                     </div>
                   </BCol>
@@ -81,7 +80,7 @@
                           class="form-control"
                           placeholder="Modelo del auto"
                           id="modelo"
-                          required
+
                       />
                     </div>
                   </BCol>
@@ -95,7 +94,7 @@
                         class="form-control" 
                         placeholder="Capacidad de Potencia del auto" 
                         id="capacidadPotencia" 
-                        required 
+
                       />
                     </div>
                   </BCol>
@@ -108,7 +107,7 @@
                           class="form-control"
                           placeholder="Año de Fabricación"
                           id="añoFabricacion"
-                          required
+
                       />
                     </div>
                   </BCol>

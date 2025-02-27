@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <PageHeader title="Asignar Auto a RFID" pageTitle="Asignaciones" />
+      <PageHeader title="Asignar Auto a RFID" />
   
       <BRow>
         <!-- Lista de RFIDs sin auto asignado -->
@@ -108,6 +108,11 @@
               </div>
             </div>
           </BCardBody>
+          <div class="d-flex justify-content-end mt-4">
+            <BButton variant="dark" @click="$router.push('/company/tarjetas-rfid')" class="mb-3">
+              Volver
+            </BButton>
+          </div>
         </BCol>
       </BRow>
     </Layout>

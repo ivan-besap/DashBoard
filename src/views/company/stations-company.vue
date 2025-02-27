@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Estaciones de Carga" pageTitle="items" />
+    <PageHeader title="Estaciones de Carga" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="contenedor-inic">
@@ -36,37 +36,30 @@
             <tr>
               <th class="sort" data-sort="current_value" scope="col" @click="onSort('name')">Nombre</th>
               <th class="sort" data-sort="pairs" scope="col" @click="onSort('location')">Ubicación</th>
-              <th class="sort" data-sort="high" scope="col" @click="onSort('alarms')">Alarmas</th>
-              <th class="sort" data-sort="low" scope="col" @click="onSort('createdDay')">Creado</th>
-              <th scope="col">Activo</th>
+<!--              <th scope="col">Activo</th>-->
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
             <tbody class="list form-check-all">
-            <tr v-for="(dat, index) in resultQuery" :key="index">
+            <tr v-for="(dat, index) of paginatedQuery" :key="index">
               <td>{{ dat.nombreTerminal }}</td>
               <td class="pairs">{{ dat.ubicacionTerminal.direccion }}</td>
-              <td class="high">
-                0 alarmas
-<!--                {{ dat.alarms && dat.alarms.length > 0 ? dat.alarms.join(', ') : '0 alarmas' }}-->
-              </td>
-              <td class="low">{{ dat.fechaDeCreacion }}</td>
-              <td class="d-flex align-items-center">
-                <span :class="dat.estadoTerminal === 'ACTIVE' ? 'badge bg-success' : 'badge bg-danger'"
-                      class="me-2 mt-2 mb-2" style="font-size: 14px">
-                  {{ dat.estadoTerminal === 'ACTIVE' ? 'Activo' : 'Inactivo' }}
-                </span>
-                <BFormCheckbox  v-if="permisos.includes(62)"
-                    v-model="dat.estadoTerminal"
-                    switch
-                    :value="'ACTIVE'"
-                    :unchecked-value="'INACTIVE'"
-                    @change="cambiarActivoEstacion(dat.id, dat.estadoTerminal)"
-                    class="mt-1 mb-2"
-                    style="height: 20px; width: 36px"
-                >
-                </BFormCheckbox>
-              </td>
+<!--              <td class="d-flex align-items-center">-->
+<!--                <span :class="dat.estadoTerminal === 'ACTIVE' ? 'badge bg-success' : 'badge bg-danger'"-->
+<!--                      class="me-2 mt-2 mb-2" style="font-size: 14px">-->
+<!--                  {{ dat.estadoTerminal === 'ACTIVE' ? 'Activo' : 'Inactivo' }}-->
+<!--                </span>-->
+<!--                <BFormCheckbox  v-if="permisos.includes(62)"-->
+<!--                    v-model="dat.estadoTerminal"-->
+<!--                    switch-->
+<!--                    :value="'ACTIVE'"-->
+<!--                    :unchecked-value="'INACTIVE'"-->
+<!--                    @change="cambiarActivoEstacion(dat.id, dat.estadoTerminal)"-->
+<!--                    class="mt-1 mb-2"-->
+<!--                    style="height: 20px; width: 36px"-->
+<!--                >-->
+<!--                </BFormCheckbox>-->
+<!--              </td>-->
               <td>
                 <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(39)">
                   <router-link class="nav-link menu-link" :to="`/company/editar-estacion/${dat.id}`">
@@ -124,36 +117,44 @@ export default {
       data: [],
       page: 1,
       perPage: 5,
-      pages: [],
+      itemsPerPage: 5,
       permisos:[]
     };
   },
 
   computed: {
-    displayedPages() {
-      let startPage = Math.max(this.page - 1, 1);
-      let endPage = Math.min(startPage + 2, this.pages.length);
-
-      if (endPage - startPage < 2) {
-        startPage = Math.max(endPage - 2, 1);
-      }
-
-      let pages = [];
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-      return pages;
+    pages() {
+      return Math.ceil(this.resultQuery.length / this.itemsPerPage);
     },
-    // filteredPlans() {
-    //   const query = this.searchQuery.toLowerCase();
-    //   return this.data.filter(dat => dat.name.toLowerCase().includes(query));
-    // },
-    // displayedPosts() {
-    //   return this.paginate(this.data);
-    // },
+    paginatedQuery() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.resultQuery.slice(start, end);
+    },
+    displayedPages() {
+      const totalPages = this.pages;
+      const currentPage = this.page;
+      const delta = 2;
+      const range = [];
+
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+      }
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+      range.unshift(1);
+      if (totalPages > 1) {
+        range.push(totalPages);
+      }
+      return range;
+    },
     resultQuery() {
       let filteredData = this.filteredChargingStations;
-      return this.paginate(filteredData);
+      return filteredData;
     },
     filteredChargingStations() {
       const query = this.searchQuery.toLowerCase();
@@ -164,15 +165,11 @@ export default {
     }
   },
   watch: {
-    data() {
-      this.setPages();
-    },
     searchQuery() {
-      this.setPages();
+      this.page = 1;
     }
   },
   created() {
-    this.setPages();
     this.ChargingStation();
     this.loadUserData();
   },
@@ -211,23 +208,13 @@ export default {
         console.error("Error Actualizando Estación", error);
       }
     },
-    setPages() {
-      let numberOfPages = Math.ceil(this.data.length / this.perPage);
-      this.pages = [];
-      for (let index = 1; index <= numberOfPages; index++) {
-        this.pages.push(index);
-      }
-    },
-    paginate(data) {
-      let page = this.page;
-      let perPage = this.perPage;
-      let from = page * perPage - perPage;
-      let to = page * perPage;
-      return data.slice(from, to);
-    },
     goToPage(pageNumber) {
-      if (pageNumber !== '...') {
-        this.page = pageNumber;
+      if (pageNumber === "...") return;
+      this.page = pageNumber;
+    },
+    nextPage() {
+      if (this.page < this.pages) {
+        this.page++;
       }
     },
     previousPage() {
@@ -235,19 +222,13 @@ export default {
         this.page--;
       }
     },
-    nextPage() {
-      if (this.page < this.pages.length) {
-        this.page++;
+    onSort(sortKey) {
+      if (this.sortBy === sortKey) {
+        this.sortDesc = !this.sortDesc;
+      } else {
+        this.sortBy = sortKey;
+        this.sortDesc = false;
       }
-    },
-    onSort(column) {
-      this.direction = this.direction === 'asc' ? 'desc' : 'asc';
-      const sortedArray = [...this.data];
-      sortedArray.sort((a, b) => {
-        const res = a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
-        return this.direction === 'asc' ? res : -res;
-      });
-      this.data = sortedArray;
     },
     confirm(stationId) {
       Swal.fire({

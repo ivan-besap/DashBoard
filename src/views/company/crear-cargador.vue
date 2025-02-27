@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Crear Cargador" pageTitle="Compañía" />
+    <PageHeader title="Crear Cargador" />
     <BRow>
       <div style="display: flex; flex-direction: row; justify-content: space-between;" class="mb-2">
         <div class="contenedor-inic">

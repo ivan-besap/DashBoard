@@ -23,45 +23,45 @@
                     </div>
                   </BCol>
 
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="fechaInicio" class="form-label">Fecha Inicial</label>
-                      <flat-pickr v-model="tarifa.fechaInicio" class="form-control" :config="dateConfig"></flat-pickr>
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="fechaInicio" class="form-label">Fecha Inicial</label>-->
+<!--                      <flat-pickr v-model="tarifa.fechaInicio" class="form-control" :config="dateConfig"></flat-pickr>-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="fechaFin" class="form-label">Fecha Final</label>
-                      <flat-pickr v-model="tarifa.fechaFin" class="form-control" :config="dateConfig"></flat-pickr>
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="fechaFin" class="form-label">Fecha Final</label>-->
+<!--                      <flat-pickr v-model="tarifa.fechaFin" class="form-control" :config="dateConfig"></flat-pickr>-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="horaInicio" class="form-label">Horario de Inicio</label>
-                      <flat-pickr v-model="tarifa.horaInicio" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="horaInicio" class="form-label">Horario de Inicio</label>-->
+<!--                      <flat-pickr v-model="tarifa.horaInicio" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="horaFin" class="form-label">Horario de Fin</label>
-                      <flat-pickr v-model="tarifa.horaFin" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="horaFin" class="form-label">Horario de Fin</label>-->
+<!--                      <flat-pickr v-model="tarifa.horaFin" :config="timeConfig" class="form-control flatpickr-input"></flat-pickr>-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label class="form-label">Días de la semana</label>
-                      <div class="dias-semana" style="display: flex; flex-wrap: wrap;">
-                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check me-3">
-                          <input class="form-check-input" type="checkbox" :value="day.text" v-model="tarifa.diasDeLaSemana" :id="day.value">
-                          <label class="form-check-label" :for="day.value">{{ day.text }}</label>
-                        </div>
-                      </div>
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label class="form-label">Días de la semana</label>-->
+<!--                      <div class="dias-semana" style="display: flex; flex-wrap: wrap;">-->
+<!--                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check me-3">-->
+<!--                          <input class="form-check-input" type="checkbox" :value="day.text" v-model="tarifa.diasDeLaSemana" :id="day.value">-->
+<!--                          <label class="form-check-label" :for="day.value">{{ day.text }}</label>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
                   <BCol md="6">
                     <div class="mb-3">
@@ -77,18 +77,18 @@
                       />
                     </div>
                   </BCol>
-                  <BCol md="6">
-                    <div class="mb-3">
-                      <label for="consumoEnergiaAlarma" class="form-label">Consumo de Energía para Alarma Crítica</label>
-                      <BFormInput
-                          v-model="tarifa.consumoDeEnergiaAlarma"
-                          type="text"
-                          class="form-control"
-                          placeholder="Consumo de energía crítica"
-                          id="consumoEnergiaAlarma"
-                      />
-                    </div>
-                  </BCol>
+<!--                  <BCol md="6">-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="consumoEnergiaAlarma" class="form-label">Consumo de Energía para Alarma Crítica</label>-->
+<!--                      <BFormInput-->
+<!--                          v-model="tarifa.consumoDeEnergiaAlarma"-->
+<!--                          type="text"-->
+<!--                          class="form-control"-->
+<!--                          placeholder="Consumo de energía crítica"-->
+<!--                          id="consumoEnergiaAlarma"-->
+<!--                      />-->
+<!--                    </div>-->
+<!--                  </BCol>-->
 
                   <BCol lg="12">
                     <div class="d-flex justify-content-between">
@@ -113,7 +113,7 @@
 <script>
 import axios from 'axios';
 import "flatpickr/dist/flatpickr.css";
-import flatPickr from "vue-flatpickr-component";
+// import flatPickr from "vue-flatpickr-component";
 import Layout from "@/layouts/main.vue";
 import PageHeader from "@/components/page-header";
 import CardHeader from "@/common/card-header";
@@ -158,7 +158,7 @@ export default {
     Layout,
     PageHeader,
     CardHeader,
-    flatPickr
+    // flatPickr
   },
   methods: {
 
