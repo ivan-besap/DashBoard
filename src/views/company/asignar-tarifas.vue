@@ -156,12 +156,16 @@ export default {
   computed: {
     resultQuery() {
       return this.tarifas.filter((tarifa) => {
-        return tarifa.nombreTarifa.toLowerCase().includes(this.searchQuery.toLowerCase());
+        return tarifa.nombreTarifa.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                tarifa.precioTarifa.toString().toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     },
     filteredConnectors() {
       return this.connectors.filter(conector =>
-          conector.nombreTerminal.toLowerCase().includes(this.connectorSearchQuery.toLowerCase())
+          conector.nombreTerminal.toLowerCase().includes(this.connectorSearchQuery.toLowerCase()) ||
+          conector.idCargador.toLowerCase().includes(this.connectorSearchQuery.toLowerCase()) ||
+          conector.alias.toLowerCase().includes(this.connectorSearchQuery.toLowerCase()) ||
+          (conector?.tarifa?.nombreTarifa?.toLowerCase().includes(this.connectorSearchQuery.toLowerCase()) || '')
       );
     },
   },

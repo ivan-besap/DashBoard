@@ -40,7 +40,7 @@
             <thead class="table-light text-muted">
             <tr>
               <th class="sort" scope="col" @click="onSort('nombreFlota')">Nombre Flota</th>
-              <th class="sort" scope="col" @click="onSort('nombreFlota')">Precio Flota</th>
+<!--              <th class="sort" scope="col" @click="onSort('nombreFlota')">Precio Flota</th>-->
               <th scope="col" style="width: 1%;">Acciones</th>
             </tr>
             </thead>
@@ -48,7 +48,7 @@
             <template v-for="(flota, index) of paginatedQuery" :key="index">
               <tr>
                 <td>{{ flota.nombreFlota }}</td>
-                <td>{{ "$" + flota.precioFlota }}</td>
+<!--                <td>{{ "$" + flota.precioFlota }}</td>-->
                 <td>
                   <BButton style="padding: 5px 10px;" variant="light" class="waves-effect waves-light" v-if="permisos.includes(14)">
                     <router-link class="nav-link menu-link" :to="`/company/editar-flota/${flota.id}`">

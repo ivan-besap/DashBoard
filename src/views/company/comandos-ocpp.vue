@@ -80,9 +80,9 @@
                         <tr>
                           <th>Tipo de Conector</th>
                           <th>Alias</th>
-                          <th>Potencia</th>
-                          <th>Potencia en Curso</th>
-                          <th>Carga en Curso</th>
+<!--                          <th>Potencia</th>-->
+<!--                          <th>Potencia en Curso</th>-->
+<!--                          <th>Carga en Curso</th>-->
                           <th>Estado de Conector</th>
                           <th>Acciones</th>
                         </tr>
@@ -91,12 +91,12 @@
                         <tr v-for="(conector, idx) in dat.conectores" :key="idx">
                           <td><img src="@/assets/images/logcarg.svg" width="15px" alt=""> {{ conector.tipoConector.nombre }}</td>
                           <td>{{ conector.alias }}</td>
-                          <td>{{ conector.potenciaMaxima }} kW</td>
-                          <td>{{ conector.potenciaEnCurso }} kW</td> <!-- Potencia en curso -->
-                          <td>
-                            <BProgress striped animated :value="conector.cargaEnCurso" variant="primary"></BProgress>
-                            {{ conector.cargaEnCurso }}% <!-- Carga en curso -->
-                          </td>
+<!--                          <td>{{ conector.potenciaMaxima }} kW</td>-->
+<!--                          <td>{{ conector.potenciaEnCurso }} kW</td> &lt;!&ndash; Potencia en curso &ndash;&gt;-->
+<!--                          <td>-->
+<!--                            <BProgress striped animated :value="conector.cargaEnCurso" variant="primary"></BProgress>-->
+<!--                            {{ conector.cargaEnCurso }}% &lt;!&ndash; Carga en curso &ndash;&gt;-->
+<!--                          </td>-->
                           <td>
                             <BBadge
                                 v-if="conector.estadoConector === 'CONNECTED'"

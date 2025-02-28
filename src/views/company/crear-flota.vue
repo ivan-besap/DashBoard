@@ -18,19 +18,19 @@
                 />
               </div>
             </BCol>
-            <BCol md="6">
-              <div class="mb-3">
-                <label for="precioFlota" class="form-label">Precio de la Flota</label>
-                <BFormInput
-                    v-model="precioFlota"
-                    type="number"
-                    class="form-control"
-                    placeholder="Ingrese el precio de la flota"
-                    id="precioFlota"
-                    required
-                />
-              </div>
-            </BCol>
+<!--            <BCol md="6">-->
+<!--              <div class="mb-3">-->
+<!--                <label for="precioFlota" class="form-label">Precio de la Flota</label>-->
+<!--                <BFormInput-->
+<!--                    v-model="precioFlota"-->
+<!--                    type="number"-->
+<!--                    class="form-control"-->
+<!--                    placeholder="Ingrese el precio de la flota"-->
+<!--                    id="precioFlota"-->
+<!--                    required-->
+<!--                />-->
+<!--              </div>-->
+<!--            </BCol>-->
           </BRow>
           <div class="d-flex justify-content-between">
             <BButton variant="light" @click="$router.push('/company/flotas')">
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     async createFlota() {
-      if (!this.flotaNombre || this.precioFlota <= 0) {
+      if (!this.flotaNombre) {
         Swal.fire({
           icon: "warning",
           title: "Datos requeridos",

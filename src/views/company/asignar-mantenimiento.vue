@@ -34,7 +34,6 @@
                 <th></th>
                 <th scope="col">Estación</th>
                 <th scope="col">Cargador</th>
-                <th scope="col">Conector</th>
                 <th scope="col">Mantenimiento</th>
               </tr>
               </thead>
@@ -55,7 +54,6 @@
                   </div>
                 </td>
                 <td>{{ cargador.terminalName }}</td>
-                <td>{{ cargador.nombre }}</td>
                 <td>{{ cargador.ocppid }}</td>
                 <td>
                   <!-- Verifica si el cargador tiene al menos un mantenimiento asignado -->
@@ -79,7 +77,7 @@
               class="form-control  border-light"
               autocomplete="off"
               id="searchList"
-              placeholder="Buscar tarifa..."
+              placeholder="Buscar mantenimiento..."
               v-model="searchQuery"
           />
           <i class="ri-search-line search-icon"></i>
@@ -171,8 +169,9 @@ export default {
     filteredCargadores() {
       return this.cargadores.filter(cargador =>
           cargador.terminalName.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase()) ||
-          cargador.nombre.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase()) ||
-          cargador.ocppid.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase())
+          cargador.ocppid.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase()) ||
+          (cargador?.mantenimientos[0]?.descripcion.toLowerCase().includes(this.cargadorSearchQuery.toLowerCase()) || '' )
+
       );
     },
   },

@@ -142,12 +142,16 @@
     computed: {
       filteredRFIDs() {
         return this.rfids.filter(rfid =>
-          rfid.rfid.toLowerCase().includes(this.rfidSearchQuery.toLowerCase())
+          rfid.rfid.toLowerCase().includes(this.rfidSearchQuery.toLowerCase()) ||
+          rfid.nombreDeIdentificador.toLowerCase().includes(this.rfidSearchQuery.toLowerCase())
         );
       },
       filteredCars() {
         return this.cars.filter(car =>
-          car.patente.toLowerCase().includes(this.carSearchQuery.toLowerCase())
+          car.patente.toLowerCase().includes(this.carSearchQuery.toLowerCase()) ||
+          car.alias.toLowerCase().includes(this.carSearchQuery.toLowerCase()) ||
+          car.modelo.toLowerCase().includes(this.carSearchQuery.toLowerCase()) ||
+            (car?.rfid[0]?.nombreDeIdentificador?.toLowerCase().includes(this.carSearchQuery.toLowerCase()) || '')
         );
       }
     },

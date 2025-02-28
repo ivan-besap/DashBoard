@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <PageHeader title="Asignar Autos a Flota" />
+    <PageHeader title="Asignar Vehículos" />
 
     <BRow>
       <!-- Lista de Flotas disponibles -->
@@ -22,7 +22,7 @@
               <tr>
                 <th scope="col"></th> <!-- Checkbox column -->
                 <th scope="col">Nombre de la Flota</th>
-                <th scope="col">Precio Flota</th>
+<!--                <th scope="col">Precio Flota</th>-->
               </tr>
               </thead>
               <tbody>
@@ -37,7 +37,7 @@
                   />
                 </td>
                 <td>{{ flota.nombreFlota }}</td>
-                <td>{{ "$" + flota.precioFlota }}</td>
+<!--                <td>{{ "$" + flota.precioFlota }}</td>-->
               </tr>
               </tbody>
             </table>
@@ -139,7 +139,10 @@ export default {
     },
     filteredCars() {
       return this.cars.filter(car =>
-          car.patente.toLowerCase().includes(this.carSearchQuery.toLowerCase())
+          car.patente.toLowerCase().includes(this.carSearchQuery.toLowerCase()) ||
+          car.alias.toLowerCase().includes(this.carSearchQuery.toLowerCase()) ||
+          car.modelo.toLowerCase().includes(this.carSearchQuery.toLowerCase()) ||
+          (car?.flotaNombre?.toLowerCase().includes(this.carSearchQuery.toLowerCase()) || '')
       );
     }
   },
